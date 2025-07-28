@@ -1,12 +1,34 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './config/database';
+
+// Load env vars
+dotenv.config();
+
+// Connect to database
+connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.get('/', (req: Request, res: Response) => {
- res.json({ message: 'Hello from MERN backend!' });
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+app.use(express.json());
+
+// Basic test route
+app.get('/api/test', (_req: Request, res: Response) => {
+  res.json({ 
+    message: 'Server is working!',
+    database: process.env.DATABASE_TYPE 
+  });
 });
 
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
- console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Using database: ${process.env.DATABASE_TYPE}`);
 });
