@@ -25,7 +25,14 @@ Hit CTRL + SHIFT + V to open the .md-formatter for VS CODE.
 
 ## Getting Started
 
-### Running the Application
+### Running the Application in prod mode
+
+Start Application:
+```bash
+docker-compose -f compose.yaml -f compose.prod.yaml up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
+```
+
+### Running the Application in dev mode
 
 Start Application:
 ```bash
