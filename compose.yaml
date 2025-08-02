@@ -120,6 +120,29 @@ services:
     depends_on:
       - postgresql
 
+  # Database Seeding Service
+  seed:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: development
+    container_name: mern-seed
+    command: npm run seed
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/portfolio?authSource=admin
+      - DATABASE_TYPE=mongodb
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - server
+    profiles:
+      - tools
+    networks:
+      - app-network
+
 volumes:
   mongodb_data:
   postgresql_data:
