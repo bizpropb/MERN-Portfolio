@@ -1,8 +1,9 @@
 #!/bin/sh
 
 clear
+echo ""
 echo "===================================================================================="
-echo " startup.sh - STARTUP COMPLETE "
+echo " startup.sh - startup complete! "
 echo "===================================================================================="
 echo ""
 
@@ -25,10 +26,12 @@ fi
 
 # Server
 if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "mern-server.*Up"; then
-    echo "   ✔️ Server API:             http://localhost:5000/api/test"
+    echo "   ✔️ Swagger Server API:     http://localhost:5000/api-docs"
+    echo "   ✔️ Test API:               http://localhost:5000/api/test"
 else
     echo "   ❌ Server:                 Not running"
 fi
+
 
 # Client
 if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "mern-client.*Up"; then
@@ -36,13 +39,19 @@ if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "mern-client.*Up
 else
     echo "   ❌ Client:                 Not running"
 fi
-echo "  If a link doesn't connect, check the docker-compose.yml to find the correct port and fix it"
-echo "  Ports here may be out of sync with docker-compose.yml"
+echo "   >>⚠️  Ports aren't auto-synced with compose.yaml, when in doubt look there."
 
-echo ""
 echo ""
 echo "🔧 Quick Commands:"
-echo "   docker-compose logs -f        # Follow the logs (display and update logs in realtime)"
+echo "   docker ps -a                       # List all containers (check if something broke)"
+echo "   docker-compose logs -f             # Follow the logs (display and update logs in realtime)"
+echo "   netstat -ano | findstr :5000       # Check if port (5000) is in use"  
+echo "   >>⚠️  compose.prod container will try to auto-restart and claim ports - Keep in mind when 'npm run dev'"
+echo ""
+echo "🔧 Advanced Commands:"
+echo "   docker-compose down                    # Stop container to ensure clean shutdown"
+echo "   docker-compose down -v                 # -v, in case you want to remove the volumes too"
+echo "   docker container prune                 # Remove orphaned and stopped containers for clean-up"
+echo "   docker-compose build --no-cache        # Rebuild containers if needed (without cache)"
+echo "   docker-compose restart server      # Quick restart server (is configured to hot reload)"
 echo "===================================================================================="
-
-
