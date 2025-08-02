@@ -4,6 +4,17 @@ This is the backend Node.js/Express server for the MERN stack project.
 
 ## Development
 
+### Install dependencies
+```bash
+npm install
+```
+
+### Seed, if you haven't done so already
+```bash
+cd server
+npm run seed
+```
+
 ### Running outside Docker
 ```bash
 npm run dev

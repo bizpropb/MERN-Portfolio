@@ -25,28 +25,39 @@ Hit CTRL + SHIFT + V to open the .md-formatter for VS CODE.
 
 ## Getting Started
 
-### Running the Application in prod mode
+### Install dependencies for client
+```bash
+cd client
+npm install
+```
 
-Start Application:
+### Install dependencies for server
+```bash
+cd server
+npm install
+```
+
+### Running the Application in prod mode
+Quick start Application in prod mode (including helper script):
 ```bash
 docker-compose -f compose.yaml -f compose.prod.yaml up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
+docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
 ```
 
 ### Running the Application in dev mode
 
-Start Application:
+Quick start Application in dev mode (including helper script & seed):
 ```bash
 docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
+docker exec -it mern-server npm run seed
+docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
 ```
 
-Start helper script:
-```bash
-docker run -it -v ${PWD}/startup.sh:/startup.sh:ro -v /var/run/docker.sock:/var/run/docker.sock --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
-```
 
-Docker Troubleshooting:
+### Docker Troubleshooting:
 ```bash
 docker-compose down # Stop all containers and deleted them
 docker-compose down -v # Stop containers and remove volumes (if needed)
+docker container prune # Remove orphaned and stopped containers
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
 ```

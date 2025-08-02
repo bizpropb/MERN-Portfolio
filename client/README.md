@@ -4,6 +4,11 @@ This is the frontend React application for the MERN stack project, built with Vi
 
 ## Development
 
+### Install dependencies
+```bash
+npm install
+```
+
 ### Running outside Docker (dev mode)
 ```bash
 npm run dev
