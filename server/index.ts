@@ -18,6 +18,8 @@ import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import skillRoutes from './routes/skills';
 import profileRoutes from './routes/profile';
+import uploadRoutes from './routes/uploads';
+import commentsRoutes from './routes/comments';
 
 // Import swagger configuration
 import swaggerSpec from './config/swagger';
@@ -71,6 +73,8 @@ app.use('/api/auth', authRoutes);      // Authentication routes (login, register
 app.use('/api/projects', projectRoutes); // Project management routes
 app.use('/api/skills', skillRoutes);    // Skill management routes
 app.use('/api/profile', profileRoutes); // User profile routes
+app.use('/api/comments', commentsRoutes); // Comments management routes
+app.use('/api/upload', uploadRoutes); // Upload management routes
 
 /**
  * Health check endpoint
