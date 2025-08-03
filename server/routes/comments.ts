@@ -3,7 +3,8 @@ import {
   getProjectComments,
   createComment,
   updateComment,
-  deleteComment
+  deleteComment,
+  getRecentComments
 } from '../controllers/commentsController';
 import { protect } from '../middleware/auth';
 import { userOrAdmin, commentLimiter } from '../middleware/roleAuth';
@@ -17,6 +18,38 @@ import { userOrAdmin, commentLimiter } from '../middleware/roleAuth';
 
 // Initialize Express Router
 const router = express.Router();
+
+/**
+ * @swagger
+ * /api/comments/recent:
+ *   get:
+ *     tags: [Comments]
+ *     summary: Get recent comments
+ *     description: Retrieve the most recent public comments across all projects
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Recent comments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     comments:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Comment'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
+router.get('/recent', protect, getRecentComments);
 
 /**
  * @swagger

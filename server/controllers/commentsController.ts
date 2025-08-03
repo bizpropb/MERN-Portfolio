@@ -30,7 +30,7 @@ interface AuthRequest extends Request {
  * @queryParam {number} [page=1] - Page number for pagination
  * @queryParam {number} [limit=10] - Number of comments per page
  * @example
- * GET /api/comments/project/60f7b3b3b3b3b3b3b3b3b3b3?page=1&limit=5
+ * GET /api/comments/project/60f7b3b3b3b3b3b3b3b3b3?page=1&limit=5
  */
 export const getProjectComments = async (req: Request, res: Response) => {
   try {
@@ -298,6 +298,49 @@ export const updateComment = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+};
+
+/**
+ * @async
+ * @function deleteComment
+ * @description Delete a comment and all its replies (only by author or admin)
+ * @param {AuthRequest} req - Express request object with authentication
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ * @param {string} req.params.commentId - The comment ID to delete
+ * @example
+ * DELETE /api/comments/60f7b3b3b3b3b3b3b3b3b3b3
+ */
+/**
+ * @async
+ * @function getRecentComments
+ * @description Get the most recent public comments across all projects
+ * @param {AuthRequest} req - Express request object with authentication
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ * @example
+ * GET /api/comments/recent
+ */
+export const getRecentComments = async (req: AuthRequest, res: Response) => {
+  try {
+    const comments = await Comment.find({ isPublic: true })
+      .populate('userId', 'firstName lastName')
+      .populate('projectId', 'title')
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    res.json({
+      success: true,
+      data: { comments }
+    });
+  } catch (error: any) {
+    console.error('Get recent comments error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

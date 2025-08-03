@@ -74,7 +74,7 @@ export const validateQuery = (schema: Joi.ObjectSchema) => {
       return;
     }
 
-    req.query = value;
+    Object.assign(req.query, value);
     next();
   };
 };
