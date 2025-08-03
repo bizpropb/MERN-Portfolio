@@ -11,6 +11,8 @@ import { connectDB } from '../config/database';
 import User from '../models/User';
 import Project from '../models/Project';
 import Skill from '../models/Skill';
+import Comment from '../models/Comment';
+import Upload from '../models/Upload';  
 
 dotenv.config();
 
@@ -33,7 +35,7 @@ const question = (query: string): Promise<string> => {
 
 /**
  * Seed data for populating the database
- * Contains sample users, skills, and projects with realistic data
+ * Contains sample users, skills, projects, and comments with realistic data
  */
 const seedData = {
   users: [
@@ -43,6 +45,34 @@ const seedData = {
       firstName: 'Demo',
       lastName: 'User',
       bio: 'Full-stack developer passionate about building amazing web applications. I love learning new technologies and solving complex problems.',
+      role: 'user',
+      isVerified: true
+    },
+    // Additional users to create comments
+    {
+      email: 'sarah.dev@example.com',
+      password: 'password123',
+      firstName: 'Sarah',
+      lastName: 'Developer',
+      bio: 'Frontend specialist with a passion for clean, accessible user interfaces.',
+      role: 'user',
+      isVerified: true
+    },
+    {
+      email: 'mike.engineer@example.com',
+      password: 'password123',
+      firstName: 'Mike',
+      lastName: 'Engineer',
+      bio: 'Backend engineer focused on scalable architecture and performance optimization.',
+      role: 'user',
+      isVerified: true
+    },
+    {
+      email: 'alex.reviewer@example.com',
+      password: 'password123',
+      firstName: 'Alex',
+      lastName: 'Reviewer',
+      bio: 'Tech lead and code reviewer with 8+ years of experience.',
       role: 'user',
       isVerified: true
     }
@@ -99,27 +129,72 @@ const seedData = {
       likes: 18,
       views: 156
     }
+  ],
+
+  comments: [
+    // Comments for DevHub Portfolio project
+    {
+      content: "Impressive work! The authentication system is really well implemented. Clean code structure and great use of TypeScript.",
+      rating: 5,
+      projectIndex: 0 // Will be replaced with actual project ID
+    },
+    {
+      content: "Love the UI design! The Tailwind CSS implementation is spot on. How long did this take to build?",
+      rating: 4,
+      projectIndex: 0
+    },
+    {
+      content: "Great project showcase! The responsive design works perfectly across devices. Really solid portfolio piece.",
+      rating: 5,
+      projectIndex: 0
+    },
+    
+    // Comments for E-Commerce API project
+    {
+      content: "Excellent API design! The PostgreSQL integration looks robust. Have you considered adding GraphQL endpoints?",
+      rating: 4,
+      projectIndex: 1
+    },
+    {
+      content: "Really thorough testing with Jest. The Stripe integration must have been challenging - well done!",
+      rating: 5,
+      projectIndex: 1
+    },
+    
+    // Comments for Task Management Dashboard project
+    {
+      content: "The real-time features are awesome! Socket.io implementation looks clean. Still in progress but already impressive.",
+      rating: 4,
+      projectIndex: 2
+    },
+    {
+      content: "Drag and drop functionality is smooth. Looking forward to seeing the final version!",
+      rating: 4,
+      projectIndex: 2
+    }
   ]
 };
 
 /**
  * Checks if the database already contains any data
- * @returns {Promise<{users: number, projects: number, skills: number, hasData: boolean}>} 
+ * @returns {Promise<{users: number, projects: number, skills: number, comments: number, hasData: boolean}>} 
  * Object containing counts of existing documents and a flag indicating if any data exists
  */
 const checkExistingData = async () => {
   // Count documents in parallel for better performance
-  const [userCount, projectCount, skillCount] = await Promise.all([
+  const [userCount, projectCount, skillCount, commentCount] = await Promise.all([
     User.countDocuments(),
     Project.countDocuments(),
-    Skill.countDocuments()
+    Skill.countDocuments(),
+    Comment.countDocuments()
   ]);
 
   return {
     users: userCount,
     projects: projectCount,
     skills: skillCount,
-    hasData: userCount > 0 || projectCount > 0 || skillCount > 0
+    comments: commentCount,
+    hasData: userCount > 0 || projectCount > 0 || skillCount > 0 || commentCount > 0
   };
 };
 
@@ -127,7 +202,7 @@ const checkExistingData = async () => {
  * Main function to seed the database with initial data
  * - Connects to the database
  * - Checks for existing data and prompts for confirmation before deletion
- * - Creates users, skills, and projects
+ * - Creates users, skills, projects, and comments
  * - Provides a summary of the seeding operation
  */
 const seedDatabase = async (): Promise<void> => {
@@ -145,6 +220,7 @@ const seedDatabase = async (): Promise<void> => {
       console.log(`   👥 Users: ${existingData.users}`);
       console.log(`   📁 Projects: ${existingData.projects}`);
       console.log(`   🛠️  Skills: ${existingData.skills}`);
+      console.log(`   💬 Comments: ${existingData.comments}`);
       console.log('');
       
       // Prompt user for confirmation before dropping data
@@ -164,10 +240,11 @@ const seedDatabase = async (): Promise<void> => {
     await Promise.all([
       User.deleteMany({}),
       Project.deleteMany({}),
-      Skill.deleteMany({})
+      Skill.deleteMany({}),
+      Comment.deleteMany({})
     ]);
     
-    // Create demo user(s)
+    // Create demo users
     console.log('👥 Creating users...');
     const createdUsers = await User.create(seedData.users);
     console.log(`✅ Created ${createdUsers.length} users`);
@@ -198,17 +275,43 @@ const seedDatabase = async (): Promise<void> => {
     const createdProjects = await Project.create(projectsWithUser);
     console.log(`✅ Created ${createdProjects.length} projects`);
     
+    // Create comments from different users on the demo user's projects
+    console.log('💬 Creating comments...');
+    const commentsWithData = seedData.comments.map((comment, index) => {
+      const project = createdProjects[comment.projectIndex];
+      const commenterIndex = (index % 3) + 1; // Rotate through commenters (skip index 0 which is demo user)
+      const commenter = createdUsers[commenterIndex];
+      
+      return {
+        projectId: project._id,
+        userId: commenter._id,
+        content: comment.content,
+        rating: comment.rating,
+        isPublic: true,
+        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000) // Random date within last 30 days
+      };
+    });
+    
+    const createdComments = await Comment.create(commentsWithData);
+    console.log(`✅ Created ${createdComments.length} comments`);
+    
     // Display summary of seeding operation
     console.log('\n🎉 Database seeding completed successfully!');
     console.log('📊 Summary:');
     console.log(`   👥 Users: ${createdUsers.length}`);
     console.log(`   🛠️  Skills: ${createdSkills.length}`);
     console.log(`   📁 Projects: ${createdProjects.length}`);
+    console.log(`   💬 Comments: ${createdComments.length}`);
     
     // Display demo credentials
     console.log('\n🔑 Demo Credentials:');
     console.log('   Email: demo@devhub.com');
     console.log('   Password: password123');
+    
+    console.log('\n👥 Additional Test Users:');
+    console.log('   sarah.dev@example.com / password123');
+    console.log('   mike.engineer@example.com / password123');
+    console.log('   alex.reviewer@example.com / password123');
     
     // Clean up and exit
     rl.close();
