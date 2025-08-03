@@ -1,0 +1,85 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                     // version of JavaScript to compile to - ESNext for modern builds
+    
+    // === WHAT FEATURES TYPESCRIPT KNOWS ABOUT === //
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],  // include: type definitions for browser APIs and modern ES features
+    "module": "ESNext",                     // use: latest ES module syntax (import/export) - best for bundlers
+    "moduleResolution": "bundler",          // use: bundler-specific resolution for modern tooling like Vite
+    "jsx": "react-jsx",                     // compile: JSX to React.createElement calls
+    
+    // === FILE HANDLING === //
+    "allowJs": true,                        // allows: .js files
+    "skipLibCheck": true,                   // disallow: type-checking node_modules (faster compilation)
+    "esModuleInterop": true,                // allows: importing CommonJS modules with ES6 syntax
+    "allowSyntheticDefaultImports": true,   // allows: default imports from modules without default export
+    "resolveJsonModule": true,              // allows: import data from './data.json'
+    "isolatedModules": true,                // allows: sole file compilation (Vite requirement)
+    "noEmit": true,                         // disallow: .js file output (Vite handles compilation)
+    "verbatimModuleSyntax": true,           // allows: explicit type-only imports for better bundling
+    
+    // === PERFORMANCE OPTIMIZATIONS === //
+    "allowImportingTsExtensions": true,     // allows: importing .ts/.tsx files directly (modern bundlers support this)
+    "moduleDetection": "force",             // use: all files as modules (better tree-shaking)
+    
+    // === ACTUALLY USEFUL ERROR CHECKING === //
+    "noImplicitReturns": true,              // disallow: functions with missing return statements
+    "noFallthroughCasesInSwitch": true,     // disallow: switch cases without break statements
+    "noUncheckedIndexedAccess": true,       // adds: undefined check when accessing arrays/objects by index
+    
+    // === DISABLE OVERLY STRICT TYPE CHECKING === //
+    "noImplicitAny": false,                 // allows: variables without explicit types
+    "strictNullChecks": false,              // allows: null/undefined assignments
+    "strict": false                         // disallow: all strict type checking rules
+  },
+  "include": ["src"]                        // defines: folders to compile
+}
+
+/* ===========DEVELOPER NOTES============
+    
+  <<ADVANTAGES OVER PLAIN JAVASCRIPT>>
+
+1. TYPE SAFETY: Prevents common runtime errors by catching:
+   - Missing return statements in functions 
+  ❌Counter Argument: Console errors show this immediately during dev/runtime, so it's visible
+   - Accidental switch case fallthroughs
+  ✅Counter Argument: Correct, but rare in frontends and detectable via testing (even if slower). 
+
+2. MODERN TOOLING: Enables autocompletion for:
+   - Browser DOM APIs (via DOM lib)
+  ❌Counter Argument: Modern IDEs with AI (Windsurf, Copilot) provide intelligent autocompletion based on context
+   - ES6+ features (Maps, Promises, etc.)
+  ❌Counter Argument: Modern editors already know ES6+ APIs even for plain JS files
+   - React JSX syntax
+  ❌Counter Argument: JSX IntelliSense works in .jsx files without TypeScript
+
+3. MODERN MODULE SUPPORT: Allows cleaner imports of:
+   - CommonJS packages (via esModuleInterop)
+  ❌Counter Argument: Modern bundlers like Vite handle CJS/ESM interop automatically for JS too
+   - JSON files as typed objects
+  ❌Counter Argument: JSON imports work in JS with bundlers, types aren't essential for simple data
+
+4. FRAMEWORK INTEGRATION: Specifically configured for:
+   - Vite's HMR requirements (isolatedModules)
+  ❌Counter Argument: Vite HMR works perfectly fine with plain JS/JSX files
+   - React 17+ JSX runtime (automatic React import)
+  ❌Counter Argument: JSX transform works in .jsx files without TypeScript
+
+5. PERFORMANCE: Faster compilation by:
+   - Skipping node_modules type checks
+  ❌Counter Argument: Plain JS has no type checking overhead at all
+   - Offloading transpilation to Vite (noEmit)
+  ❌Counter Argument: Vite transpiles JS directly without TypeScript layer
+
+6. EARLY ERROR DETECTION: Catches type mismatches during development
+ ❌Counter Argument: Browser console shows type errors immediately once they occur. 
+    TypeScript cannot prevent wrong nested properties or incorrect API payloads, etc. 
+    So testing in a browser will be mandatory either way.
+
+7. BETTER REFACTORING: Safe renaming and restructuring across large codebases
+ ❌Counter Argument: VS Code global rename works for functions/variables.
+
+  <<DO I RECOMMEND TYPESCRIPT IN A FRONTEND? 1/13>>
+  No. No i wouldnt. Typescript is brilliant for backends, but not for frontends.
+  */
+
