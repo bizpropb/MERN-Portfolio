@@ -29,7 +29,7 @@ services:
       POSTGRES_PASSWORD: password123
       POSTGRES_DB: portfolio
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
       - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/postgres-init.sql:ro
