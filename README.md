@@ -53,6 +53,11 @@ docker exec -it mern-server npm run seed
 docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
 ```
 
+### Quick Rebuild:
+```bash
+docker-compose down # Stop all containers and deleted them
+docker-compose build --no-cache # Rebuild all containers (with clean cache)
+```
 
 ### Docker Troubleshooting:
 ```bash
