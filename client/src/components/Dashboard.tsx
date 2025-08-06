@@ -28,13 +28,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardData();
-    
-    // Set up real-time updates every 30 seconds
-    const interval = setInterval(() => {
-      fetchDashboardData();
-    }, 30000);
-
-    return () => clearInterval(interval);
+    // Removed setInterval - no more real-time updates
   }, []);
 
   const fetchDashboardData = async () => {
@@ -94,7 +88,7 @@ const Dashboard: React.FC = () => {
             category: category.charAt(0).toUpperCase() + category.slice(1),
             count: count as number
           })),
-          monthlyActivity: generateMonthlyActivity(projects),
+          monthlyActivity: getStaticMonthlyActivity(), // Fixed static data
           recentComments: comments.slice(0, 5)
         };
 
@@ -109,32 +103,35 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const generateMonthlyActivity = (projects: any[]) => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-    return months.map(month => ({
-      month,
-      projects: Math.floor(Math.random() * 5) + 1,
-      views: Math.floor(Math.random() * 100) + 20
-    }));
+  // Static monthly activity data (no more randomization)
+  const getStaticMonthlyActivity = () => {
+    return [
+      { month: 'Jan', projects: 3, views: 45 },
+      { month: 'Feb', projects: 5, views: 67 },
+      { month: 'Mar', projects: 2, views: 38 },
+      { month: 'Apr', projects: 4, views: 82 },
+      { month: 'May', projects: 6, views: 94 },
+      { month: 'Jun', projects: 3, views: 56 }
+    ];
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gradient-to-r from-blue-500 to-purple-600"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Dashboard</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Dashboard</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
           <button 
             onClick={fetchDashboardData}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="btn-primary"
           >
             Retry
           </button>
@@ -146,12 +143,12 @@ const Dashboard: React.FC = () => {
   if (!stats) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Portfolio Dashboard</h1>
-          <p className="text-gray-600">Real-time overview of your projects, skills, and engagement</p>
+          <h1 className="text-3xl font-bold gradient-text mb-2">Portfolio Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">Overview of your projects, skills, and engagement (sample data)</p>
         </div>
 
         {/* Stats Overview */}
@@ -160,33 +157,37 @@ const Dashboard: React.FC = () => {
             title="Total Projects" 
             value={stats.totalProjects} 
             icon="📁" 
-            color="bg-blue-500" 
+            gradientFrom="from-blue-500" 
+            gradientTo="to-cyan-500" 
           />
           <StatCard 
             title="Total Skills" 
             value={stats.totalSkills} 
             icon="🛠️" 
-            color="bg-green-500" 
+            gradientFrom="from-green-500" 
+            gradientTo="to-emerald-500" 
           />
           <StatCard 
             title="Profile Views" 
             value={stats.totalViews} 
             icon="👁️" 
-            color="bg-purple-500" 
+            gradientFrom="from-purple-500" 
+            gradientTo="to-pink-500" 
           />
           <StatCard 
             title="Project Likes" 
             value={stats.totalLikes} 
             icon="❤️" 
-            color="bg-red-500" 
+            gradientFrom="from-red-500" 
+            gradientTo="to-rose-500" 
           />
         </div>
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Project Status Chart */}
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">Projects by Status</h3>
+          <div className="card">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Projects by Status</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -202,62 +203,124 @@ const Dashboard: React.FC = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'rgb(31 41 55)',
+                    border: '1px solid rgb(75 85 99)',
+                    borderRadius: '8px',
+                    color: 'white'
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
           {/* Skills by Category */}
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">Skills by Category</h3>
+          <div className="card">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Skills by Category</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={stats.skillsByCategory}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#3B82F6" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="category" 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                />
+                <YAxis 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'rgb(31 41 55)',
+                    border: '1px solid rgb(75 85 99)',
+                    borderRadius: '8px',
+                    color: 'white'
+                  }}
+                />
+                <Bar 
+                  dataKey="count" 
+                  fill="url(#colorGradient)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <defs>
+                  <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.9}/>
+                  </linearGradient>
+                </defs>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Activity Chart */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
-          <h3 className="text-xl font-semibold mb-4">Monthly Activity</h3>
+        <div className="card mb-8">
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Monthly Activity (static data)</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            This chart shows static sample data and does not update automatically
+          </p>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={stats.monthlyActivity}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="projects" stroke="#10B981" strokeWidth={2} />
-              <Line type="monotone" dataKey="views" stroke="#3B82F6" strokeWidth={2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis 
+                dataKey="month" 
+                stroke="#9CA3AF"
+                fontSize={12}
+              />
+              <YAxis 
+                stroke="#9CA3AF"
+                fontSize={12}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'rgb(31 41 55)',
+                  border: '1px solid rgb(75 85 99)',
+                  borderRadius: '8px',
+                  color: 'white'
+                }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="projects" 
+                stroke="#10B981" 
+                strokeWidth={3}
+                dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, stroke: '#10B981', strokeWidth: 2 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="views" 
+                stroke="#3B82F6" 
+                strokeWidth={3}
+                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Recent Comments */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-semibold mb-4">Recent Comments</h3>
+        <div className="card">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Recent Comments</h3>
           {stats.recentComments.length > 0 ? (
             <div className="space-y-4">
               {stats.recentComments.map((comment) => (
-                <div key={comment.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                <div key={comment.id} className="border-l-4 border-gradient-to-b from-blue-500 to-purple-600 pl-4 py-2">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-gray-800 mb-1">{comment.content}</p>
-                      <p className="text-sm text-gray-600">
-                        On project: <span className="font-medium">{comment.projectTitle}</span>
+                      <p className="text-gray-800 dark:text-gray-200 mb-1">{comment.content}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        On project: <span className="font-medium text-blue-600 dark:text-blue-400">{comment.projectTitle}</span>
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
                         By {comment.userName} • {new Date(comment.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                     {comment.rating && (
                       <div className="ml-4 flex items-center">
                         <span className="text-yellow-500">{'★'.repeat(comment.rating)}</span>
-                        <span className="text-gray-300">{'★'.repeat(5 - comment.rating)}</span>
+                        <span className="text-gray-300 dark:text-gray-600">{'★'.repeat(5 - comment.rating)}</span>
                       </div>
                     )}
                   </div>
@@ -265,7 +328,7 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No comments yet. Share your projects to get feedback!</p>
+            <p className="text-gray-500 dark:text-gray-400">No comments yet. Share your projects to get feedback!</p>
           )}
         </div>
       </div>
@@ -277,18 +340,19 @@ interface StatCardProps {
   title: string;
   value: number;
   icon: string;
-  color: string;
+  gradientFrom: string;
+  gradientTo: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color }) => (
-  <div className="bg-white p-6 rounded-lg shadow-lg">
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon, gradientFrom, gradientTo }) => (
+  <div className="card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
     <div className="flex items-center">
-      <div className={`${color} p-3 rounded-full text-white text-2xl mr-4`}>
+      <div className={`bg-gradient-to-br ${gradientFrom} ${gradientTo} p-3 rounded-full text-white text-2xl mr-4 shadow-lg`}>
         {icon}
       </div>
       <div>
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+        <p className="text-2xl font-bold gradient-text">{value}</p>
       </div>
     </div>
   </div>
