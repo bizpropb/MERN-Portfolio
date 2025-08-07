@@ -53,5 +53,5 @@ echo "   docker-compose down                    # Stop container to ensure clean
 echo "   docker-compose down -v                 # -v, in case you want to remove the volumes too"
 echo "   docker container prune                 # Remove orphaned and stopped containers for clean-up"
 echo "   docker-compose build --no-cache        # Rebuild containers if needed (without cache)"
-echo "   docker-compose restart server      # Quick restart server (is configured to hot reload)"
+echo "   docker-compose restart                 # Quick restart (is configured to hot reload)"
 echo "===================================================================================="
