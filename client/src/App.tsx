@@ -498,7 +498,7 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <Navigation />
-                    <main className="py-6">
+                    <main className="py-0">
                       <Routes>
                         <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="/dashboard" element={<Dashboard />} />
