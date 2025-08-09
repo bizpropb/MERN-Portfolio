@@ -46,17 +46,13 @@ docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.so
 
 ### Running the Application in dev mode
 
-Quick start Application in dev mode (including helper script & seed):
-```bash
-docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
-docker exec -it mern-server npm run seed
-docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
-```
-
-### Quick Rebuild:
+Quick start (and rebuild) Application in dev mode (including helper script & seed):
 ```bash
 docker-compose down # Stop all containers and deleted them
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
+docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
+docker exec -it mern-server npm run seed
+docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
 ```
 
 ### Docker Troubleshooting:
