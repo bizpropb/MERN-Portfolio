@@ -1,5 +1,52 @@
 @import "tailwindcss";
 
+/* React Grid Layout styles */
+.react-grid-layout {
+  position: relative;
+}
+
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGw9IiM0QTVBNkIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iNSIgY3k9IjUiIHI9IjEiLz48Y2lyY2xlIGN4PSIxIiBjeT0iNSIgcj0iMSIvPjxjaXJjbGUgY3g9IjUiIGN5PSIxIiByPSIxIi8+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiLz48L2c+PC9zdmc+') no-repeat;
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  cursor: se-resize;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: rgba(59, 130, 246, 0.3);
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  border-radius: 8px;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+}
+
 /* Custom dark mode variant for Tailwind 4 */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -36,7 +83,7 @@
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700;
+    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300;
   }
   
   .badge {
@@ -131,4 +178,46 @@
 /* Initialize dark mode as default */
 html {
   color-scheme: dark;
+}
+
+/* Dark mode chart tooltip fixes */
+.recharts-tooltip-wrapper .recharts-tooltip-content {
+  background: rgb(31 41 55) !important;
+  border: 1px solid rgb(75 85 99) !important;
+  border-radius: 8px !important;
+  color: white !important;
+}
+
+.recharts-tooltip-wrapper .recharts-tooltip-label {
+  color: white !important;
+}
+
+.recharts-tooltip-wrapper .recharts-tooltip-item {
+  color: white !important;
+}
+
+/* Light mode chart tooltip fixes */
+@media (prefers-color-scheme: light) {
+  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-content {
+    background: white !important;
+    border: 1px solid rgb(209 213 219) !important;
+    color: black !important;
+  }
+  
+  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-label {
+    color: black !important;
+  }
+  
+  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-item {
+    color: black !important;
+  }
+}
+
+/* Fix bar chart hover color in dark mode */
+.recharts-bar-rectangle {
+  transition: fill-opacity 0.2s ease;
+}
+
+.recharts-bar-rectangle:hover {
+  fill-opacity: 0.8 !important;
 }

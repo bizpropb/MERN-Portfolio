@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
+import { EyeSlashIcon, EyeIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { FolderIcon, WrenchScrewdriverIcon, EyeIcon as EyeIconSolid, HeartIcon } from '@heroicons/react/24/solid';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface DashboardStats {
   totalProjects: number;
@@ -21,21 +28,99 @@ interface DashboardStats {
   }>;
 }
 
+interface LayoutItem {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hiddenCards, setHiddenCards] = useState<Set<string>>(new Set());
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [monthlyData, setMonthlyData] = useState<Array<{ month: string; projects: number; views: number }>>([]);
+  
+  // Store original layouts for restoration when unhiding
+  const originalLayouts = {
+    lg: [
+      { i: 'monthly-activity', x: 0, y: 0, w: 4, h: 2 },
+      { i: 'total-projects', x: 4, y: 0, w: 2, h: 1 },
+      { i: 'total-skills', x: 6, y: 0, w: 2, h: 1 },
+      { i: 'profile-views', x: 8, y: 0, w: 2, h: 1 },
+      { i: 'project-likes', x: 10, y: 0, w: 2, h: 1 },
+      { i: 'projects-status', x: 0, y: 2, w: 4, h: 4 },
+      { i: 'skills-category', x: 4, y: 2, w: 4, h: 4 },
+      { i: 'recent-comments', x: 8, y: 2, w: 4, h: 4 }
+    ],
+    md: [
+      { i: 'monthly-activity', x: 0, y: 0, w: 6, h: 2 },
+      { i: 'total-projects', x: 6, y: 0, w: 3, h: 1 },
+      { i: 'total-skills', x: 9, y: 0, w: 3, h: 1 },
+      { i: 'profile-views', x: 6, y: 1, w: 3, h: 1 },
+      { i: 'project-likes', x: 9, y: 1, w: 3, h: 1 },
+      { i: 'projects-status', x: 0, y: 2, w: 6, h: 4 },
+      { i: 'skills-category', x: 6, y: 2, w: 6, h: 4 },
+      { i: 'recent-comments', x: 0, y: 6, w: 12, h: 4 }
+    ],
+    sm: [
+      { i: 'monthly-activity', x: 0, y: 0, w: 6, h: 2 },
+      { i: 'total-projects', x: 0, y: 2, w: 3, h: 1 },
+      { i: 'total-skills', x: 3, y: 2, w: 3, h: 1 },
+      { i: 'profile-views', x: 0, y: 3, w: 3, h: 1 },
+      { i: 'project-likes', x: 3, y: 3, w: 3, h: 1 },
+      { i: 'projects-status', x: 0, y: 4, w: 6, h: 4 },
+      { i: 'skills-category', x: 0, y: 8, w: 6, h: 4 },
+      { i: 'recent-comments', x: 0, y: 12, w: 6, h: 4 }
+    ]
+  };
+
+  const [layouts, setLayouts] = useState(originalLayouts);
+  const [cardSizes, setCardSizes] = useState<Record<string, {lg: LayoutItem, md: LayoutItem, sm: LayoutItem}>>({});
+
+  const cardInfo = {
+    'monthly-activity': { title: 'Monthly Activity', type: 'activity' },
+    'total-projects': { title: 'Total Projects', type: 'stat' },
+    'total-skills': { title: 'Total Skills', type: 'stat' },
+    'profile-views': { title: 'Profile Views', type: 'stat' },
+    'project-likes': { title: 'Project Likes', type: 'stat' },
+    'projects-status': { title: 'Projects by Status', type: 'chart' },
+    'skills-category': { title: 'Skills by Category', type: 'chart' },
+    'recent-comments': { title: 'Recent Comments', type: 'comments' }
+  };
+
+  const generateRandomMonthlyData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    return months.map(month => ({
+      month,
+      projects: Math.floor(Math.random() * 10) + 1,
+      views: Math.floor(Math.random() * 100) + 20
+    }));
+  };
 
   useEffect(() => {
+    // Initialize card sizes from original layouts
+    const sizes: Record<string, {lg: LayoutItem, md: LayoutItem, sm: LayoutItem}> = {};
+    Object.keys(cardInfo).forEach(cardId => {
+      sizes[cardId] = {
+        lg: originalLayouts.lg.find(item => item.i === cardId)!,
+        md: originalLayouts.md.find(item => item.i === cardId)!,
+        sm: originalLayouts.sm.find(item => item.i === cardId)!
+      };
+    });
+    setCardSizes(sizes);
+    
     fetchDashboardData();
-    // Removed setInterval - no more real-time updates
+    setMonthlyData(generateRandomMonthlyData());
   }, []);
 
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
       
-      // Fetch data from multiple endpoints
       const [projectsRes, skillsRes, commentsRes] = await Promise.all([
         fetch('http://localhost:5000/api/projects?analytics=true', {
           headers: { Authorization: `Bearer ${token}` }
@@ -51,13 +136,49 @@ const Dashboard: React.FC = () => {
       const projectsData = await projectsRes.json();
       const skillsData = await skillsRes.json();
       const commentsData = await commentsRes.json();
+      
+      console.log('Raw comments data from API:', JSON.stringify(commentsData, null, 2));
 
       if (projectsData.success && skillsData.success) {
         const projects = projectsData.data.projects;
         const skills = skillsData.data.skills;
-        const comments = commentsData.success ? commentsData.data.comments : [];
+        console.log('Raw comments data:', commentsData);
+        const comments = commentsData.success ? commentsData.data.comments.map((comment: any) => {
+          console.log('Processing comment:', comment);
+          
+          // Handle user data
+          let userName = 'Anonymous';
+          if (comment.userId) {
+            if (typeof comment.userId === 'object' && comment.userId.firstName) {
+              // User data is populated
+              userName = `${comment.userId.firstName} ${comment.userId.lastName || ''}`.trim();
+            } else if (comment.user) {
+              // Check for alternative user field
+              const user = comment.user;
+              userName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Anonymous';
+            }
+          }
+          
+          // Handle project title
+          let projectTitle = 'Unknown Project';
+          if (comment.projectId) {
+            if (typeof comment.projectId === 'object' && comment.projectId.title) {
+              projectTitle = comment.projectId.title;
+            } else if (comment.project) {
+              projectTitle = comment.project.title || projectTitle;
+            }
+          }
+          
+          return {
+            ...comment,
+            content: comment.content || 'No content',
+            userName,
+            projectTitle,
+            rating: comment.rating || 0,
+            createdAt: comment.createdAt
+          };
+        }) : [];
 
-        // Calculate stats
         const totalViews = projects.reduce((sum: number, p: any) => sum + p.views, 0);
         const totalLikes = projects.reduce((sum: number, p: any) => sum + p.likes, 0);
         
@@ -79,17 +200,17 @@ const Dashboard: React.FC = () => {
           completedProjects: statusCounts.completed || 0,
           inProgressProjects: statusCounts['in-progress'] || 0,
           projectsByStatus: [
-            { name: 'Completed', value: statusCounts.completed || 0, color: '#10B981' },
-            { name: 'In Progress', value: statusCounts['in-progress'] || 0, color: '#F59E0B' },
-            { name: 'Planning', value: statusCounts.planning || 0, color: '#6B7280' },
-            { name: 'Archived', value: statusCounts.archived || 0, color: '#EF4444' }
+            { name: 'Completed', value: statusCounts.completed || 0, color: '#3B82F6' },
+            { name: 'In Progress', value: statusCounts['in-progress'] || 0, color: '#8B5CF6' },
+            { name: 'Planning', value: statusCounts.planning || 0, color: '#A855F7' },
+            { name: 'Archived', value: statusCounts.archived || 0, color: '#EC4899' }
           ].filter(item => item.value > 0),
           skillsByCategory: Object.entries(skillCategories).map(([category, count]) => ({
             category: category.charAt(0).toUpperCase() + category.slice(1),
             count: count as number
           })),
-          monthlyActivity: getStaticMonthlyActivity(), // Fixed static data
-          recentComments: comments.slice(0, 5)
+          monthlyActivity: monthlyData.length > 0 ? monthlyData : generateRandomMonthlyData(),
+          recentComments: comments || []
         };
 
         setStats(dashboardStats);
@@ -103,16 +224,55 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Static monthly activity data (no more randomization)
-  const getStaticMonthlyActivity = () => {
-    return [
-      { month: 'Jan', projects: 3, views: 45 },
-      { month: 'Feb', projects: 5, views: 67 },
-      { month: 'Mar', projects: 2, views: 38 },
-      { month: 'Apr', projects: 4, views: 82 },
-      { month: 'May', projects: 6, views: 94 },
-      { month: 'Jun', projects: 3, views: 56 }
-    ];
+  const rerandomizeData = () => {
+    const newData = generateRandomMonthlyData();
+    setMonthlyData(newData);
+    if (stats) {
+      setStats({
+        ...stats,
+        monthlyActivity: newData
+      });
+    }
+  };
+
+  const handleHideCard = (cardId: string) => {
+    // Store current size before hiding
+    const currentLayouts = layouts;
+    const updatedSizes = { ...cardSizes };
+    
+    ['lg', 'md', 'sm'].forEach(breakpoint => {
+      const layout = currentLayouts[breakpoint as keyof typeof currentLayouts].find(item => item.i === cardId);
+      if (layout) {
+        updatedSizes[cardId] = {
+          ...updatedSizes[cardId],
+          [breakpoint]: { ...layout }
+        };
+      }
+    });
+    
+    setCardSizes(updatedSizes);
+    setHiddenCards(prev => new Set([...prev, cardId]));
+  };
+
+  const handleShowCard = (cardId: string) => {
+    setHiddenCards(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(cardId);
+      return newSet;
+    });
+    
+    // Restore original size when showing
+    if (cardSizes[cardId]) {
+      setLayouts(prev => ({
+        lg: [...prev.lg.filter(item => item.i !== cardId), cardSizes[cardId].lg],
+        md: [...prev.md.filter(item => item.i !== cardId), cardSizes[cardId].md],
+        sm: [...prev.sm.filter(item => item.i !== cardId), cardSizes[cardId].sm]
+      }));
+    }
+  };
+
+  const handleLayoutChange = (layout: any, layouts: any) => {
+    setLayouts(layouts);
   };
 
   if (loading) {
@@ -129,10 +289,7 @@ const Dashboard: React.FC = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Dashboard</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-          <button 
-            onClick={fetchDashboardData}
-            className="btn-primary"
-          >
+          <button onClick={fetchDashboardData} className="btn-primary">
             Retry
           </button>
         </div>
@@ -142,218 +299,292 @@ const Dashboard: React.FC = () => {
 
   if (!stats) return null;
 
+  const visibleLayouts = {
+    lg: layouts.lg.filter(item => !hiddenCards.has(item.i)),
+    md: layouts.md.filter(item => !hiddenCards.has(item.i)),
+    sm: layouts.sm.filter(item => !hiddenCards.has(item.i))
+  };
+
+  // The Actual Component UI // don't forget to do actual realiable COMMENTS
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Portfolio Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">Overview of your projects, skills, and engagement (sample data)</p>
-        </div>
+  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 grid grid-cols-12">
+    {/* MAIN: takes full width on small screens, 11/12 on large screens */}
+    <main className="col-span-12 lg:col-span-11 p-6 z-10">
+      <div className="max-w-full mx-auto">
+        {/* Header with hidden cards dropdown */}
+        <div className="mb-0 flex justify-end">
+          <div
+            className="relative"
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setTimeout(() => setShowDropdown(false), 500)}
+          >
+            <button className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+              hiddenCards.size > 0
+                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700'
+                : 'bg-gray-500 dark:bg-gray-600 text-gray-300 hover:bg-gray-600 dark:hover:bg-gray-500'
+            }`}>
+              <EyeIcon className="w-4 h-4" />
+              <ChevronDownIcon className="w-4 h-4" />
+            </button>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard 
-            title="Total Projects" 
-            value={stats.totalProjects} 
-            icon="📁" 
-            gradientFrom="from-blue-500" 
-            gradientTo="to-cyan-500" 
-          />
-          <StatCard 
-            title="Total Skills" 
-            value={stats.totalSkills} 
-            icon="🛠️" 
-            gradientFrom="from-green-500" 
-            gradientTo="to-emerald-500" 
-          />
-          <StatCard 
-            title="Profile Views" 
-            value={stats.totalViews} 
-            icon="👁️" 
-            gradientFrom="from-purple-500" 
-            gradientTo="to-pink-500" 
-          />
-          <StatCard 
-            title="Project Likes" 
-            value={stats.totalLikes} 
-            icon="❤️" 
-            gradientFrom="from-red-500" 
-            gradientTo="to-rose-500" 
-          />
-        </div>
-
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Project Status Chart */}
-          <div className="card">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Projects by Status</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats.projectsByStatus}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={120}
-                  dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
-                >
-                  {stats.projectsByStatus.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgb(31 41 55)',
-                    border: '1px solid rgb(75 85 99)',
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Skills by Category */}
-          <div className="card">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Skills by Category</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats.skillsByCategory}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis 
-                  dataKey="category" 
-                  stroke="#9CA3AF"
-                  fontSize={12}
-                />
-                <YAxis 
-                  stroke="#9CA3AF"
-                  fontSize={12}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgb(31 41 55)',
-                    border: '1px solid rgb(75 85 99)',
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Bar 
-                  dataKey="count" 
-                  fill="url(#colorGradient)"
-                  radius={[4, 4, 0, 0]}
-                />
-                <defs>
-                  <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.9}/>
-                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.9}/>
-                  </linearGradient>
-                </defs>
-              </BarChart>
-            </ResponsiveContainer>
+            {showDropdown && hiddenCards.size > 0 && (
+              <div className="absolute right-0 top-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-48">
+                {Array.from(hiddenCards).map(cardId => {
+                  const card = cardInfo[cardId as keyof typeof cardInfo];
+                  return (
+                    <button
+                      key={cardId}
+                      onClick={() => handleShowCard(cardId)}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-md last:rounded-b-md text-gray-900 dark:text-gray-100"
+                    >
+                      {card?.title}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Activity Chart */}
-        <div className="card mb-8">
-          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Monthly Activity (static data)</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            This chart shows static sample data and does not update automatically
-          </p>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={stats.monthlyActivity}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis 
-                dataKey="month" 
-                stroke="#9CA3AF"
-                fontSize={12}
-              />
-              <YAxis 
-                stroke="#9CA3AF"
-                fontSize={12}
-              />
+        {/* Dashboard Grid with Drag & Drop */}
+        <ResponsiveGridLayout
+          className="layout"
+          layouts={visibleLayouts}
+          onLayoutChange={handleLayoutChange}
+          breakpoints={{ lg: 1200, md: 996, sm: 768 }}
+          cols={{ lg: 12, md: 12, sm: 6 }}
+          rowHeight={100}
+          draggableHandle=".drag-handle"
+        >
+          {Object.keys(cardInfo).filter(cardId => !hiddenCards.has(cardId)).map(cardId => (
+            <div key={cardId} className="card relative">
+              <div className="drag-handle absolute top-0 left-0 right-0 h-8 cursor-move z-20"></div>
+              <button
+                onClick={() => handleHideCard(cardId)}
+                className="absolute top-2 right-2 p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded z-30"
+              >
+                <EyeSlashIcon className="w-4 h-4" />
+              </button>
+              {renderCard(cardId, stats, rerandomizeData, monthlyData)}
+            </div>
+          ))}
+        </ResponsiveGridLayout>
+      </div>
+    </main>
+
+    {/* ASIDE: proper height, no flex bullshit */}
+    <aside className="hidden lg:block col-span-1 h-[400px] relative overflow-visible">
+      <div className="opacity-40 absolute inset-0">
+        <div className="absolute top-82 left-1/8 transform -translate-x-1/2 rotate-90 whitespace-nowrap">
+          <h1 className="text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+            DRAG AND DROP
+          </h1>
+        </div>
+      </div>
+    </aside>
+  </div>
+  );
+};
+
+const renderCard = (
+  cardId: string,
+  stats: DashboardStats,
+  rerandomizeData: () => void,
+  monthlyData: Array<{ month: string; projects: number; views: number }>
+) => {
+  switch (cardId) {
+    case 'total-projects':
+      return (
+        <StatCard title="Total Projects" value={stats.totalProjects} icon={<FolderIcon className="w-6 h-6" />} />
+      );
+    
+    case 'total-skills':
+      return (
+        <StatCard title="Total Skills" value={stats.totalSkills} icon={<WrenchScrewdriverIcon className="w-6 h-6" />} />
+      );
+      
+    case 'profile-views':
+      return (
+        <StatCard title="Profile Views" value={stats.totalViews} icon={<EyeIconSolid className="w-6 h-6" />} />
+      );
+      
+    case 'project-likes':
+      return (
+        <StatCard title="Project Likes" value={stats.totalLikes} icon={<HeartIcon className="w-6 h-6" />} />
+      );
+
+    case 'projects-status':
+      return (
+        <div className="h-full p-4">
+          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Projects by Status</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
+          <ResponsiveContainer width="100%" height="80%">
+            <PieChart>
+              <Pie
+                data={stats.projectsByStatus}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                dataKey="value"
+                label={({ name, value }) => `${name}: ${value}`}
+              >
+                {stats.projectsByStatus.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgb(31 41 55)',
-                  border: '1px solid rgb(75 85 99)',
+                  backgroundColor: 'var(--tooltip-bg, #000)',
+                  border: '1px solid var(--tooltip-border, #fff)',
                   borderRadius: '8px',
-                  color: 'white'
+                  color: 'var(--tooltip-text, #fff)'
                 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="projects" 
-                stroke="#10B981" 
-                strokeWidth={3}
-                dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
-                activeDot={{ r: 8, stroke: '#10B981', strokeWidth: 2 }}
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      );
+
+    case 'skills-category':
+      return (
+        <div className="h-full p-4">
+          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Skills by Category</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
+          <ResponsiveContainer width="100%" height="80%">
+            <BarChart data={stats.skillsByCategory}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="category" stroke="#9CA3AF" fontSize={10} />
+              <YAxis stroke="#9CA3AF" fontSize={10} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'var(--tooltip-bg, #000)',
+                  border: '1px solid var(--tooltip-border, #fff)',
+                  borderRadius: '8px',
+                  color: 'var(--tooltip-text, #fff)'
+                }}
+                cursor={{ fill: 'rgba(75, 85, 99, 0.2)' }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="views" 
-                stroke="#3B82F6" 
-                strokeWidth={3}
-                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }}
-                activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2 }}
+              <Bar dataKey="count" fill="url(#colorGradient)" radius={[2, 2, 0, 0]} />
+              <defs>
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.9}/>
+                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.9}/>
+                </linearGradient>
+              </defs>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      );
+
+    case 'monthly-activity':
+      return (
+        <div className="h-full p-4">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Monthly Activity</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Randomized sample data</p>
+            </div>
+            <button
+              onClick={rerandomizeData}
+              className="px-3 py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white text-xs rounded-md hover:from-cyan-500 hover:via-blue-600 hover:to-purple-700 transition-all"
+            >
+              Rerandomize
+            </button>
+          </div>
+          <ResponsiveContainer width="100%" height="75%">
+            <LineChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="month" stroke="#9CA3AF" fontSize={10} />
+              <YAxis stroke="#9CA3AF" fontSize={10} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'var(--tooltip-bg, #000)',
+                  border: '1px solid var(--tooltip-border, #fff)',
+                  borderRadius: '8px',
+                  color: 'var(--tooltip-text, #fff)'
+                }}
               />
+              <Line type="monotone" dataKey="projects" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', strokeWidth: 1, r: 3 }} />
+              <Line type="monotone" dataKey="views" stroke="#3B82F6" strokeWidth={2} dot={{ fill: '#3B82F6', strokeWidth: 1, r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
+      );
 
-        {/* Recent Comments */}
-        <div className="card">
-          <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Recent Comments</h3>
+    case 'recent-comments':
+      return (
+        <div className="h-full p-4">
+          <h3 className="text-xl font-semibold mb-2 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100">Recent Comments</h3>
           {stats.recentComments.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-2 max-h-[calc(100%-3rem)] overflow-y-auto pr-2" style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#8B5CF6 transparent'
+            }}>
               {stats.recentComments.map((comment) => (
-                <div key={comment.id} className="border-l-4 border-gradient-to-b from-blue-500 to-purple-600 pl-4 py-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="text-gray-800 dark:text-gray-200 mb-1">{comment.content}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        On project: <span className="font-medium text-blue-600 dark:text-blue-400">{comment.projectTitle}</span>
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-500">
-                        By {comment.userName} • {new Date(comment.createdAt).toLocaleDateString()}
+                <div key={comment.id} className="border-l-4 border-purple-500 pl-3 py-1">
+                  <p className="text-sm text-gray-800 dark:text-gray-200 mb-1">{comment.content}</p>
+                  <div className="flex flex-col text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                    <div className="flex justify-between items-center">
+                      <p>
+                        By: <span className="font-medium text-purple-600 dark:text-purple-400">
+                          {comment.userName || 'Anonymous'}
+                        </span>
+                        {comment.rating > 0 && (
+                          <span className="ml-2">
+                            <span className="text-yellow-500">{'★'.repeat(comment.rating)}</span>
+                            <span className="text-gray-300 dark:text-gray-600">{'★'.repeat(5 - comment.rating)}</span>
+                          </span>
+                        )}
                       </p>
                     </div>
-                    {comment.rating && (
-                      <div className="ml-4 flex items-center">
-                        <span className="text-yellow-500">{'★'.repeat(comment.rating)}</span>
-                        <span className="text-gray-300 dark:text-gray-600">{'★'.repeat(5 - comment.rating)}</span>
-                      </div>
+                    {comment.createdAt && (
+                      <p>
+                        On: <span className="font-medium text-gray-700 dark:text-gray-300">
+                          {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </p>
+                    )}
+                    {comment.projectTitle && (
+                      <p className="text-gray-700 dark:text-gray-300 italic">
+                        On project: {comment.projectTitle}
+                      </p>
                     )}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 dark:text-gray-400">No comments yet. Share your projects to get feedback!</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No comments yet. Share your projects to get feedback!</p>
           )}
         </div>
-      </div>
-    </div>
-  );
+      );
+
+    default:
+      return <div>Unknown card</div>;
+  }
 };
 
 interface StatCardProps {
   title: string;
   value: number;
-  icon: string;
-  gradientFrom: string;
-  gradientTo: string;
+  icon: React.ReactNode;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, gradientFrom, gradientTo }) => (
-  <div className="card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-    <div className="flex items-center">
-      <div className={`bg-gradient-to-br ${gradientFrom} ${gradientTo} p-3 rounded-full text-white text-2xl mr-4 shadow-lg`}>
-        {icon}
-      </div>
-      <div>
-        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-        <p className="text-2xl font-bold gradient-text">{value}</p>
-      </div>
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
+  <div className="flex items-center h-full p-4">
+    <div className="bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 p-3 rounded-full text-white mr-4 shadow-lg">
+      {icon}
+    </div>
+    <div>
+      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+      <p className="text-2xl font-bold text-white">{value}</p>
     </div>
   </div>
 );
