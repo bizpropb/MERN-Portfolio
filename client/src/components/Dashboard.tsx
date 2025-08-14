@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
-import { EyeSlashIcon, EyeIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { EyeSlashIcon, EyeIcon, ChevronDownIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { FolderIcon, WrenchScrewdriverIcon, EyeIcon as EyeIconSolid, HeartIcon } from '@heroicons/react/24/solid';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -36,6 +36,76 @@ interface LayoutItem {
   h: number;
 }
 
+// Memoized chart components to prevent unnecessary re-renders
+const MemoizedPieChart = React.memo(({ data, getTooltipStyle }: { data: any[], getTooltipStyle: () => any }) => (
+  <div className="h-full flex flex-col">
+    <ResponsiveContainer width="100%" height="75%">
+      <PieChart margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={70}
+          outerRadius={112}
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Pie>
+        <Tooltip contentStyle={getTooltipStyle()} />
+      </PieChart>
+    </ResponsiveContainer>
+    <div className="flex flex-wrap justify-center gap-2 mt-1">
+      {data.map((entry, index) => (
+        <div key={index} className="flex items-center gap-1 text-xs">
+          <div 
+            className="w-3 h-3 rounded-sm" 
+            style={{ backgroundColor: entry.color }}
+          ></div>
+          <span className="text-gray-700 dark:text-gray-300">
+            {entry.name}: {entry.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+));
+
+const MemoizedBarChart = React.memo(({ data, getTooltipStyle }: { data: any[], getTooltipStyle: () => any }) => (
+  <ResponsiveContainer width="100%" height="80%">
+    <BarChart data={data}>
+      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+      <XAxis dataKey="category" stroke="#9CA3AF" fontSize={10} />
+      <YAxis stroke="#9CA3AF" fontSize={10} />
+      <Tooltip 
+        contentStyle={getTooltipStyle()}
+        cursor={{ fill: 'rgba(75, 85, 99, 0.2)' }}
+      />
+      <Bar dataKey="count" fill="url(#colorGradient)" radius={[2, 2, 0, 0]} />
+      <defs>
+        <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.9}/>
+          <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.9}/>
+        </linearGradient>
+      </defs>
+    </BarChart>
+  </ResponsiveContainer>
+));
+
+const MemoizedLineChart = React.memo(({ data, getTooltipStyle }: { data: any[], getTooltipStyle: () => any }) => (
+  <ResponsiveContainer width="100%" height="75%">
+    <LineChart data={data}>
+      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+      <XAxis dataKey="month" stroke="#9CA3AF" fontSize={10} />
+      <YAxis stroke="#9CA3AF" fontSize={10} />
+      <Tooltip contentStyle={getTooltipStyle()} />
+      <Line type="monotone" dataKey="projects" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', strokeWidth: 1, r: 3 }} />
+      <Line type="monotone" dataKey="views" stroke="#3B82F6" strokeWidth={2} dot={{ fill: '#3B82F6', strokeWidth: 1, r: 3 }} />
+    </LineChart>
+  </ResponsiveContainer>
+));
+
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,6 +113,7 @@ const Dashboard: React.FC = () => {
   const [hiddenCards, setHiddenCards] = useState<Set<string>>(new Set());
   const [showDropdown, setShowDropdown] = useState(false);
   const [monthlyData, setMonthlyData] = useState<Array<{ month: string; projects: number; views: number }>>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   // Store original layouts for restoration when unhiding
   const originalLayouts = {
@@ -81,6 +152,17 @@ const Dashboard: React.FC = () => {
   const [layouts, setLayouts] = useState(originalLayouts);
   const [cardSizes, setCardSizes] = useState<Record<string, {lg: LayoutItem, md: LayoutItem, sm: LayoutItem}>>({});
 
+  // Memoized chart data to prevent unnecessary recalculations
+  const memoizedChartData = useMemo(() => {
+    if (!stats) return { projectsByStatus: [], skillsByCategory: [], monthlyActivity: [] };
+    
+    return {
+      projectsByStatus: stats.projectsByStatus,
+      skillsByCategory: stats.skillsByCategory,
+      monthlyActivity: stats.monthlyActivity
+    };
+  }, [stats?.projectsByStatus, stats?.skillsByCategory, stats?.monthlyActivity]);
+
   const cardInfo = {
     'monthly-activity': { title: 'Monthly Activity', type: 'activity' },
     'total-projects': { title: 'Total Projects', type: 'stat' },
@@ -90,6 +172,75 @@ const Dashboard: React.FC = () => {
     'projects-status': { title: 'Projects by Status', type: 'chart' },
     'skills-category': { title: 'Skills by Category', type: 'chart' },
     'recent-comments': { title: 'Recent Comments', type: 'comments' }
+  };
+
+  // Tooltip styles that respond to dark mode
+  const getTooltipStyle = () => ({
+    backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF',
+    border: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`,
+    borderRadius: '8px',
+    color: isDarkMode ? '#F9FAFB' : '#111827',
+    fontSize: '14px',
+    padding: '8px 12px',
+    boxShadow: isDarkMode 
+      ? '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2)' 
+      : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+  });
+
+  // Save layout to localStorage
+  const saveLayoutToStorage = (layouts: any, hiddenCards: Set<string>) => {
+    try {
+      localStorage.setItem('dashboard-layouts', JSON.stringify(layouts));
+      localStorage.setItem('dashboard-hidden-cards', JSON.stringify(Array.from(hiddenCards)));
+    } catch (error) {
+      console.error('Failed to save layout to localStorage:', error);
+    }
+  };
+
+  // Load layout from localStorage
+  const loadLayoutFromStorage = () => {
+    try {
+      const savedLayouts = localStorage.getItem('dashboard-layouts');
+      const savedHiddenCards = localStorage.getItem('dashboard-hidden-cards');
+      
+      if (savedLayouts) {
+        const parsedLayouts = JSON.parse(savedLayouts);
+        setLayouts(parsedLayouts);
+      }
+      
+      if (savedHiddenCards) {
+        const parsedHiddenCards = JSON.parse(savedHiddenCards);
+        setHiddenCards(new Set(parsedHiddenCards));
+      }
+    } catch (error) {
+      console.error('Failed to load layout from localStorage:', error);
+    }
+  };
+
+  // Reset layout to original
+  const resetLayout = () => {
+    setLayouts(originalLayouts);
+    setHiddenCards(new Set());
+    setCardSizes({});
+    
+    // Initialize card sizes from original layouts
+    const sizes: Record<string, {lg: LayoutItem, md: LayoutItem, sm: LayoutItem}> = {};
+    Object.keys(cardInfo).forEach(cardId => {
+      sizes[cardId] = {
+        lg: originalLayouts.lg.find(item => item.i === cardId)!,
+        md: originalLayouts.md.find(item => item.i === cardId)!,
+        sm: originalLayouts.sm.find(item => item.i === cardId)!
+      };
+    });
+    setCardSizes(sizes);
+    
+    // Clear localStorage
+    try {
+      localStorage.removeItem('dashboard-layouts');
+      localStorage.removeItem('dashboard-hidden-cards');
+    } catch (error) {
+      console.error('Failed to clear layout from localStorage:', error);
+    }
   };
 
   const generateRandomMonthlyData = () => {
@@ -102,6 +253,25 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
+    // Check for dark mode
+    const checkDarkMode = () => {
+      const isDark = document.documentElement.classList.contains('dark') || 
+                    (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      setIsDarkMode(isDark);
+    };
+
+    checkDarkMode();
+    
+    // Watch for dark mode changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', checkDarkMode);
+
+    // Load saved layout
+    loadLayoutFromStorage();
+
     // Initialize card sizes from original layouts
     const sizes: Record<string, {lg: LayoutItem, md: LayoutItem, sm: LayoutItem}> = {};
     Object.keys(cardInfo).forEach(cardId => {
@@ -115,6 +285,11 @@ const Dashboard: React.FC = () => {
     
     fetchDashboardData();
     setMonthlyData(generateRandomMonthlyData());
+
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener('change', checkDarkMode);
+    };
   }, []);
 
   const fetchDashboardData = async () => {
@@ -251,28 +426,37 @@ const Dashboard: React.FC = () => {
     });
     
     setCardSizes(updatedSizes);
-    setHiddenCards(prev => new Set([...prev, cardId]));
+    
+    const newHiddenCards = new Set([...hiddenCards, cardId]);
+    setHiddenCards(newHiddenCards);
+    
+    // Save to localStorage
+    saveLayoutToStorage(layouts, newHiddenCards);
   };
 
   const handleShowCard = (cardId: string) => {
-    setHiddenCards(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(cardId);
-      return newSet;
-    });
+    const newHiddenCards = new Set(hiddenCards);
+    newHiddenCards.delete(cardId);
+    setHiddenCards(newHiddenCards);
     
     // Restore original size when showing
     if (cardSizes[cardId]) {
-      setLayouts(prev => ({
-        lg: [...prev.lg.filter(item => item.i !== cardId), cardSizes[cardId].lg],
-        md: [...prev.md.filter(item => item.i !== cardId), cardSizes[cardId].md],
-        sm: [...prev.sm.filter(item => item.i !== cardId), cardSizes[cardId].sm]
-      }));
+      const newLayouts = {
+        lg: [...layouts.lg.filter(item => item.i !== cardId), cardSizes[cardId].lg],
+        md: [...layouts.md.filter(item => item.i !== cardId), cardSizes[cardId].md],
+        sm: [...layouts.sm.filter(item => item.i !== cardId), cardSizes[cardId].sm]
+      };
+      setLayouts(newLayouts);
+      
+      // Save to localStorage
+      saveLayoutToStorage(newLayouts, newHiddenCards);
     }
   };
 
   const handleLayoutChange = (layout: any, layouts: any) => {
     setLayouts(layouts);
+    // Save to localStorage whenever layout changes
+    saveLayoutToStorage(layouts, hiddenCards);
   };
 
   if (loading) {
@@ -305,23 +489,39 @@ const Dashboard: React.FC = () => {
     sm: layouts.sm.filter(item => !hiddenCards.has(item.i))
   };
 
-  // The Actual Component UI // don't forget to do actual realiable COMMENTS
-  return (
-  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 grid grid-cols-12">
-    {/* MAIN: takes full width on small screens, 11/12 on large screens */}
-    <main className="col-span-12 lg:col-span-11 p-6 z-10">
+// The Actual Component UI // don't forget to do actual realiable COMMENTS
+return (
+  <div className="grid grid-cols-24">
+
+    {/* ASIDE: Counterweight left*/}
+    <aside className="hidden lg:block col-span-1">
+    </aside>
+
+    {/* MAIN: takes full width on small screens, 21/24 on large screens */}
+    <main className="ml-0 col-span-24 lg:col-span-21 p-6 z-10">
       <div className="max-w-full mx-auto">
-        {/* Header with hidden cards dropdown */}
-        <div className="mb-0 flex justify-end">
+        {/* Header with hidden cards dropdown and reset button */}
+        <div className="mb-0 flex justify-end gap-2">
+          {/* Reset button */}
+          <button
+            onClick={resetLayout}
+            className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-purple-700 hover:text-white hover:border-transparent"
+            title="Reset to original layout"
+          >
+            <ArrowPathIcon className="w-4 h-4" />
+          </button>
+
+          {/* Show hidden cards dropdown */}
           <div
             className="relative"
             onMouseEnter={() => setShowDropdown(true)}
             onMouseLeave={() => setTimeout(() => setShowDropdown(false), 500)}
           >
-            <button className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+            
+            <button className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg ${
               hiddenCards.size > 0
-                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700'
-                : 'bg-gray-500 dark:bg-gray-600 text-gray-300 hover:bg-gray-600 dark:hover:bg-gray-500'
+                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white border-purple-600'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 opacity-50'
             }`}>
               <EyeIcon className="w-4 h-4" />
               <ChevronDownIcon className="w-4 h-4" />
@@ -343,6 +543,7 @@ const Dashboard: React.FC = () => {
                 })}
               </div>
             )}
+
           </div>
         </div>
 
@@ -365,15 +566,15 @@ const Dashboard: React.FC = () => {
               >
                 <EyeSlashIcon className="w-4 h-4" />
               </button>
-              {renderCard(cardId, stats, rerandomizeData, monthlyData)}
+              {renderCard(cardId, stats, rerandomizeData, monthlyData, getTooltipStyle, memoizedChartData)}
             </div>
           ))}
         </ResponsiveGridLayout>
       </div>
     </main>
 
-    {/* ASIDE: proper height, no flex bullshit */}
-    <aside className="hidden lg:block col-span-1 h-[400px] relative overflow-visible">
+    {/* ASIDE: proper height */}
+    <aside className="hidden lg:block col-span-2 relative overflow-visible">
       <div className="opacity-40 absolute inset-0">
         <div className="absolute top-82 left-1/8 transform -translate-x-1/2 rotate-90 whitespace-nowrap">
           <h1 className="text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
@@ -390,7 +591,9 @@ const renderCard = (
   cardId: string,
   stats: DashboardStats,
   rerandomizeData: () => void,
-  monthlyData: Array<{ month: string; projects: number; views: number }>
+  monthlyData: Array<{ month: string; projects: number; views: number }>,
+  getTooltipStyle: () => any,
+  memoizedChartData: { projectsByStatus: any[], skillsByCategory: any[], monthlyActivity: any[] }
 ) => {
   switch (cardId) {
     case 'total-projects':
@@ -418,31 +621,7 @@ const renderCard = (
         <div className="h-full p-4">
           <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Projects by Status</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
-          <ResponsiveContainer width="100%" height="80%">
-            <PieChart>
-              <Pie
-                data={stats.projectsByStatus}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                dataKey="value"
-                label={({ name, value }) => `${name}: ${value}`}
-              >
-                {stats.projectsByStatus.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'var(--tooltip-bg, #000)',
-                  border: '1px solid var(--tooltip-border, #fff)',
-                  borderRadius: '8px',
-                  color: 'var(--tooltip-text, #fff)'
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          <MemoizedPieChart data={memoizedChartData.projectsByStatus} getTooltipStyle={getTooltipStyle} />
         </div>
       );
 
@@ -451,29 +630,7 @@ const renderCard = (
         <div className="h-full p-4">
           <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Skills by Category</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
-          <ResponsiveContainer width="100%" height="80%">
-            <BarChart data={stats.skillsByCategory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="category" stroke="#9CA3AF" fontSize={10} />
-              <YAxis stroke="#9CA3AF" fontSize={10} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'var(--tooltip-bg, #000)',
-                  border: '1px solid var(--tooltip-border, #fff)',
-                  borderRadius: '8px',
-                  color: 'var(--tooltip-text, #fff)'
-                }}
-                cursor={{ fill: 'rgba(75, 85, 99, 0.2)' }}
-              />
-              <Bar dataKey="count" fill="url(#colorGradient)" radius={[2, 2, 0, 0]} />
-              <defs>
-                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.9}/>
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.9}/>
-                </linearGradient>
-              </defs>
-            </BarChart>
-          </ResponsiveContainer>
+          <MemoizedBarChart data={memoizedChartData.skillsByCategory} getTooltipStyle={getTooltipStyle} />
         </div>
       );
 
@@ -492,23 +649,7 @@ const renderCard = (
               Rerandomize
             </button>
           </div>
-          <ResponsiveContainer width="100%" height="75%">
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="month" stroke="#9CA3AF" fontSize={10} />
-              <YAxis stroke="#9CA3AF" fontSize={10} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'var(--tooltip-bg, #000)',
-                  border: '1px solid var(--tooltip-border, #fff)',
-                  borderRadius: '8px',
-                  color: 'var(--tooltip-text, #fff)'
-                }}
-              />
-              <Line type="monotone" dataKey="projects" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', strokeWidth: 1, r: 3 }} />
-              <Line type="monotone" dataKey="views" stroke="#3B82F6" strokeWidth={2} dot={{ fill: '#3B82F6', strokeWidth: 1, r: 3 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          <MemoizedLineChart data={monthlyData} getTooltipStyle={getTooltipStyle} />
         </div>
       );
 
@@ -584,7 +725,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
     </div>
     <div>
       <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-      <p className="text-2xl font-bold text-white">{value}</p>
+      <p className="text-2xl font-bold text-gray-800 dark:text-white">{value}</p>
     </div>
   </div>
 );
