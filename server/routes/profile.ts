@@ -5,7 +5,8 @@ import {
   updateProfile, 
   changePassword, 
   deleteAccount,
-  getDashboardData
+  getDashboardData,
+  getAllUsersForMap
 } from '../controllers/profileController';
 import { protect } from '../middleware/auth';
 import { validate } from '../utils/validation';
@@ -76,6 +77,43 @@ router.get('/dashboard', getDashboardData);
 
 /**
  * @swagger
+ * /api/profile/map-users:
+ *   get:
+ *     tags: [Profile]
+ *     summary: Get all users for map display
+ *     description: Retrieve all users with their locations for displaying on the map
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Users with locations retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *             example:
+ *               success: true
+ *               data:
+ *                 users:
+ *                   - _id: "60f7b3b3b3b3b3b3b3b3b3b3"
+ *                     firstName: "John"
+ *                     lastName: "Doe"
+ *                     fullName: "John Doe"
+ *                     location:
+ *                       latitude: 47.3769
+ *                       longitude: 8.5417
+ *                       city: "Zurich"
+ *                       country: "Switzerland"
+ *                     avatar: "https://example.com/avatar.jpg"
+ *                     bio: "Full-stack developer"
+ *                     memberSince: "2024-01-10T08:00:00.000Z"
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.get('/map-users', getAllUsersForMap);
+
+/**
+ * @swagger
  * /api/profile:
  *   get:
  *     tags: [Profile]
@@ -137,11 +175,37 @@ router.get('/dashboard', getDashboardData);
  *                 type: string
  *                 format: uri
  *                 description: URL to user's avatar image
+ *               location:
+ *                 type: object
+ *                 properties:
+ *                   latitude:
+ *                     type: number
+ *                     minimum: -90
+ *                     maximum: 90
+ *                     description: Latitude coordinate
+ *                   longitude:
+ *                     type: number
+ *                     minimum: -180
+ *                     maximum: 180
+ *                     description: Longitude coordinate
+ *                   city:
+ *                     type: string
+ *                     maxLength: 100
+ *                     description: City name
+ *                   country:
+ *                     type: string
+ *                     maxLength: 100
+ *                     description: Country name
  *           example:
  *             firstName: "John"
  *             lastName: "Doe"
  *             bio: "Senior Full-stack Developer with 5+ years experience"
  *             avatar: "https://example.com/new-avatar.jpg"
+ *             location:
+ *               latitude: 47.3769
+ *               longitude: 8.5417
+ *               city: "Zurich"
+ *               country: "Switzerland"
  *     responses:
  *       200:
  *         description: Profile updated successfully
@@ -160,6 +224,11 @@ router.get('/dashboard', getDashboardData);
  *                   lastName: "Doe"
  *                   bio: "Senior Full-stack Developer with 5+ years experience"
  *                   avatar: "https://example.com/new-avatar.jpg"
+ *                   location:
+ *                     latitude: 47.3769
+ *                     longitude: 8.5417
+ *                     city: "Zurich"
+ *                     country: "Switzerland"
  *                   updatedAt: "2024-01-15T11:00:00.000Z"
  *       400:
  *         $ref: '#/components/responses/ValidationError'

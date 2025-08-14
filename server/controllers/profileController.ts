@@ -131,7 +131,7 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const allowedUpdates = ['firstName', 'lastName', 'bio', 'avatar'];
+    const allowedUpdates = ['firstName', 'lastName', 'bio', 'avatar', 'location'];
     const updates: any = {};
     
     Object.keys(req.body).forEach(key => {
@@ -434,6 +434,58 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
     res.status(500).json({
       success: false,
       message: 'Server error fetching dashboard data'
+    });
+  }
+};
+
+/**
+ * @async
+ * @function getAllUsersForMap
+ * @description Get all users with their locations for the map display
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ */
+export const getAllUsersForMap = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Fetch all users with locations, excluding sensitive data
+    const users = await User.find(
+      { 
+        location: { $exists: true },
+        'location.latitude': { $exists: true },
+        'location.longitude': { $exists: true }
+      },
+      {
+        firstName: 1,
+        lastName: 1,
+        location: 1,
+        avatar: 1,
+        bio: 1,
+        createdAt: 1
+      }
+    ).limit(100); // Limit for performance
+
+    res.status(200).json({
+      success: true,
+      data: {
+        users: users.map(user => ({
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          fullName: `${user.firstName} ${user.lastName}`,
+          location: user.location,
+          avatar: user.avatar,
+          bio: user.bio,
+          memberSince: user.createdAt
+        }))
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get users for map error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching user locations'
     });
   }
 };

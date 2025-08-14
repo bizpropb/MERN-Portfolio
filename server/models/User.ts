@@ -14,6 +14,12 @@ import bcrypt from 'bcryptjs';
  * @property {string} [avatar] - URL to user's profile picture (optional)
  * @property {'user'|'admin'} role - User's role in the system
  * @property {boolean} isVerified - Whether the user's email has been verified
+ * @property {boolean} isSuspended - Whether the user's account is suspended
+ * @property {Object} [location] - User's geographical location (optional)
+ * @property {number} location.latitude - Latitude coordinate
+ * @property {number} location.longitude - Longitude coordinate
+ * @property {string} [location.city] - City name (optional)
+ * @property {string} [location.country] - Country name (optional)
  * @property {Date} [lastLogin] - Timestamp of last login (optional)
  * @property {Date} createdAt - Timestamp when the user was created
  * @property {Date} updatedAt - Timestamp when the user was last updated
@@ -31,6 +37,12 @@ export interface IUser extends Document {
   role: 'user' | 'admin';
   isVerified: boolean;
   isSuspended: boolean;
+  location?: {
+    latitude: number;
+    longitude: number;
+    city?: string;
+    country?: string;
+  };
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -119,6 +131,31 @@ const UserSchema = new Schema<IUser>({
     default: false,
   },
   /**
+   * User's geographical location (optional)
+   */
+  location: {
+    latitude: {
+      type: Number,
+      min: [-90, 'Latitude must be between -90 and 90'],
+      max: [90, 'Latitude must be between -90 and 90']
+    },
+    longitude: {
+      type: Number,
+      min: [-180, 'Longitude must be between -180 and 180'],
+      max: [180, 'Longitude must be between -180 and 180']
+    },
+    city: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'City name cannot exceed 100 characters']
+    },
+    country: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'Country name cannot exceed 100 characters']
+    }
+  },
+  /**
    * Timestamp of last login (optional)
    */
   lastLogin: {
@@ -142,6 +179,7 @@ const UserSchema = new Schema<IUser>({
 // Define indexes for optimized querying
 UserSchema.index({ email: 1 }); // For fast lookups by email
 UserSchema.index({ createdAt: -1 }); // For sorting users by creation date
+UserSchema.index({ 'location.latitude': 1, 'location.longitude': 1 }); // For geospatial queries
 
 /**
  * Virtual property that returns the user's full name

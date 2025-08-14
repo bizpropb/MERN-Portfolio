@@ -46,9 +46,9 @@ const seedData = {
       lastName: 'User',
       bio: 'Full-stack developer passionate about building amazing web applications. I love learning new technologies and solving complex problems.',
       role: 'user',
-      isVerified: true
+      isVerified: true,
+      location: { latitude: 47.3769, longitude: 8.5417, city: 'Zurich', country: 'Switzerland' }
     },
-    // Additional users to create comments
     {
       email: 'sarah.dev@example.com',
       password: 'password123',
@@ -56,7 +56,8 @@ const seedData = {
       lastName: 'Developer',
       bio: 'Frontend specialist with a passion for clean, accessible user interfaces.',
       role: 'user',
-      isVerified: true
+      isVerified: true,
+      location: { latitude: 40.7128, longitude: -74.0060, city: 'New York', country: 'United States' }
     },
     {
       email: 'mike.engineer@example.com',
@@ -65,7 +66,8 @@ const seedData = {
       lastName: 'Engineer',
       bio: 'Backend engineer focused on scalable architecture and performance optimization.',
       role: 'user',
-      isVerified: true
+      isVerified: true,
+      location: { latitude: 51.5074, longitude: -0.1278, city: 'London', country: 'United Kingdom' }
     },
     {
       email: 'alex.reviewer@example.com',
@@ -74,7 +76,168 @@ const seedData = {
       lastName: 'Reviewer',
       bio: 'Tech lead and code reviewer with 8+ years of experience.',
       role: 'user',
-      isVerified: true
+      isVerified: true,
+      location: { latitude: 35.6762, longitude: 139.6503, city: 'Tokyo', country: 'Japan' }
+    },
+    {
+      email: 'maria.frontend@example.com',
+      password: 'password123',
+      firstName: 'Maria',
+      lastName: 'Garcia',
+      bio: 'Creative frontend developer specializing in React and modern CSS.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 41.3851, longitude: 2.1734, city: 'Barcelona', country: 'Spain' }
+    },
+    {
+      email: 'luca.backend@example.com',
+      password: 'password123',
+      firstName: 'Luca',
+      lastName: 'Rossi',
+      bio: 'Full-stack developer with expertise in Node.js and microservices.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 45.4642, longitude: 9.1900, city: 'Milan', country: 'Italy' }
+    },
+    {
+      email: 'anna.designer@example.com',
+      password: 'password123',
+      firstName: 'Anna',
+      lastName: 'Mueller',
+      bio: 'UX/UI designer turned developer, bridging design and code.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 52.5200, longitude: 13.4050, city: 'Berlin', country: 'Germany' }
+    },
+    {
+      email: 'chen.developer@example.com',
+      password: 'password123',
+      firstName: 'Chen',
+      lastName: 'Wei',
+      bio: 'Software engineer passionate about AI and machine learning applications.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 39.9042, longitude: 116.4074, city: 'Beijing', country: 'China' }
+    },
+    {
+      email: 'emma.fullstack@example.com',
+      password: 'password123',
+      firstName: 'Emma',
+      lastName: 'Johnson',
+      bio: 'Full-stack developer with a love for clean code and agile methodologies.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: -33.8688, longitude: 151.2093, city: 'Sydney', country: 'Australia' }
+    },
+    {
+      email: 'raj.mobile@example.com',
+      password: 'password123',
+      firstName: 'Raj',
+      lastName: 'Patel',
+      bio: 'Mobile and web developer with expertise in React Native and PWAs.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 19.0760, longitude: 72.8777, city: 'Mumbai', country: 'India' }
+    },
+    {
+      email: 'sophie.data@example.com',
+      password: 'password123',
+      firstName: 'Sophie',
+      lastName: 'Dubois',
+      bio: 'Data engineer and full-stack developer, specializing in Python and JavaScript.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 48.8566, longitude: 2.3522, city: 'Paris', country: 'France' }
+    },
+    {
+      email: 'carlos.devops@example.com',
+      password: 'password123',
+      firstName: 'Carlos',
+      lastName: 'Rodriguez',
+      bio: 'DevOps engineer and backend developer, cloud infrastructure enthusiast.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: -34.6118, longitude: -58.3960, city: 'Buenos Aires', country: 'Argentina' }
+    },
+    {
+      email: 'yuki.frontend@example.com',
+      password: 'password123',
+      firstName: 'Yuki',
+      lastName: 'Tanaka',
+      bio: 'Frontend developer with a focus on performance optimization and accessibility.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 34.6937, longitude: 135.5023, city: 'Osaka', country: 'Japan' }
+    },
+    {
+      email: 'dmitri.backend@example.com',
+      password: 'password123',
+      firstName: 'Dmitri',
+      lastName: 'Volkov',
+      bio: 'Backend architect with extensive experience in distributed systems.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 55.7558, longitude: 37.6176, city: 'Moscow', country: 'Russia' }
+    },
+    {
+      email: 'priya.ai@example.com',
+      password: 'password123',
+      firstName: 'Priya',
+      lastName: 'Sharma',
+      bio: 'ML engineer and full-stack developer, building intelligent web applications.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 28.7041, longitude: 77.1025, city: 'Delhi', country: 'India' }
+    },
+    {
+      email: 'erik.security@example.com',
+      password: 'password123',
+      firstName: 'Erik',
+      lastName: 'Larsson',
+      bio: 'Security-focused developer with expertise in secure coding practices.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 59.3293, longitude: 18.0686, city: 'Stockholm', country: 'Sweden' }
+    },
+    {
+      email: 'fatima.mobile@example.com',
+      password: 'password123',
+      firstName: 'Fatima',
+      lastName: 'Al-Zahra',
+      bio: 'Mobile-first developer specializing in progressive web applications.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 25.2048, longitude: 55.2708, city: 'Dubai', country: 'UAE' }
+    },
+    {
+      email: 'lucas.game@example.com',
+      password: 'password123',
+      firstName: 'Lucas',
+      lastName: 'Silva',
+      bio: 'Game developer turned web developer, bringing interactive experiences to the web.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: -23.5505, longitude: -46.6333, city: 'São Paulo', country: 'Brazil' }
+    },
+    {
+      email: 'maya.blockchain@example.com',
+      password: 'password123',
+      firstName: 'Maya',
+      lastName: 'Thompson',
+      bio: 'Blockchain developer exploring decentralized web technologies.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 49.2827, longitude: -123.1207, city: 'Vancouver', country: 'Canada' }
+    },
+    {
+      email: 'ahmed.fullstack@example.com',
+      password: 'password123',
+      firstName: 'Ahmed',
+      lastName: 'Hassan',
+      bio: 'Full-stack developer with a passion for creating impactful digital solutions.',
+      role: 'user',
+      isVerified: true,
+      location: { latitude: 30.0444, longitude: 31.2357, city: 'Cairo', country: 'Egypt' }
     }
   ],
   
@@ -247,7 +410,7 @@ const seedDatabase = async (): Promise<void> => {
     // Create demo users
     console.log('👥 Creating users...');
     const createdUsers = await User.create(seedData.users);
-    console.log(`✅ Created ${createdUsers.length} users`);
+    console.log(`✅ Created ${createdUsers.length} users with locations worldwide`);
     
     // Create skills with random data for the demo user
     console.log('🛠️  Creating skills...');
@@ -279,7 +442,7 @@ const seedDatabase = async (): Promise<void> => {
     console.log('💬 Creating comments...');
     const commentsWithData = seedData.comments.map((comment, index) => {
       const project = createdProjects[comment.projectIndex];
-      const commenterIndex = (index % 3) + 1; // Rotate through commenters (skip index 0 which is demo user)
+      const commenterIndex = (index % 19) + 1; // Rotate through commenters (skip index 0 which is demo user)
       const commenter = createdUsers[commenterIndex];
       
       return {
@@ -298,7 +461,7 @@ const seedDatabase = async (): Promise<void> => {
     // Display summary of seeding operation
     console.log('\n🎉 Database seeding completed successfully!');
     console.log('📊 Summary:');
-    console.log(`   👥 Users: ${createdUsers.length}`);
+    console.log(`   👥 Users: ${createdUsers.length} (with global locations)`);
     console.log(`   🛠️  Skills: ${createdSkills.length}`);
     console.log(`   📁 Projects: ${createdProjects.length}`);
     console.log(`   💬 Comments: ${createdComments.length}`);
@@ -308,10 +471,11 @@ const seedDatabase = async (): Promise<void> => {
     console.log('   Email: demo@devhub.com');
     console.log('   Password: password123');
     
-    console.log('\n👥 Additional Test Users:');
-    console.log('   sarah.dev@example.com / password123');
-    console.log('   mike.engineer@example.com / password123');
-    console.log('   alex.reviewer@example.com / password123');
+    console.log('\n🗺️  Global User Locations:');
+    console.log('   Users are distributed across 20 cities worldwide:');
+    console.log('   Zurich, New York, London, Tokyo, Barcelona, Milan, Berlin,');
+    console.log('   Beijing, Sydney, Mumbai, Paris, Buenos Aires, Osaka, Moscow,');
+    console.log('   Delhi, Stockholm, Dubai, São Paulo, Vancouver, Cairo');
     
     // Clean up and exit
     rl.close();
