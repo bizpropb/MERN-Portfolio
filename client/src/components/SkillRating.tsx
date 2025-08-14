@@ -57,7 +57,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, rea
   const getProgressWidth = (level: number) => `${(level / 5) * 100}%`;
 
   return (
-    <div className={`w-full bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border transition-all duration-300 ${
+    <div className={`w-full bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border transition-all duration-300 mb-6 ${
       isGlowing 
         ? 'shadow-[0_0_20px_rgba(168,85,247,0.8)] border-purple-400' 
         : 'border-gray-200 dark:border-gray-700 hover:shadow-xl'
@@ -174,7 +174,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, rea
                   key={index}
                   className="inline-block px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
                 >
-                  🏆 {cert}
+                  {cert}
                 </span>
               ))}
             </div>
@@ -331,7 +331,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
       </div>
 
       {/* Skills Grid */}
-      <div className="w-[90%] mx-auto">
+      <div className="w-[90%] mx-auto pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 justify-items-center">
         {filteredAndSortedSkills.map((skill) => (
           <SkillRatingComponent
