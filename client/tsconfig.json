@@ -72,12 +72,12 @@
   ❌Counter Argument: Vite transpiles JS directly without TypeScript layer
 
 6. EARLY ERROR DETECTION: Catches type mismatches during development
- ❌Counter Argument: Browser console shows type errors immediately once they occur. 
+  ❌Counter Argument: Browser console shows type errors immediately once they occur. 
     TypeScript cannot prevent wrong nested properties or incorrect API payloads, etc. 
     So testing in a browser will be mandatory either way.
 
 7. BETTER REFACTORING: Safe renaming and restructuring across large codebases
- ❌Counter Argument: VS Code global rename works for functions/variables.
+  ❌Counter Argument: VS Code global rename works for functions/variables.
 
 PS: Some libraries are <not> compatible (at all) with ts, but have no issues with js.
 This is a major downside. 
@@ -88,7 +88,7 @@ This is a major downside.
 
 //-------------------------------------------------------------------------------------
 
-/* =========== TLDR: ASSESSMENT ============
+/* =========== EXTERNAL ASSESSMENT ============
    VALID COUNTERS (Where TS provides little/no frontend value):
    1. Missing returns - Console catches these quickly
    2. Switch fallthroughs - Rare in UI code
@@ -127,6 +127,39 @@ This is a major downside.
    JS preferable for:
    - Solo devs
    - Visual-heavy work
-   - Short-lived prototypes
+   - Prototypes
    - flexibility in library choices
+*/
+
+
+
+/* More typescript tipps/hacks that make your life less painful
+---------------------------------------------------------------------------------------------
+Alternative Solution if TypeScript still complains about imported library issues you just cant resolve:
+
+Option 1: Type assertion
+<Map
+  {...viewState}
+  // other props...
+  {...({ canvasContextAttributes: { preserveDrawingBuffer: true } } as any)}
+>
+
+Option 2: Use @ts-ignore
+<Map
+  {...viewState}
+  // other props...
+  // @ts-ignore - MapLibre accepts this option but react-map-gl types don't include it
+  canvasContextAttributes={{ preserveDrawingBuffer: true }}
+>
+
+Option 3: Pass through a spread operator
+const mapOptions = {
+  canvasContextAttributes: { preserveDrawingBuffer: true }
+};
+
+<Map
+  {...viewState}
+  // other props...
+  {...mapOptions as any}
+>
 */

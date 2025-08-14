@@ -48,7 +48,7 @@ docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.so
 
 Quick start (and rebuild) Application in dev mode (including helper script & seed):
 ```bash
-docker-compose down # Stop all containers and deleted them
+docker-compose down # Stop all containers and delete them
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
 docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
 docker exec -it mern-server npm run seed
@@ -57,7 +57,7 @@ docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.so
 
 ### Docker Troubleshooting:
 ```bash
-docker-compose down # Stop all containers and deleted them
+docker-compose down # Stop all containers and delete them
 docker-compose down -v # Stop containers and remove volumes (if needed)
 docker container prune # Remove orphaned and stopped containers
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
