@@ -75,8 +75,7 @@ const uploadSchema = new Schema<IUpload>({
     enum: {
       values: ['image', 'video', 'document', 'other'],
       message: 'File type must be one of: image, video, document, other'
-    },
-    index: true
+    }
   },
   /**
    * Size of the file in bytes
@@ -100,8 +99,7 @@ const uploadSchema = new Schema<IUpload>({
    */
   isFeatured: {
     type: Boolean,
-    default: false,
-    index: true
+    default: false
   },
   /**
    * Alternative text for accessibility (mainly for images)
