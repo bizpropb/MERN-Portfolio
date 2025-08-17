@@ -50,8 +50,7 @@ const commentSchema = new Schema<IComment>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'User ID is required'],
-    index: true
+    required: [true, 'User ID is required']
   },
   /**
    * The comment text content
@@ -92,8 +91,7 @@ const commentSchema = new Schema<IComment>({
    */
   parentCommentId: {
     type: Schema.Types.ObjectId,
-    ref: 'Comment',
-    index: true
+    ref: 'Comment'
   }
 }, {
   /**
