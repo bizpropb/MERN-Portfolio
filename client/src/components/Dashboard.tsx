@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import { EyeSlashIcon, EyeIcon, ChevronDownIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { FolderIcon, WrenchScrewdriverIcon, EyeIcon as EyeIconSolid, HeartIcon } from '@heroicons/react/24/solid';
@@ -107,6 +108,7 @@ const MemoizedLineChart = React.memo(({ data, getTooltipStyle }: { data: any[], 
 ));
 
 const Dashboard: React.FC = () => {
+  const { username } = useParams<{ username: string }>();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -170,7 +172,7 @@ const Dashboard: React.FC = () => {
     'profile-views': { title: 'Profile Views', type: 'stat' },
     'project-likes': { title: 'Project Likes', type: 'stat' },
     'projects-status': { title: 'Projects by Status', type: 'chart' },
-    'skills-category': { title: 'Skills by Category', type: 'chart' },
+    'skills-category': { title: 'Skillpoints by Category', type: 'chart' },
     'recent-comments': { title: 'Recent Comments', type: 'comments' }
   };
 
@@ -283,7 +285,6 @@ const Dashboard: React.FC = () => {
     });
     setCardSizes(sizes);
     
-    fetchDashboardData();
     setMonthlyData(generateRandomMonthlyData());
 
     return () => {
@@ -292,105 +293,108 @@ const Dashboard: React.FC = () => {
     };
   }, []);
 
+  // Separate useEffect for data fetching that depends on username
+  useEffect(() => {
+    if (username) {
+      fetchDashboardData();
+    }
+  }, [username]);
+
   const fetchDashboardData = async () => {
     try {
+      if (!username) {
+        setError('Username not provided');
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('token');
       
-      const [projectsRes, skillsRes, commentsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/projects?analytics=true', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        fetch('http://localhost:5000/api/skills', {
+      // Use the new username-based dashboard endpoint and comments endpoint
+      const [dashboardRes, commentsRes] = await Promise.all([
+        fetch(`http://localhost:5000/api/user/${username}/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         fetch('http://localhost:5000/api/comments/recent', {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
-
-      const projectsData = await projectsRes.json();
-      const skillsData = await skillsRes.json();
+      
+      if (!dashboardRes.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
+      
+      const dashboardData = await dashboardRes.json();
       const commentsData = await commentsRes.json();
       
-      console.log('Raw comments data from API:', JSON.stringify(commentsData, null, 2));
-
-      if (projectsData.success && skillsData.success) {
-        const projects = projectsData.data.projects;
-        const skills = skillsData.data.skills;
-        console.log('Raw comments data:', commentsData);
-        const comments = commentsData.success ? commentsData.data.comments.map((comment: any) => {
-          console.log('Processing comment:', comment);
-          
-          // Handle user data
-          let userName = 'Anonymous';
-          if (comment.userId) {
-            if (typeof comment.userId === 'object' && comment.userId.firstName) {
-              // User data is populated
-              userName = `${comment.userId.firstName} ${comment.userId.lastName || ''}`.trim();
-            } else if (comment.user) {
-              // Check for alternative user field
-              const user = comment.user;
-              userName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Anonymous';
-            }
-          }
-          
-          // Handle project title
-          let projectTitle = 'Unknown Project';
-          if (comment.projectId) {
-            if (typeof comment.projectId === 'object' && comment.projectId.title) {
-              projectTitle = comment.projectId.title;
-            } else if (comment.project) {
-              projectTitle = comment.project.title || projectTitle;
-            }
-          }
-          
-          return {
-            ...comment,
-            content: comment.content || 'No content',
-            userName,
-            projectTitle,
-            rating: comment.rating || 0,
-            createdAt: comment.createdAt
-          };
-        }) : [];
-
-        const totalViews = projects.reduce((sum: number, p: any) => sum + p.views, 0);
-        const totalLikes = projects.reduce((sum: number, p: any) => sum + p.likes, 0);
-        
-        const statusCounts = projects.reduce((acc: any, project: any) => {
-          acc[project.status] = (acc[project.status] || 0) + 1;
-          return acc;
-        }, {});
-
-        const skillCategories = skills.reduce((acc: any, skill: any) => {
-          acc[skill.category] = (acc[skill.category] || 0) + 1;
-          return acc;
-        }, {});
-
-        const dashboardStats: DashboardStats = {
-          totalProjects: projects.length,
-          totalSkills: skills.length,
-          totalViews,
-          totalLikes,
-          completedProjects: statusCounts.completed || 0,
-          inProgressProjects: statusCounts['in-progress'] || 0,
-          projectsByStatus: [
-            { name: 'Completed', value: statusCounts.completed || 0, color: '#3B82F6' },
-            { name: 'In Progress', value: statusCounts['in-progress'] || 0, color: '#8B5CF6' },
-            { name: 'Planning', value: statusCounts.planning || 0, color: '#A855F7' },
-            { name: 'Archived', value: statusCounts.archived || 0, color: '#EC4899' }
-          ].filter(item => item.value > 0),
-          skillsByCategory: Object.entries(skillCategories).map(([category, count]) => ({
-            category: category.charAt(0).toUpperCase() + category.slice(1),
-            count: count as number
-          })),
-          monthlyActivity: monthlyData.length > 0 ? monthlyData : generateRandomMonthlyData(),
-          recentComments: comments || []
-        };
-
-        setStats(dashboardStats);
-        setError(null);
+      if (!dashboardData.success) {
+        throw new Error(dashboardData.message || 'Failed to fetch dashboard data');
       }
+
+      console.log('Dashboard API Response:', dashboardData);
+      console.log('Comments API Response:', commentsData);
+
+      // Extract data from the new API structure
+      const data = dashboardData.data;
+      const comments = commentsData.success ? commentsData.data.comments.map((comment: any) => {
+        let userName = 'Anonymous';
+        if (comment.userId) {
+          if (typeof comment.userId === 'object' && comment.userId.username) {
+            userName = comment.userId.username;
+          } else if (comment.user && comment.user.username) {
+            userName = comment.user.username;
+          }
+        }
+        
+        let projectTitle = 'Unknown Project';
+        if (comment.projectId) {
+          if (typeof comment.projectId === 'object' && comment.projectId.title) {
+            projectTitle = comment.projectId.title;
+          } else if (comment.project) {
+            projectTitle = comment.project.title || projectTitle;
+          }
+        }
+        
+        return {
+          ...comment,
+          content: comment.content || 'No content',
+          userName,
+          projectTitle,
+          rating: comment.rating || 0,
+          createdAt: comment.createdAt
+        };
+      }) : [];
+
+      // Transform project stats for the pie chart
+      const projectsByStatus = data.projectStats?.map((stat: any) => ({
+        name: stat._id?.charAt(0).toUpperCase() + stat._id?.slice(1) || 'Unknown',
+        value: stat.count,
+        color: stat._id === 'completed' ? '#3B82F6' : 
+               stat._id === 'in-progress' ? '#8B5CF6' : 
+               stat._id === 'planning' ? '#A855F7' : '#EC4899'
+      })) || [];
+
+      // Transform skill stats for the bar chart
+      const skillsByCategory = data.skillStats?.map((stat: any) => ({
+        category: stat._id?.charAt(0).toUpperCase() + stat._id?.slice(1) || 'Unknown',
+        count: stat.count
+      })) || [];
+
+      const dashboardStats: DashboardStats = {
+        totalProjects: data.overview?.totalProjects || 0,
+        totalSkills: data.overview?.totalSkills || 0,
+        totalViews: data.overview?.totalViews || 0,
+        totalLikes: data.overview?.totalLikes || 0,
+        completedProjects: data.projectStats?.find((s: any) => s._id === 'completed')?.count || 0,
+        inProgressProjects: data.projectStats?.find((s: any) => s._id === 'in-progress')?.count || 0,
+        projectsByStatus: projectsByStatus.filter((item: any) => item.value > 0),
+        skillsByCategory,
+        monthlyActivity: monthlyData.length > 0 ? monthlyData : generateRandomMonthlyData(),
+        recentComments: comments || []
+      };
+
+      setStats(dashboardStats);
+      setError(null);
     } catch (err) {
       setError('Failed to fetch dashboard data');
       console.error('Dashboard error:', err);
@@ -628,7 +632,7 @@ const renderCard = (
     case 'skills-category':
       return (
         <div className="h-full p-4">
-          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Skills by Category</h3>
+          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Skillpoints by Category</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
           <MemoizedBarChart data={memoizedChartData.skillsByCategory} getTooltipStyle={getTooltipStyle} />
         </div>
