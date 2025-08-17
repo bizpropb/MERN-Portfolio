@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { PlusIcon, EyeIcon, HeartIcon, StarIcon } from '@heroicons/react/24/outline';
 import ProjectModal from './ProjectModal';
 import ProjectEditModal from './ProjectEditModal';
 import ProjectCreateModal from './ProjectCreateModal';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Project {
   _id: string;
@@ -36,39 +38,32 @@ interface User {
 }
 
 const ProjectsList: React.FC = () => {
+  const { username } = useParams<{ username: string }>();
+  const { user: currentUser } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Check if the current user is viewing their own projects
+  const isOwnProjects = currentUser?.username === username;
 
   useEffect(() => {
     fetchProjects();
-    fetchCurrentUser();
-  }, []);
-
-  const fetchCurrentUser = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setCurrentUser(data.data.user);
-      }
-    } catch (error) {
-      console.error('Error fetching current user:', error);
-    }
-  };
+  }, [username]);
 
   const fetchProjects = async () => {
     try {
+      if (!username) {
+        console.error('Username not provided');
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/projects', {
+      const response = await fetch(`http://localhost:5000/api/user/${username}/projects`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -128,15 +123,17 @@ const ProjectsList: React.FC = () => {
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-            My Projects
+            {isOwnProjects ? 'My Projects' : 'Projects'}
           </h1>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            <PlusIcon className="w-5 h-5" />
-            <span>New Project</span>
-          </button>
+          {isOwnProjects && (
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <PlusIcon className="w-5 h-5" />
+              <span>New Project</span>
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -285,7 +282,7 @@ const ProjectsList: React.FC = () => {
           isOpen={isModalOpen}
           onClose={closeModals}
           onEdit={handleEditProject}
-          currentUserId={currentUser?._id || ''}
+          currentUserId={currentUser?.id || ''}
           onProjectUpdate={handleProjectUpdate}
         />
       )}

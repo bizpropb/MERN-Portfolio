@@ -90,7 +90,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
       newErrors.liveUrl = 'Please enter a valid URL';
     }
 
-    if (formData.imageUrl && !/^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)$/i.test(formData.imageUrl)) {
+    if (formData.imageUrl && !/^https?:\/\/.*/.test(formData.imageUrl)) {
       newErrors.imageUrl = 'Please enter a valid image URL';
     }
 
@@ -133,7 +133,6 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
       if (result.success) {
         onProjectUpdate(result.data.project);
         onClose();
-        alert('Project updated successfully!');
       } else {
         alert('Error updating project: ' + result.message);
       }

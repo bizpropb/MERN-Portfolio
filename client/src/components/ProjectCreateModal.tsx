@@ -146,7 +146,6 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
           featured: false
         });
         setErrors({});
-        alert('Project created successfully!');
       } else {
         alert('Error creating project: ' + result.message);
       }

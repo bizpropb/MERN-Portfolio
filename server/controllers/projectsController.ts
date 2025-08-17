@@ -114,6 +114,92 @@ export const getProjects = async (req: Request, res: Response): Promise<void> =>
 
 /**
  * @async
+ * @function getProjectsByUsername
+ * @description Get projects for a specific user by username
+ * @param {Request} req - Express request object with username parameter
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ */
+export const getProjectsByUsername = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username
+    const User = require('../models/User').default;
+    const targetUser = await User.findOne({ username: username.toLowerCase() });
+    
+    if (!targetUser) {
+      res.status(404).json({
+        success: false,
+        message: `User with username '${username}' not found`
+      });
+      return;
+    }
+
+    // Get projects for the target user
+    const projects = await Project.find({ userId: targetUser._id })
+      .sort({ featured: -1, createdAt: -1 })
+      .populate('userId', 'firstName lastName');
+
+    // Calculate stats
+    const stats = await Project.aggregate([
+      { $match: { userId: targetUser._id } },
+      {
+        $group: {
+          _id: null,
+          totalProjects: { $sum: 1 },
+          featuredProjects: { $sum: { $cond: ['$featured', 1, 0] } },
+          totalViews: { $sum: '$views' },
+          totalLikes: { $sum: '$likes' },
+          completedProjects: { $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] } },
+          inProgressProjects: { $sum: { $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    // Status breakdown
+    const statusStats = await Project.aggregate([
+      { $match: { userId: targetUser._id } },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          username: targetUser.username,
+          firstName: targetUser.firstName,
+          lastName: targetUser.lastName
+        },
+        projects,
+        stats: stats[0] || {
+          totalProjects: 0,
+          featuredProjects: 0,
+          totalViews: 0,
+          totalLikes: 0,
+          completedProjects: 0,
+          inProgressProjects: 0
+        },
+        statusStats
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get projects by username error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching projects'
+    });
+  }
+};
+
+/**
+ * @async
  * @function getProject
  * @description Get a single project by ID and increment view count
  * @param {Request} req - Express request object with project ID parameter
