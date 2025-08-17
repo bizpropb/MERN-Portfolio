@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { ExclamationTriangleIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon, MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 // Fix for default markers
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -16,15 +17,17 @@ interface UserLocation {
   firstName: string;
   lastName: string;
   fullName: string;
-  location: {
+  username?: string;
+  location?: {
     latitude: number;
     longitude: number;
     city?: string;
     country?: string;
-  };
+  } | null;
   avatar?: string;
   bio?: string;
   memberSince: string;
+  lastLogin?: string;
 }
 
 const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
@@ -36,7 +39,7 @@ const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
       <div>
         <h3 className="m-0 font-bold text-gray-900 dark:text-gray-100">{user.fullName}</h3>
         <p className="m-0 text-sm text-gray-600 dark:text-gray-300">
-          {user.location.city}{user.location.country ? `, ${user.location.country}` : ''}
+          {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
         </p>
       </div>
     </div>
@@ -46,111 +49,171 @@ const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
     <p className="mt-1 mb-0 text-xs text-gray-500 dark:text-gray-400">
       Member since {new Date(user.memberSince).toLocaleDateString()}
     </p>
+    {user.username && (
+      <div className="mt-2">
+        <a 
+          href={`/userspace/${user.username}/profile`}
+          className="inline-block px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-md transition-colors duration-200"
+        >
+          View Profile
+        </a>
+      </div>
+    )}
+  </div>
+);
+
+const UserCard: React.FC<{ 
+  user: UserLocation; 
+  onHover: (user: UserLocation) => void;
+  onLeave: () => void;
+  onClick: (user: UserLocation) => void;
+}> = ({ user, onHover, onLeave, onClick }) => (
+  <div 
+    className="p-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-200"
+    onMouseEnter={() => onHover(user)}
+    onMouseLeave={onLeave}
+    onClick={() => onClick(user)}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden">
+        {user.avatar ? (
+          <>
+            <img 
+              src={user.avatar} 
+              alt={user.fullName}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                if (e.currentTarget.nextElementSibling) {
+                  (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                }
+              }}
+            />
+            <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center" style={{ display: 'none' }}>
+              <span className="text-white font-bold text-sm">{user.firstName[0]}{user.lastName[0]}</span>
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-sm">{user.firstName[0]}{user.lastName[0]}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center space-x-2">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{user.fullName}</h3>
+          {user.username && (
+            <span className="text-xs text-gray-500 dark:text-gray-400">@{user.username}</span>
+          )}
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
+          {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
+        </p>
+        {user.bio && (
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{user.bio}</p>
+        )}
+      </div>
+    </div>
   </div>
 );
 
 const Map: React.FC = () => {
-  // Added Leaflet styles directly to the component, since we are only using leaflet inside this file
+  const { isDark } = useDarkMode();
+  
+  // Manage page scrolling behavior for full-height map
   useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .dark .map-tiles {
-        filter: brightness(1) invert(1) contrast(1) hue-rotate(180deg) saturate(0.3);
-      }
-
-      .dark .leaflet-container {
-        background: #1f2937 !important;
-      }
-
-      .dark .leaflet-control-zoom,
-      .dark .leaflet-control-attribution {
-        filter: invert(1) hue-rotate(180deg);
-      }
-
-      .dark .leaflet-control-attribution {
-        background: rgba(0, 0, 0, 0.8) !important;
-      }
-
-      .leaflet-popup-content-wrapper {
-        background-color: #ffffff;
-      }
-
-      .dark .leaflet-popup-content-wrapper {
-        background-color: #1f2937;
-      }
-
-      .leaflet-popup-tip {
-        background-color: #ffffff;
-      }
-
-      .dark .leaflet-popup-tip {
-        background-color: #1f2937;
-      }
-    `;
-    document.head.appendChild(style);
+    // Disable Y-axis scrolling on the page when map is loaded
+    document.body.style.overflowY = 'hidden';
+    
     return () => {
-      document.head.removeChild(style);
+      // Re-enable Y-axis scrolling when leaving the map page
+      document.body.style.overflowY = 'auto';
     };
   }, []);
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<{ [key: string]: L.Marker }>({});
   const [users, setUsers] = useState<UserLocation[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch users
+  // Debounced search function
+  const debouncedSearch = useCallback(async (query: string) => {
+    setSearchLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Always search ALL users (including those without locations)
+      const response = await fetch('http://localhost:5000/api/dashboard/all-users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const data = await response.json();
+      if (data.success && data.data && data.data.users) {
+        let allUsers = data.data.users;
+        
+        // Client-side filtering if there's a search query
+        if (query.trim()) {
+          const searchTerm = query.trim().toLowerCase();
+          allUsers = allUsers.filter((user: any) => 
+            user.username?.toLowerCase().includes(searchTerm) ||
+            user.firstName?.toLowerCase().includes(searchTerm) ||
+            user.lastName?.toLowerCase().includes(searchTerm) ||
+            user.fullName?.toLowerCase().includes(searchTerm) ||
+            user.location?.city?.toLowerCase().includes(searchTerm) ||
+            user.location?.country?.toLowerCase().includes(searchTerm)
+          );
+        }
+        
+        setFilteredUsers(allUsers);
+      }
+    } catch (err) {
+      console.error('Search error:', err);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, []);
+
+  // Handle search input with 300ms debounce
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    searchTimeoutRef.current = setTimeout(() => {
+      debouncedSearch(value);
+    }, 300);
+  };
+
+  // Fetch initial users
   useEffect(() => {
     const fetchUsers = async () => {
-      console.log('=== FETCHING USERS ===');
       try {
         const token = localStorage.getItem('token');
-        console.log('Token exists:', !!token);
-        
-        const response = await fetch('http://localhost:5000/api/profile/map-users', {
+        const response = await fetch('http://localhost:5000/api/dashboard/all-users', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        console.log('API Response Status:', response.status);
         const data = await response.json();
-        console.log('API Response Data:', data);
-
         if (data.success && data.data && data.data.users) {
-          console.log('SUCCESS: Using real users from API:', data.data.users.length);
-          console.log('First user sample:', data.data.users[0]);
           setUsers(data.data.users);
+          setFilteredUsers(data.data.users);
         } else {
-          console.log('API FAILED: Using fallback demo users');
           throw new Error('API response invalid');
         }
       } catch (err) {
         console.error('ERROR fetching users:', err);
-        console.log('FALLBACK: Creating demo users...');
-        // For demo, create some fake users if API fails
-        const demoUsers = [
-          {
-            _id: '1',
-            firstName: 'Demo',
-            lastName: 'User',
-            fullName: 'Demo User',
-            location: { latitude: 47.3769, longitude: 8.5417, city: 'Zurich', country: 'Switzerland' },
-            bio: 'Demo user from Zurich',
-            memberSince: '2024-01-01'
-          },
-          {
-            _id: '2', 
-            firstName: 'Test',
-            lastName: 'Person',
-            fullName: 'Test Person',
-            location: { latitude: 51.5074, longitude: -0.1278, city: 'London', country: 'UK' },
-            bio: 'Test user from London',
-            memberSince: '2024-01-01'
-          }
-        ];
-        console.log('FALLBACK: Demo users created:', demoUsers.length);
-        setUsers(demoUsers);
+        // Don't show fallback demo users - just show empty map
+        setUsers([]);
+        setFilteredUsers([]);
       } finally {
-        console.log('=== FETCH COMPLETE ===');
         setLoading(false);
       }
     };
@@ -158,354 +221,185 @@ const Map: React.FC = () => {
     fetchUsers();
   }, []);
 
+  // Map interaction handlers
+  const handleUserHover = useCallback((user: UserLocation) => {
+    if (mapInstanceRef.current && user.location?.latitude && user.location?.longitude) {
+      mapInstanceRef.current.panTo([user.location.latitude, user.location.longitude]);
+    }
+  }, []);
+
+  const handleUserLeave = useCallback(() => {
+    // Optional: Reset view or do nothing
+  }, []);
+
+  const handleUserClick = useCallback((user: UserLocation) => {
+    if (mapInstanceRef.current && user.location?.latitude && user.location?.longitude) {
+      const marker = markersRef.current[user._id];
+      if (marker) {
+        mapInstanceRef.current.setView([user.location.latitude, user.location.longitude], 8);
+        marker.openPopup();
+      }
+    }
+  }, []);
+
   // Initialize map
   useEffect(() => {
-    console.log('=== MAP INITIALIZATION EFFECT ===');
-    console.log('mapRef.current:', mapRef.current);
-    console.log('mapInstanceRef.current:', mapInstanceRef.current);
-    console.log('loading state:', loading);
-    console.log('mapReady state:', mapReady);
-    
-    if (loading) {
-      console.log('SKIP: Still loading users...');
-      return;
-    }
-    
-    if (!mapRef.current) {
-      console.log('WAITING: No mapRef.current yet...');
-      return;
-    }
-    
-    if (mapInstanceRef.current) {
-      console.log('SKIP: Map already exists');
-      return;
-    }
+    if (loading || !mapRef.current || mapInstanceRef.current) return;
 
-    console.log('STARTING: Map creation process...');
-    console.log('DOM element dimensions:', {
-      width: mapRef.current.offsetWidth,
-      height: mapRef.current.offsetHeight,
-      display: window.getComputedStyle(mapRef.current).display,
-      visibility: window.getComputedStyle(mapRef.current).visibility
-    });
-
-    // Add a small delay to ensure DOM is fully ready
     const timeout = setTimeout(() => {
       try {
-        console.log('TIMEOUT FIRED: Creating map instance...');
-        console.log('mapRef.current at timeout:', mapRef.current);
+        if (!mapRef.current) return;
         
-        if (!mapRef.current) {
-          console.error('FATAL: mapRef.current is null at timeout!');
-          return;
-        }
-        
-        console.log('CREATING MAP: Starting L.map() call...');
-        
-        const map = L.map(mapRef.current!, {
-            zoomControl: true,
-            attributionControl: true,
-            minZoom: 3,
-            maxZoom: 18,
-            worldCopyJump: true,
-            maxBounds: L.latLngBounds([[-85, -170], [85, 170]]),
-            maxBoundsViscosity: 1
-          });
+        const map = L.map(mapRef.current, {
+          zoomControl: true,
+          attributionControl: true,
+          minZoom: 3,
+          maxZoom: 18,
+          worldCopyJump: true,
+          maxBounds: L.latLngBounds([[-85, -Infinity], [85, Infinity]]),
+          maxBoundsViscosity: 1
+        });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            keepBuffer: 50,
-            bounds: L.latLngBounds([[-85, -170], [85, 170]]),
-        }).addTo(map);
+        // Remove default attribution and add our own without flags
+        map.attributionControl.setPrefix('');
         
-        console.log('MAP OBJECT CREATED:', map);
-        console.log('Map container HTML:', map.getContainer());
-        console.log('Map size before setView:', map.getSize());
-        
-        // Set view to center of world with safer coordinates
-        console.log('SETTING VIEW: [30, 0] zoom 2...');
-        map.setView([30, 0], 2);
-        console.log('VIEW SET SUCCESS');
-        console.log('Map size after setView:', map.getSize());
-        console.log('Map center:', map.getCenter());
-        console.log('Map zoom:', map.getZoom());
-        console.log('Map bounds:', map.getBounds());
-
-        console.log('ADDING: Tile layer...');
-      
-      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        className: 'map-tiles',
-        maxZoom: 18,
-        keepBuffer: 20,          // Increased from default (5)
-        updateWhenIdle: false,   // Load tiles immediately
-        updateInterval: 50,      // Faster loading
-        bounds: L.latLngBounds([[-90, -180], [90, 180]]) // Full world bounds
-      }).addTo(map);
-        
-        console.log('TILE LAYER CREATED:', tileLayer);
-        
-        // Add tile layer event listeners with more detail
-        tileLayer.on('loading', () => {
-          console.log('TILES: Loading started...');
+        const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+          className: 'map-tiles',
+          maxZoom: 18,
+          keepBuffer: 20,
+          updateWhenIdle: false,
+          updateInterval: 50,
+          bounds: L.latLngBounds([[-90, -180], [90, 180]])
         });
         
-        tileLayer.on('load', () => {
-          console.log('TILES: Loading completed ✓');
-        });
-        
-        tileLayer.on('tileerror', (e: any) => {
-          console.error('TILES ERROR DETAILED:', {
-            error: e.error,
-            tile: e.tile,
-            coords: e.coords,
-            url: e.tile?.src,
-            message: e.error?.message
-          });
-        });
-        
-        tileLayer.on('tileload', (e: any) => {
-          console.log('TILE LOADED:', {
-            coords: e.coords,
-            url: e.tile?.src
-          });
-        });
-        
-        console.log('ADDING TILE LAYER TO MAP...');
         tileLayer.addTo(map);
-        console.log('SUCCESS: Tile layer added ✓');
-
-        // Store map instance
+        map.setView([30, 0], 2);
         mapInstanceRef.current = map;
-        console.log('SUCCESS: Map instance stored in ref ✓');
         
-        // Force map to resize and mark as ready
         setTimeout(() => {
-          console.log('FINAL SETUP: Invalidating map size...');
-          try {
-            map.invalidateSize();
-            console.log('RESIZE: Map size invalidated ✓');
-            console.log('RESIZE: New map size:', map.getSize());
-            console.log('RESIZE: Final map center:', map.getCenter());
-            console.log('RESIZE: Final map zoom:', map.getZoom());
-            
-            // Mark map as ready for markers
-            console.log('MAP READY: Setting mapReady to true...');
-            setMapReady(true);
-            console.log('MAP READY: State updated ✓');
-            
-          } catch (resizeError) {
-            console.error('RESIZE ERROR:', resizeError);
-          }
-        }, 0);
-        
-        console.log('=== MAP INIT COMPLETE ===');
+          map.invalidateSize();
+          setMapReady(true);
+        }, 100);
 
       } catch (error) {
-        console.error('FATAL ERROR creating map:', error);
-        console.error('Error stack:', (error as Error).stack);
-        console.error('Error name:', (error as Error).name);
-        console.error('Error message:', (error as Error).message);
+        console.error('Error creating map:', error);
       }
-    }, 0);
+    }, 100);
 
     return () => {
-      console.log('CLEANUP: Map initialization effect cleanup...');
       clearTimeout(timeout);
       if (mapInstanceRef.current) {
         try {
-          console.log('CLEANUP: Removing map instance...');
           mapInstanceRef.current.remove();
           mapInstanceRef.current = null;
           setMapReady(false);
-          console.log('CLEANUP: Map removed ✓');
-        } catch (cleanupError) {
-          console.error('CLEANUP ERROR:', cleanupError);
+          markersRef.current = {};
+        } catch (error) {
+          console.error('Error cleaning up map:', error);
         }
       }
     };
-  }, [loading]); // Only depend on loading
+  }, [loading]);
 
-  // Add markers - FIXED: Now depends on both users AND mapReady
+  // Add markers for users
   useEffect(() => {
-    console.log('=== ADD MARKERS EFFECT ===');
-    console.log('mapReady:', mapReady);
-    console.log('Map instance exists:', !!mapInstanceRef.current);
-    console.log('Users array length:', users.length);
-    console.log('Users array:', users);
-    
-    if (!mapReady) {
-      console.log('SKIP: Map not ready yet');
-      return;
-    }
-    
-    if (!mapInstanceRef.current) {
-      console.log('ERROR: mapReady=true but no map instance!');
-      return;
-    }
-    
-    if (users.length === 0) {
-      console.log('SKIP: No users to display');
-      return;
-    }
+    if (!mapReady || !mapInstanceRef.current || users.length === 0) return;
 
     const map = mapInstanceRef.current;
-    console.log('MAP READY FOR MARKERS - Starting marker creation...');
-    console.log('Map state:', {
-      center: map.getCenter(),
-      zoom: map.getZoom(),
-      size: map.getSize(),
-      bounds: map.getBounds()
+    
+    // Clear existing markers
+    Object.values(markersRef.current).forEach(marker => {
+      map.removeLayer(marker);
+    });
+    markersRef.current = {};
+
+    // Create red marker icon
+    const redIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
     });
 
-    // Clear existing markers first
-    console.log('CLEARING existing markers...');
-    let clearedCount = 0;
-    try {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          console.log('Removing existing marker at:', layer.getLatLng());
-          map.removeLayer(layer);
-          clearedCount++;
-        }
-      });
-      console.log(`CLEARED ${clearedCount} existing markers`);
-    } catch (error) {
-      console.error('ERROR clearing markers:', error);
-    }
+    // Add markers for valid users
+    users.forEach((user) => {
+      if (!user.location || typeof user.location.latitude !== 'number' || typeof user.location.longitude !== 'number') {
+        return;
+      }
 
-    // Create red marker icon with enhanced logging
-    console.log('CREATING marker icon...');
-    let redIcon;
-    try {
-      redIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      });
-      console.log('SUCCESS: Red icon created:', redIcon);
-    } catch (error) {
-      console.error('ERROR creating red icon:', error);
-      return;
-    }
+      const { latitude, longitude } = user.location;
+      if (isNaN(latitude) || isNaN(longitude) || 
+          latitude < -90 || latitude > 90 || 
+          longitude < -180 || longitude > 180) {
+        return;
+      }
 
-    // Add markers for each user with enhanced validation
-    console.log(`ADDING markers for ${users.length} users...`);
-    let successCount = 0;
-    let errorCount = 0;
-    const validUsers: UserLocation[] = [];
-    
-    // Pre-validate all users first
-    console.log('=== PRE-VALIDATION PHASE ===');
-    users.forEach((user, index) => {
-      console.log(`Validating user ${index + 1}: ${user.fullName}`);
-      
-      if (!user.location) {
-        console.error(`❌ User ${user.fullName} has no location object`);
-        return;
-      }
-      
-      const { latitude, longitude, city, country } = user.location;
-      console.log(`Coordinates: lat=${latitude}, lng=${longitude}, type=${typeof latitude}/${typeof longitude}`);
-      
-      if (typeof latitude !== 'number' || typeof longitude !== 'number') {
-        console.error(`❌ Invalid coordinate types for ${user.fullName}`);
-        return;
-      }
-      
-      if (isNaN(latitude) || isNaN(longitude)) {
-        console.error(`❌ NaN coordinates for ${user.fullName}`);
-        return;
-      }
-      
-      if (latitude < -90 || latitude > 90) {
-        console.error(`❌ Latitude out of range for ${user.fullName}: ${latitude}`);
-        return;
-      }
-      
-      if (longitude < -180 || longitude > 180) {
-        console.error(`❌ Longitude out of range for ${user.fullName}: ${longitude}`);
-        return;
-      }
-      
-      console.log(`✅ User ${user.fullName} coordinates valid`);
-      validUsers.push(user);
-    });
-    
-    console.log(`PRE-VALIDATION COMPLETE: ${validUsers.length}/${users.length} users valid`);
-    
-    // Create markers for valid users
-    console.log('=== MARKER CREATION PHASE ===');
-    validUsers.forEach((user, index) => {
-      console.log(`\n--- CREATING MARKER ${index + 1}/${validUsers.length} ---`);
-      console.log(`User: ${user.fullName}`);
-      
       try {
-        const { latitude, longitude, city, country } = user.location;
-        console.log(`Creating marker at [${latitude}, ${longitude}]`);
+        const marker = L.marker([latitude, longitude], { icon: redIcon });
         
-        // Create popup content
-        const popupContent = `
+        // Create React-rendered popup content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = `
           <div class="p-3 min-w-[200px] bg-white dark:bg-gray-800">
             <div class="flex items-center mb-2">
-              <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-                <span class="text-white font-bold text-lg">${user.firstName[0]}${user.lastName[0]}</span>
+              <div class="w-12 h-12 rounded-full mr-3 flex-shrink-0 overflow-hidden">
+                ${user.avatar ? `
+                  <img 
+                    src="${user.avatar}" 
+                    alt="${user.fullName}"
+                    class="w-full h-full object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                  />
+                  <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center" style="display: none;">
+                    <span class="text-white font-bold text-lg">${user.firstName[0]}${user.lastName[0]}</span>
+                  </div>
+                ` : `
+                  <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">${user.firstName[0]}${user.lastName[0]}</span>
+                  </div>
+                `}
               </div>
-              <div>
-                <h3 class="m-0 font-bold text-gray-900 dark:text-gray-100">${user.fullName}</h3>
-                <p class="m-0 text-sm text-gray-600 dark:text-gray-300">${city}${country ? `, ${country}` : ''}</p>
+              <div class="flex flex-col justify-center">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100">${user.fullName}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                  ${user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
+                </p>
               </div>
             </div>
             ${user.bio ? `<p class="my-2 text-sm text-gray-700 dark:text-gray-200">${user.bio}</p>` : ''}
-            <p class="mt-1 mb-0 text-xs text-gray-500 dark:text-gray-400">Member since ${new Date(user.memberSince).toLocaleDateString()}</p>
+            <p class="mt-1 mb-0 text-xs text-gray-500 dark:text-gray-400 text-right">
+              Member since ${new Date(user.memberSince).toLocaleDateString()}
+            </p>
+            ${user.username ? `
+              <div class="mt-2 text-right">
+                <a 
+                  href="/userspace/${user.username}/profile"
+                  class="profile-link inline-block px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-md transition-colors duration-200"
+                >
+                  View Profile
+                </a>
+              </div>
+            ` : ''}
           </div>
         `;
         
-        // Create marker
-        console.log('Creating L.marker instance...');
-        const marker = L.marker([latitude, longitude], { icon: redIcon });
-        console.log('Marker instance created:', marker);
+        marker.bindPopup(tempDiv.innerHTML, { 
+          maxWidth: 300,
+          className: 'custom-popup'
+        });
         
-        console.log('Adding marker to map...');
         marker.addTo(map);
-        console.log('Marker added to map ✅');
-        
-        console.log('Binding popup...');
-        marker.bindPopup(popupContent);
-        console.log('Popup bound ✅');
-        
-        console.log(`✅ SUCCESS: Marker ${index + 1} completed for ${user.fullName}`);
-        successCount++;
+        markersRef.current[user._id] = marker;
         
       } catch (error) {
-        console.error(`❌ ERROR adding marker for ${user.fullName}:`, error);
-        console.error('Error details:', (error as Error).stack);
-        errorCount++;
+        console.error(`Error adding marker for ${user.fullName}:`, error);
       }
     });
     
-    console.log(`\n=== FINAL MARKER SUMMARY ===`);
-    console.log(`✅ SUCCESS: ${successCount} markers added`);
-    console.log(`❌ ERRORS: ${errorCount} failed`);
-    console.log(`📊 VALID: ${validUsers.length}/${users.length} users had valid coordinates`);
-    console.log('=== MARKERS COMPLETE ===\n');
-    
-    // Final map state check
-    console.log('=== FINAL MAP STATE ===');
-    try {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          console.log('Final marker found at:', layer.getLatLng());
-        }
-      });
-    } catch (error) {
-      console.error('Error checking final map state:', error);
-    }
-    
-  }, [users, mapReady]); // FIXED: Depend on both users AND mapReady
+  }, [users, mapReady]);
 
   if (loading) {
     return (
@@ -517,7 +411,7 @@ const Map: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-[93vh] flex flex-col">
       {/* Disclaimer */}
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
         <div className="flex items-center space-x-2 max-w-7xl mx-auto">
@@ -528,29 +422,88 @@ const Map: React.FC = () => {
         </div>
       </div>
 
-      {/* Map Container */}
-      <div className="flex-1 relative">
-        <div ref={mapRef} className="w-full h-full" />
-        
-        {/* Status overlays */}
-        <div className="absolute top-4 right-4 space-y-2 z-[1000]">
-          {/* User count */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
-            <div className="flex items-center space-x-2">
-              <MapPinIcon className="w-5 h-5 text-red-500" />
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                {users.length} Users Worldwide
-              </span>
+      {/* Main Content */}
+      <div className="flex-1 flex relative min-h-0">
+        {/* Sidebar */}
+        <div className="w-96 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg z-[1000] h-full">
+          <div className="h-full flex flex-col">
+            {/* Search Header */}
+            <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  placeholder="Search by name, username, or location..."
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                />
+                {searchLoading && (
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Users List */}
+            <div className="flex-1 overflow-y-auto min-h-0">
+              {filteredUsers.length === 0 ? (
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                  {searchQuery ? 'No users found matching your search.' : 'No users to display.'}
+                </div>
+              ) : (
+                <div>
+                  {filteredUsers.map((user) => (
+                    <UserCard
+                      key={user._id}
+                      user={user}
+                      onHover={handleUserHover}
+                      onLeave={handleUserLeave}
+                      onClick={handleUserClick}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Results Count */}
+            <div className="flex-shrink-0 p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
+                {searchQuery && ` for "${searchQuery}"`}
+              </p>
             </div>
           </div>
+        </div>
+
+
+        {/* Map Container */}
+        <div className="flex-1 relative">
+          <div ref={mapRef} className="w-full h-full" />
           
-          {/* Map status */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${mapReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                Map {mapReady ? 'Ready' : 'Loading'}
-              </span>
+          {/* Status overlays */}
+          <div className="absolute top-4 right-4 space-y-2 z-[1000]">
+            {/* User count */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
+              <div className="flex items-center space-x-2">
+                <MapPinIcon className="w-5 h-5 text-red-500" />
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {users.filter(u => u.location?.latitude && u.location?.longitude).length} Users on Map
+                </span>
+              </div>
+            </div>
+            
+            {/* Map status */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
+              <div className="flex items-center space-x-2">
+                <div className={`w-3 h-3 rounded-full ${mapReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  Map {mapReady ? 'Ready' : 'Loading'}
+                </span>
+              </div>
             </div>
           </div>
         </div>

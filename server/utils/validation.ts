@@ -408,6 +408,11 @@ export const skillSchemas = {
  */
 export const profileSchemas = {
   update: Joi.object({
+    username: Joi.string()
+      .trim()
+      .min(1)
+      .max(30)
+      .optional(),
     firstName: Joi.string()
       .trim()
       .min(1)
@@ -426,7 +431,27 @@ export const profileSchemas = {
     avatar: Joi.string()
       .uri()
       .allow('')
-      .optional()
+      .optional(),
+    location: Joi.object({
+      latitude: Joi.number()
+        .min(-90)
+        .max(90)
+        .optional(),
+      longitude: Joi.number()
+        .min(-180)
+        .max(180)
+        .optional(),
+      city: Joi.string()
+        .trim()
+        .max(100)
+        .allow('')
+        .optional(),
+      country: Joi.string()
+        .trim()
+        .max(100)
+        .allow('')
+        .optional()
+    }).optional()
   }),
 
   changePassword: Joi.object({
