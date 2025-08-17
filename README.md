@@ -1,7 +1,97 @@
-# MERN Stack Application
+# 🌐 DevHub - MERN Portfolio Application
 
-This is a full-stack MERN (MongoDB, Express, React, Node.js) application with Docker containerization.
-Yet it also contains a postgresql database for demonstration.
+> A full-stack developer portfolio platform showcasing modern web development practices
+
+## 👨‍💻 Author & License
+
+**Created by:** Pascal Bossert (pascalbossertofficial)  
+**GitHub:** [@bizpropb](https://github.com/bizpropb?tab=repositories)  
+**Originally Created:** July 25th, 2025  
+**Signed:** August 17th, 2025  
+
+### 📜 License & Usage Notice
+
+**All Rights Reserved © 2025 Pascal Bossert**
+
+This repository serves as a **personal portfolio showcase** to demonstrate my full-stack development skills to potential employers and recruiters. 
+
+**Please respect the purpose of this project:**
+- ✅ Feel free to view, learn from, and fork for educational purposes
+- ✅ Use as inspiration for your own projects  
+- ❌ **Please do not re-upload or claim this work as your own**
+- ❌ **Do not use this exact codebase as your portfolio**
+
+If you're a recruiter or employer reviewing this code, thank you for taking the time to explore my work! This project demonstrates my capabilities with the MERN stack, TypeScript, Docker, and modern development practices.
+
+For any questions or collaboration opportunities, please reach out via GitHub or professional networks.
+
+---
+
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.x-47A248?logo=mongodb&logoColor=white)](https://mongodb.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://docker.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+
+## ✨ What is DevHub?
+
+DevHub is a **modern developer portfolio platform** where developers can showcase their skills, projects, and connect with others in the community. Think of it as a social network for developers with portfolio management, interactive world map, and real-time features.
+
+### 🚀 Key Features
+
+- **👤 Dynamic User Profiles** - Customizable developer portfolios with skills, bio, and projects
+- **🗺️ Interactive World Map** - Discover developers globally with Leaflet.js integration  
+- **📊 Personal Dashboard** - Track your projects, views, and engagement metrics
+- **🎯 Skills Management** - Showcase your technical expertise with visual skill levels
+- **📱 Responsive Design** - Seamless experience across desktop and mobile devices
+- **🌙 Dark/Light Mode** - User preference theming with system detection
+- **🔐 Secure Authentication** - JWT-based auth with password encryption
+
+### 🛠️ Tech Stack Highlights
+
+This project demonstrates proficiency in modern full-stack development:
+
+**Frontend:**
+- ⚛️ React 18 with TypeScript for type-safe component development
+- 🎨 Tailwind CSS for utility-first responsive styling
+- 🗺️ Leaflet.js for interactive mapping functionality
+- 🚦 React Router for client-side navigation
+
+**Backend:**
+- 🟢 Node.js with Express.js RESTful API architecture
+- 🍃 MongoDB with Mongoose ODM for flexible data modeling
+- 🔒 JWT authentication with bcrypt password hashing
+- 📊 RESTful endpoints with proper HTTP status codes
+
+**DevOps & Tools:**
+- 🐳 Docker containerization with multi-stage builds
+- 🔧 Development and production environment configurations
+- 📦 Automated database seeding and initialization
+- 🛠️ Comprehensive development tooling setup
+
+---
+
+## 💼 Portfolio Demo
+
+This application serves as both a **functional platform** and a **comprehensive code demonstration** of modern MERN stack development practices, including Docker containerization, responsive design, and scalable architecture patterns.
+
+*Note: PostgreSQL is included in the stack for polyglot database demonstration purposes.*
+
+
+```
+━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━
+
+███████╗███████╗████████╗██╗   ██╗██████╗ 
+██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
+███████╗█████╗     ██║   ██║   ██║██████╔╝
+╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝ 
+███████║███████╗   ██║   ╚██████╔╝██║     
+╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝     
+                                          
+━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━━━━━⊱⋆⊰━━━━
+```
+
 
 Hit CTRL + SHIFT + V to open the .md-formatter for VS CODE.
 
@@ -61,4 +151,7 @@ docker-compose down # Stop all containers and delete them
 docker-compose down -v # Stop containers and remove volumes (if needed)
 docker container prune # Remove orphaned and stopped containers
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
+wsl --shutdown # Shutdown WSL to fix vmmem memory leaks (if needed)
+sleep 10 # Wait for WSL to fully shutdown
+# You need to fully quit docker desktop / the docker engine and restart it
 ```
