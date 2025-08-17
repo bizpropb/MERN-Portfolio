@@ -17,9 +17,10 @@ import { connectDB } from './config/database';
 import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
 import skillRoutes from './routes/skills';
-import profileRoutes from './routes/profile';
+import userRoutes from './routes/user';
 import uploadRoutes from './routes/uploads';
 import commentsRoutes from './routes/comments';
+import newsRoutes from './routes/news';
 
 // Import swagger configuration
 import swaggerSpec from './config/swagger';
@@ -41,8 +42,8 @@ connectDB().catch(error => {
  * Protects against brute force and denial of service attacks
  */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 1200, // Limit each IP to 1200 requests per 10 minutes (120 per minute)
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -72,9 +73,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use('/api/auth', authRoutes);      // Authentication routes (login, register, etc.)
 app.use('/api/projects', projectRoutes); // Project management routes
 app.use('/api/skills', skillRoutes);    // Skill management routes
-app.use('/api/profile', profileRoutes); // User profile routes
+app.use('/api/dashboard', userRoutes); // User dashboard routes
+app.use('/api/user', userRoutes); // Username-based routes for user dashboards
 app.use('/api/comments', commentsRoutes); // Comments management routes
 app.use('/api/upload', uploadRoutes); // Upload management routes
+app.use('/api/news', newsRoutes); // News management routes
 
 /**
  * Health check endpoint

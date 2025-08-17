@@ -1,3 +1,5 @@
+// User model - governs profile and dashboard features for user data management
+// Handles user authentication, profile information, location data, and account settings
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
@@ -8,6 +10,7 @@ import bcrypt from 'bcryptjs';
  * @property {Types.ObjectId} _id - Unique identifier for the user
  * @property {string} email - User's email address (must be unique)
  * @property {string} password - Hashed password
+ * @property {string} [username] - Unique username for URL routing (optional for backward compatibility)
  * @property {string} firstName - User's first name
  * @property {string} lastName - User's last name
  * @property {string} [bio] - Short biography (optional)
@@ -30,6 +33,7 @@ export interface IUser extends Document {
   _id: Types.ObjectId;
   email: string;
   password: string;
+  username?: string;
   firstName: string;
   lastName: string;
   bio?: string;
@@ -65,6 +69,20 @@ const UserSchema = new Schema<IUser>({
     lowercase: true,
     trim: true,
     match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+  },
+  /**
+   * Unique username for URL routing
+   */
+  username: {
+    type: String,
+    required: false,
+    unique: true,
+    sparse: true,
+    lowercase: true,
+    trim: true,
+    minlength: [3, 'Username must be at least 3 characters'],
+    maxlength: [30, 'Username cannot exceed 30 characters'],
+    match: [/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, hyphens, and underscores']
   },
   /**
    * Hashed password
@@ -177,7 +195,7 @@ const UserSchema = new Schema<IUser>({
 });
 
 // Define indexes for optimized querying
-UserSchema.index({ email: 1 }); // For fast lookups by email
+// Note: email and username already have unique indexes from field definitions
 UserSchema.index({ createdAt: -1 }); // For sorting users by creation date
 UserSchema.index({ 'location.latitude': 1, 'location.longitude': 1 }); // For geospatial queries
 

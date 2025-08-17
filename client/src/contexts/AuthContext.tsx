@@ -3,15 +3,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface User {
   id: string;
   email: string;
+  username?: string;
   firstName: string;
   lastName: string;
   role: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   loading: boolean;
 }
@@ -40,7 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const savedToken = localStorage.getItem('token');
       if (savedToken) {
         try {
-          const response = await fetch('http://localhost:5000/api/profile', {
+          const response = await fetch('http://localhost:5000/api/dashboard', {
             headers: { Authorization: `Bearer ${savedToken}` }
           });
           
@@ -64,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -80,12 +82,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(data.data.user);
         setToken(data.data.token);
         localStorage.setItem('token', data.data.token);
-        return true;
+        return { success: true };
       }
-      return false;
+      
+      // Return the specific error message from the server
+      return { success: false, message: data.message || 'Login failed' };
+      
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      return { success: false, message: 'Network error occurred' };
     }
   };
 

@@ -52,7 +52,7 @@ export const getProjectComments = async (req: Request, res: Response) => {
       isPublic: true,
       parentCommentId: { $exists: false }
     })
-    .populate('userId', 'firstName lastName')
+    .populate('userId', 'username')
     .sort({ createdAt: -1 })
     .limit(Number(limit) * Number(page))
     .skip((Number(page) - 1) * Number(limit));
@@ -61,7 +61,7 @@ export const getProjectComments = async (req: Request, res: Response) => {
     const commentsWithReplies = await Promise.all(
       comments.map(async (comment) => {
         const replies = await Comment.find({ parentCommentId: comment._id })
-          .populate('userId', 'firstName lastName')
+          .populate('userId', 'username')
           .sort({ createdAt: 1 });
         
         return {
@@ -185,7 +185,7 @@ export const createComment = async (req: AuthRequest, res: Response) => {
     });
 
     await comment.save();
-    await comment.populate('userId', 'firstName lastName');
+    await comment.populate('userId', 'username');
 
     res.status(201).json({
       success: true,
@@ -275,7 +275,7 @@ export const updateComment = async (req: AuthRequest, res: Response) => {
     }
 
     await comment.save();
-    await comment.populate('userId', 'firstName lastName');
+    await comment.populate('userId', 'username');
 
     res.json({
       success: true,
@@ -330,7 +330,7 @@ export const updateComment = async (req: AuthRequest, res: Response) => {
 export const getRecentComments = async (req: AuthRequest, res: Response) => {
   try {
     const comments = await Comment.find({ isPublic: true })
-      .populate('userId', 'firstName lastName')
+      .populate('userId', 'username')
       .populate('projectId', 'title')
       .sort({ createdAt: -1 })
       .limit(5);
