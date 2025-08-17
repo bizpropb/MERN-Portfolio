@@ -44,6 +44,7 @@ echo "   >>⚠️  Ports aren't auto-synced with compose.yaml, when in doubt loo
 echo ""
 echo "🔧 Quick Commands:"
 echo "   docker ps -a                       # List all containers (check if something broke)"
+echo "   docker logs mern-server             # View server logs (change name to any container)"
 echo "   docker-compose logs -f             # Follow the logs (display and update logs in realtime)"
 echo "   netstat -ano | findstr :5000       # Check if port (5000) is in use"  
 echo "   >>⚠️  compose.prod container will try to auto-restart and claim ports - Keep in mind when 'npm run dev'"
