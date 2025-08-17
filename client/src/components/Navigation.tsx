@@ -6,13 +6,14 @@ import {
   ChartBarIcon, 
   FolderIcon, 
   WrenchScrewdriverIcon, 
-  PlusIcon,
   UserIcon,
-  MapIcon
+  MagnifyingGlassIcon,
+  HomeIcon,
+  MapIcon,
+  NewspaperIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useDarkMode } from '../contexts/DarkModeContext';
-import ProjectCreateModal from './ProjectCreateModal';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 interface Project {
@@ -43,15 +44,19 @@ const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useDarkMode();
   const location = useLocation();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   
-  const isActive = (path: string) => location.pathname === path;
-
-  const handleProjectCreate = (newProject: Project) => {
-    // You can add any additional logic here if needed
-    // The modal will handle closing itself and showing success message
-    console.log('New project created:', newProject);
+  const isActive = (path: string) => {
+    if (path === '/news') {
+      return location.pathname.startsWith('/news');
+    }
+    return location.pathname === path;
   };
+  
+  // Always route to logged-in user's own profile
+  const getMyProfilePath = () => {
+    return user?.username ? `/myuserspace/${user.username}/profile` : '/profile';
+  };
+
 
   return (
     <>
@@ -60,94 +65,92 @@ const Navigation: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                DevHub Demo
+                DevHub
               </Link>
               
               <div className="hidden md:flex space-x-6">
                 <Link
-                  to="/dashboard"
+                  to="/"
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/dashboard')
+                    isActive('/')
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
                       : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <ChartBarIcon className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  <HomeIcon className="w-4 h-4" />
+                  <span>Home</span>
                 </Link>
                 <Link
-                  to="/projects"
+                  to="/news"
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/projects')
+                    isActive('/news')
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
                       : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <FolderIcon className="w-4 h-4" />
-                  <span>Projects</span>
+                  <NewspaperIcon className="w-4 h-4" />
+                  <span>News</span>
                 </Link>
                 <Link
-                  to="/skills"
+                  to="/browse"
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/skills')
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <WrenchScrewdriverIcon className="w-4 h-4" />
-                  <span>Skills</span>
-                </Link>
-                <Link
-                  to="/map"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/map')
+                    isActive('/browse')
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
                       : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <MapIcon className="w-4 h-4" />
-                  <span>Map</span>
+                  <span>User Map</span>
                 </Link>
-                <Link
-                  to="/profile"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/profile')
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <UserIcon className="w-4 h-4" />
-                  <span>Profile</span>
-                </Link>
-                <button
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <PlusIcon className="w-4 h-4" />
-                  <span>New Project</span>
-                </button>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDark ? (
-                  <SunIcon className="w-5 h-5 text-white" />
-                ) : (
-                  <MoonIcon className="w-5 h-5 text-gray-700" />
-                )}
-              </button>
 
               {user && (
                 <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">
-                    Welcome, {user.firstName}!
-                  </span>
+                  <Link
+                    to={getMyProfilePath()}
+                    className="text-sm font-bold italic text-purple-500 hidden sm:block hover:text-purple-400 transition-colors"
+                  >
+                    {user.username.toUpperCase()}
+                  </Link>
+
+                  <Link
+                    to={getMyProfilePath()}
+                    className="rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center"
+                    title={`${user.firstName} ${user.lastName}`}
+                  >
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        className="w-9 h-9 rounded-full object-cover"
+                        onError={(e) => {
+                          // Fallback to initials if image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-md italic font-bold text-gray-600 dark:text-gray-300  ${user.avatar ? 'hidden' : ''}`}>
+                      {user.firstName.charAt(0).toUpperCase()}
+                    </div>
+                  </Link>
+
+                  {/* Dark Mode Toggle */}
+                  <button
+                    onClick={toggleDarkMode}
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    aria-label="Toggle dark mode"
+                  >
+                    {isDark ? (
+                      <SunIcon className="w-5 h-5 text-white" />
+                    ) : (
+                      <MoonIcon className="w-5 h-5 text-gray-700" />
+                    )}
+                  </button>
 
                   <button
                     onClick={logout}
@@ -163,12 +166,6 @@ const Navigation: React.FC = () => {
         </div>
       </nav>
 
-      {/* Create Project Modal */}
-      <ProjectCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onProjectCreate={handleProjectCreate}
-      />
     </>
   );
 };
