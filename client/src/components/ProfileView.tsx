@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { UserIcon, PencilIcon, KeyIcon, TrashIcon, EyeIcon, HeartIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { useParams } from 'react-router-dom';
+import { UserIcon, PencilIcon, KeyIcon, TrashIcon, EyeIcon, HeartIcon, MapPinIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
+import ProfileEditModal from './ProfileEditModal';
+import ProfileChangePasswordModal from './ProfileChangePasswordModal';
+import { useAuth } from '../contexts/AuthContext';
 
 interface User {
   _id: string;
   email: string;
+  username: string;
   firstName: string;
   lastName: string;
   bio?: string;
@@ -45,12 +50,15 @@ interface RecentProject {
 }
 
 const ProfileView: React.FC = () => {
+  const { username } = useParams<{ username: string }>();
+  const { user: currentUser } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [stats, setStats] = useState<ProfileStats | null>(null);
   const [recentProjects, setRecentProjects] = useState<RecentProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState({
+    username: '',
     firstName: '',
     lastName: '',
     bio: '',
@@ -70,14 +78,23 @@ const ProfileView: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Check if the current user is viewing their own profile
+  const isOwnProfile = currentUser?.username === username;
+
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [username]);
 
   const fetchProfile = async () => {
     try {
+      if (!username) {
+        console.error('Username not provided');
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/profile', {
+      const response = await fetch(`http://localhost:5000/api/user/${username}/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -87,6 +104,7 @@ const ProfileView: React.FC = () => {
         setStats(data.data.stats);
         setRecentProjects(data.data.recentActivity?.projects || []);
         setEditData({
+          username: data.data.user.username,
           firstName: data.data.user.firstName,
           lastName: data.data.user.lastName,
           bio: data.data.user.bio || '',
@@ -115,23 +133,34 @@ const ProfileView: React.FC = () => {
       
       // Prepare the update data
       const updateData: any = {
+        username: editData.username,
         firstName: editData.firstName,
         lastName: editData.lastName,
         bio: editData.bio,
         avatar: editData.avatar
       };
 
-      // Only include location if latitude and longitude are provided
-      if (editData.location.latitude && editData.location.longitude) {
-        updateData.location = {
-          latitude: parseFloat(editData.location.latitude),
-          longitude: parseFloat(editData.location.longitude),
-          city: editData.location.city,
-          country: editData.location.country
-        };
+      // Handle location data
+      if (editData.location && editData.location.latitude && editData.location.longitude) {
+        // User has valid location data - convert strings to numbers
+        const lat = parseFloat(editData.location.latitude);
+        const lng = parseFloat(editData.location.longitude);
+        
+        if (!isNaN(lat) && !isNaN(lng)) {
+          updateData.location = {
+            latitude: lat,
+            longitude: lng,
+            city: editData.location.city || '',
+            country: editData.location.country || ''
+          };
+        }
+      } else if (editData.location && editData.location.latitude === '' && editData.location.longitude === '') {
+        // User wants to clear location - send empty object instead of null
+        updateData.location = {};
       }
+      // If location is undefined/null, don't include it (no change)
       
-      const response = await fetch('http://localhost:5000/api/profile', {
+      const response = await fetch('http://localhost:5000/api/dashboard', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +174,6 @@ const ProfileView: React.FC = () => {
       if (result.success) {
         setUser(result.data.user);
         setEditMode(false);
-        alert('Profile updated successfully!');
       } else {
         alert('Error updating profile: ' + result.message);
       }
@@ -169,7 +197,7 @@ const ProfileView: React.FC = () => {
       setIsSubmitting(true);
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:5000/api/profile/password', {
+      const response = await fetch('http://localhost:5000/api/dashboard/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -243,7 +271,7 @@ const ProfileView: React.FC = () => {
               <img
                 src={user.avatar}
                 alt={`${user.firstName} ${user.lastName}`}
-                className="w-24 h-24 rounded-full object-cover border-4 border-gradient-to-r from-cyan-500 to-purple-600"
+                className="w-24 h-24 rounded-full object-cover"
               />
             ) : (
               <div className="w-24 h-24 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -289,73 +317,82 @@ const ProfileView: React.FC = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col space-y-2">
-            <button
-              onClick={() => setEditMode(true)}
-              className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-md hover:from-cyan-600 hover:to-purple-700 transition-all duration-200"
-            >
-              <PencilIcon className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
-            <button
-              onClick={() => setPasswordMode(true)}
-              className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-            >
-              <KeyIcon className="w-4 h-4" />
-              <span>Change Password</span>
-            </button>
-          </div>
+          {/* Action Buttons - Only show for own profile */}
+          {isOwnProfile && (
+            <div className="flex flex-col space-y-2">
+              <button
+                onClick={() => setEditMode(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-900 text-purple-600 dark:text-purple-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
+              >
+                <PencilIcon className="w-4 h-4" />
+                <span>Edit Profile</span>
+              </button>
+              <button
+                onClick={() => setPasswordMode(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-900 text-purple-600 dark:text-purple-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
+              >
+                <KeyIcon className="w-4 h-4" />
+                <span>Change Password</span>
+              </button>
+              <button
+                onClick={() => setPasswordMode(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-900 text-purple-600 dark:text-purple-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
+              >
+                <EnvelopeIcon className="w-4 h-4" />
+                <span>Change Email</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <UserIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <UserIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalProjects}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total Projects</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Projects</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                <EyeIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <EyeIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalViews}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total Views</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Views</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
-                <HeartIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <HeartIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalLikes}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total Likes</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Likes</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <span className="text-purple-600 dark:text-purple-400 font-bold text-xl">★</span>
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <span className="text-gray-600 dark:text-gray-400 font-bold text-xl">★</span>
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.featuredProjects}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Featured Projects</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Featured</p>
               </div>
             </div>
           </div>
@@ -384,236 +421,28 @@ const ProfileView: React.FC = () => {
         </div>
       )}
 
-      {/* Edit Profile Modal */}
-      {editMode && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Edit Profile</h3>
-              <form onSubmit={handleUpdateProfile} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    value={editData.firstName}
-                    onChange={(e) => setEditData(prev => ({ ...prev, firstName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    value={editData.lastName}
-                    onChange={(e) => setEditData(prev => ({ ...prev, lastName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Bio
-                  </label>
-                  <textarea
-                    value={editData.bio}
-                    onChange={(e) => setEditData(prev => ({ ...prev, bio: e.target.value }))}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Tell us about yourself..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Avatar URL
-                  </label>
-                  <input
-                    type="url"
-                    value={editData.avatar}
-                    onChange={(e) => setEditData(prev => ({ ...prev, avatar: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="https://example.com/avatar.jpg"
-                  />
-                </div>
-
-                {/* Location Fields */}
-                <div className="border-t pt-4">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
-                    <MapPinIcon className="w-4 h-4 mr-2" />
-                    Location (Optional)
-                  </h4>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        Latitude
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="-90"
-                        max="90"
-                        value={editData.location.latitude}
-                        onChange={(e) => setEditData(prev => ({ 
-                          ...prev, 
-                          location: { ...prev.location, latitude: e.target.value }
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        placeholder="47.3769"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        Longitude
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="-180"
-                        max="180"
-                        value={editData.location.longitude}
-                        onChange={(e) => setEditData(prev => ({ 
-                          ...prev, 
-                          location: { ...prev.location, longitude: e.target.value }
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        placeholder="8.5417"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 mt-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        value={editData.location.city}
-                        onChange={(e) => setEditData(prev => ({ 
-                          ...prev, 
-                          location: { ...prev.location, city: e.target.value }
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        placeholder="Zurich"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        Country
-                      </label>
-                      <input
-                        type="text"
-                        value={editData.location.country}
-                        onChange={(e) => setEditData(prev => ({ 
-                          ...prev, 
-                          location: { ...prev.location, country: e.target.value }
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        placeholder="Switzerland"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex space-x-3 pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-md hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50 transition-all duration-200"
-                  >
-                    {isSubmitting ? 'Saving...' : 'Save Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditMode(false)}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      {/* Edit Profile Modal - Only for own profile */}
+      {isOwnProfile && (
+        <ProfileEditModal
+          isOpen={editMode}
+          onClose={() => setEditMode(false)}
+          editData={editData}
+          setEditData={setEditData}
+          onSubmit={handleUpdateProfile}
+          isSubmitting={isSubmitting}
+        />
       )}
 
-      {/* Change Password Modal */}
-      {passwordMode && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Change Password</h3>
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordData.currentPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                    minLength={6}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordData.confirmNewPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmNewPassword: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-
-                <div className="flex space-x-3 pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-md hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50 transition-all duration-200"
-                  >
-                    {isSubmitting ? 'Changing...' : 'Change Password'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPasswordMode(false)}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      {/* Change Password Modal - Only for own profile */}
+      {isOwnProfile && (
+        <ProfileChangePasswordModal
+          isOpen={passwordMode}
+          onClose={() => setPasswordMode(false)}
+          passwordData={passwordData}
+          setPasswordData={setPasswordData}
+          onSubmit={handleChangePassword}
+          isSubmitting={isSubmitting}
+        />
       )}
     </div>
   );
