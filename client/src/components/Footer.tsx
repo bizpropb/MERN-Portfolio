@@ -20,6 +20,14 @@ const Footer: React.FC = () => {
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
                 Full-Stack Developer passionate about modern web technologies and clean code architecture.
               </p>
+              <a 
+                href="https://github.com/bizpropb/MERN-Portfolio" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 dark:text-gray-400 mt-3 inline-block hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+              >
+                https://github.com/bizpropb/MERN-Portfolio
+              </a>
             </div>
             <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
               <span>© {currentYear} Pascal Bossert.</span>
@@ -37,16 +45,19 @@ const Footer: React.FC = () => {
               It represents a snapshot of technical capabilities.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-white text-xs rounded-full">
+              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-xs rounded-full">
                 React
               </span>
-              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-white text-xs rounded-full">
+              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-xs rounded-full">
                 TypeScript
               </span>
-              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-white text-xs rounded-full">
+              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-xs rounded-full">
                 Node.js
               </span>
-              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-white text-xs rounded-full">
+              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-xs rounded-full">
+                Express.js
+              </span>
+              <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-xs rounded-full">
                 MongoDB
               </span>
             </div>
@@ -58,7 +69,8 @@ const Footer: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Important Notice</h3>
               <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2 mt-3">
                 <div className="text-xs text-gray-600 dark:text-gray-400">
-                  This application is a demonstration project and not intended for production use. 
+                  This application is a demonstration project and not intended for production use.
+                  The application may use incomplete or insecure features for demonstration purposes.  
                   All data is for testing purposes only. No personal information is collected or stored. 
                   By using this demo, you acknowledge this is a portfolio showcase and not a commercial product.
                 </div>
