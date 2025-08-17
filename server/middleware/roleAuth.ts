@@ -89,12 +89,12 @@ export const checkOwnershipOrAdmin = (req: AuthRequest, res: Response, next: Nex
  * @limits 100 requests per 15 minutes per IP
  */
 export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 120, // Limit each IP to 120 requests per minute
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: '1 minute'
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -102,7 +102,7 @@ export const apiLimiter = rateLimit({
     res.status(429).json({
       success: false,
       message: 'Too many requests from this IP, please try again later.',
-      retryAfter: '15 minutes',
+      retryAfter: '1 minute',
       limit: 100,
       windowMs: 15 * 60 * 1000
     });
@@ -111,17 +111,17 @@ export const apiLimiter = rateLimit({
 
 /**
  * @const {rateLimit} authLimiter
- * @description Strict rate limiter for authentication endpoints
+ * @description Rate limiter for authentication endpoints (generous for demo)
  * Prevents brute force attacks on login and registration
- * @limits 5 requests per 15 minutes per IP
+ * @limits 50 requests per 15 minutes per IP
  */
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 auth requests per window
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // Limit each IP to 30 auth requests per minute
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: '1 minute'
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -130,7 +130,7 @@ export const authLimiter = rateLimit({
     res.status(429).json({
       success: false,
       message: 'Too many authentication attempts, please try again later.',
-      retryAfter: '15 minutes',
+      retryAfter: '1 minute',
       limit: 5,
       windowMs: 15 * 60 * 1000
     });
@@ -148,7 +148,7 @@ export const uploadLimiter = rateLimit({
   max: 20, // Limit each IP to 20 upload requests per hour
   message: {
     success: false,
-    message: 'Too many upload attempts, please try again later.',
+    message: 'Too many upload attempts, please try again later. ',
     retryAfter: '1 hour'
   },
   standardHeaders: true,
@@ -166,13 +166,13 @@ export const uploadLimiter = rateLimit({
 
 /**
  * @const {rateLimit} commentLimiter
- * @description Rate limiter for comment creation endpoints
+ * @description Rate limiter for comment creation endpoints (generous for demo)
  * Prevents spam and encourages thoughtful commenting
- * @limits 10 requests per 10 minutes per IP
+ * @limits 50 requests per 10 minutes per IP
  */
 export const commentLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 10, // Limit each IP to 10 comments per 10 minutes
+  max: 50, // Limit each IP to 50 comments per 10 minutes (generous for demo)
   message: {
     success: false,
     message: 'Too many comments submitted, please slow down.',

@@ -22,10 +22,10 @@ import { authSchemas } from '../utils/validation';
 // Initialize Express Router
 const router = express.Router();
 
-// Rate limiting for authentication endpoints to prevent brute force attacks
+// Rate limiting for authentication endpoints
 const authRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // 30 attempts per minute
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.'
@@ -34,10 +34,10 @@ const authRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
-// Stricter rate limiting for registration to prevent abuse
+// Rate limiting for registration (generous for demo/development)
 const registerRateLimit = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 3,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // 20 attempts per hour (much more generous)
   message: {
     success: false,
     message: 'Too many registration attempts, please try again later.'
