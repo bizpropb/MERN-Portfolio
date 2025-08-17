@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 
 // Initialize dark mode immediately to prevent flash
 (() => {
@@ -13,19 +13,23 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 
 // Context Providers
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Components
 import Navigation from './components/Navigation';
+import NavigationSubUserspace from './components/NavigationSubUserspace';
+import NavigationSubMyUserspace from './components/NavigationSubMyUserspace';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './components/Dashboard';
-import SkillsManager from './components/SkillRating';
+import SkillsManager from './components/SkillManager';
 import ProjectCreateModal from './components/ProjectCreateModal';
 import ProjectsList from './components/ProjectsList';
 import ProfileView from './components/ProfileView';
 import Map from './components/Map';
+import HomePage from './components/HomePage';
+import NewsView from './components/NewsView';
 
 
 // Particle System Component
@@ -142,6 +146,56 @@ const ParticleBackground: React.FC = () => {
   );
 };
 
+// Dashboard Redirect Component
+const DashboardRedirect: React.FC = () => {
+  const { user } = useAuth();
+  
+  if (!user || !user.username) {
+    return <div>Loading...</div>;
+  }
+  
+  return <Navigate to={`/myuserspace/${user.username}/dashboard`} replace />;
+};
+
+// Sub Navigation Component with conditional rendering
+const ConditionalSubNavigation: React.FC = () => {
+  const location = useLocation();
+  const { user } = useAuth();
+  
+  // Check if we're in userspace (viewing someone else)
+  const userspaceMatch = location.pathname.match(/^\/userspace\/([^\/]+)/);
+  if (userspaceMatch) {
+    const viewedUsername = userspaceMatch[1];
+    // If logged-in user is trying to view their own profile via /userspace/, redirect to /myuserspace/
+    if (user && viewedUsername === user.username) {
+      const currentPath = location.pathname.replace('/userspace/', '/myuserspace/');
+      window.location.replace(currentPath);
+      return null;
+    }
+    return <NavigationSubUserspace />;
+  }
+  
+  // Check if we're in my userspace
+  const myUserspaceMatch = location.pathname.match(/^\/myuserspace\/([^\/]+)/);
+  if (myUserspaceMatch && user) {
+    return <NavigationSubMyUserspace />;
+  }
+  
+  return null;
+};
+
+// Conditional Footer Component
+const ConditionalFooter: React.FC = () => {
+  const location = useLocation();
+  
+  // Hide footer on browse/map page
+  if (location.pathname === '/browse') {
+    return null;
+  }
+  
+  return <Footer />;
+};
+
 // Main App Component
 const App: React.FC = () => {
   return (
@@ -160,26 +214,40 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <Navigation />
+                    <ConditionalSubNavigation />
                     <main className="flex-1 py-0 relative">
                       <Routes>
-                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/projects" element={<ProjectsList />} />
-                        <Route path="/projects/new" element={<ProjectCreateModal isOpen={true} onClose={() => {}} onProjectCreate={() => {}} />} />
-                        <Route path="/skills" element={<SkillsManager />} />
-                        <Route path="/profile" element={<ProfileView />} />
-                        <Route path="/map" element={<Map />} />
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/browse" element={<Map />} />
+                        <Route path="/news" element={<NewsView />} />
+                        <Route path="/news/:slug" element={<NewsView />} />
+                        <Route path="/dashboard" element={<DashboardRedirect />} />
+                        <Route path="/projects" element={<DashboardRedirect />} />
+                        <Route path="/skills" element={<DashboardRedirect />} />
+                        <Route path="/profile" element={<DashboardRedirect />} />
+                        {/* My userspace routes */}
+                        <Route path="/myuserspace/:username/dashboard" element={<Dashboard />} />
+                        <Route path="/myuserspace/:username/projects" element={<ProjectsList />} />
+                        <Route path="/myuserspace/:username/projects/new" element={<ProjectCreateModal isOpen={true} onClose={() => {}} onProjectCreate={() => {}} />} />
+                        <Route path="/myuserspace/:username/skills" element={<SkillsManager />} />
+                        <Route path="/myuserspace/:username/profile" element={<ProfileView />} />
+                        
+                        {/* Other users' userspace routes */}
+                        <Route path="/userspace/:username/dashboard" element={<Dashboard />} />
+                        <Route path="/userspace/:username/projects" element={<ProjectsList />} />
+                        <Route path="/userspace/:username/skills" element={<SkillsManager />} />
+                        <Route path="/userspace/:username/profile" element={<ProfileView />} />
                         <Route path="*" element={
                           <div className="text-center py-12">
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Page Not Found</h1>
-                            <Link to="/dashboard" className="text-blue-600 dark:text-blue-400 hover:underline">
-                              Go to Dashboard
+                            <Link to="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+                              Go to Home
                             </Link>
                           </div>
                         } />
                       </Routes>
                     </main>
-                    <Footer />
+                    <ConditionalFooter />
                   </ProtectedRoute>
                 }
               />
