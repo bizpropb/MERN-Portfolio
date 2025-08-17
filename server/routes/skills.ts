@@ -7,7 +7,9 @@ import {
   deleteSkill,
   endorseSkill,
   getSkillsByCategory,
-  getSkillAnalytics
+  getSkillAnalytics,
+  getSkillsByUsername,
+  getAvailableSkills
 } from '../controllers/skillsController';
 import { protect } from '../middleware/auth';
 import { validate, validateQuery } from '../utils/validation';
@@ -69,6 +71,25 @@ router.use(protect);
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.get('/analytics', getSkillAnalytics);
+
+/**
+ * @swagger
+ * /api/skills/available:
+ *   get:
+ *     tags: [Skills]
+ *     summary: Get all available skills
+ *     description: Retrieve all available skills from the skill database (seed data)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Available skills retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ */
+router.get('/available', getAvailableSkills);
 
 /**
  * @swagger

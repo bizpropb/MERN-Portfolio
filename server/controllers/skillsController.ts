@@ -125,6 +125,92 @@ export const getSkills = async (req: Request, res: Response): Promise<void> => {
 
 /**
  * @async
+ * @function getSkillsByUsername
+ * @description Get skills for a specific user by username
+ * @param {Request} req - Express request object with username parameter
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ */
+export const getSkillsByUsername = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username
+    const User = require('../models/User').default;
+    const targetUser = await User.findOne({ username: username.toLowerCase() });
+    
+    if (!targetUser) {
+      res.status(404).json({
+        success: false,
+        message: `User with username '${username}' not found`
+      });
+      return;
+    }
+
+    // Get skills for the target user
+    const skills = await Skill.find({ 
+      userId: targetUser._id, 
+      isActive: true 
+    })
+    .sort({ proficiencyLevel: -1, endorsements: -1 })
+    .select('name category proficiencyLevel yearsOfExperience description endorsements certifications lastUsed');
+
+    // Calculate stats
+    const stats = await Skill.aggregate([
+      { $match: { userId: targetUser._id, isActive: true } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          averageProficiency: { $avg: '$proficiencyLevel' },
+          expertSkills: { $sum: { $cond: [{ $gte: ['$proficiencyLevel', 5] }, 1, 0] } },
+          totalEndorsements: { $sum: '$endorsements' }
+        }
+      }
+    ]);
+
+    const categoryStats = await Skill.aggregate([
+      { $match: { userId: targetUser._id, isActive: true } },
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+          averageProficiency: { $avg: '$proficiencyLevel' }
+        }
+      },
+      { $sort: { count: -1 } }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          username: targetUser.username,
+          firstName: targetUser.firstName,
+          lastName: targetUser.lastName
+        },
+        skills,
+        stats: stats[0] || {
+          total: 0,
+          averageProficiency: 0,
+          expertSkills: 0,
+          totalEndorsements: 0
+        },
+        categoryStats
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get skills by username error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching skills'
+    });
+  }
+};
+
+/**
+ * @async
  * @function getSkill
  * @description Get a single skill by ID
  * @param {Request} req - Express request object with skill ID parameter
@@ -596,6 +682,76 @@ export const getSkillAnalytics = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Server error fetching skill analytics'
+    });
+  }
+};
+
+/**
+ * @async
+ * @function getAvailableSkills
+ * @description Get all available skills from the seed data for skill selection
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ */
+export const getAvailableSkills = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+      return;
+    }
+
+    // Get all unique skill names and categories from the database
+    const allUniqueSkills = await Skill.aggregate([
+      {
+        $group: {
+          _id: {
+            name: '$name',
+            category: '$category'
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$_id.name',
+          category: '$_id.category'
+        }
+      },
+      {
+        $sort: { category: 1, name: 1 }
+      }
+    ]);
+
+    // Get skills the current user already has
+    const userSkills = await Skill.find({ 
+      userId: req.user._id, 
+      isActive: true 
+    }).select('name');
+    
+    const userSkillNames = userSkills.map(skill => skill.name);
+
+    // Filter out skills the user already has
+    const availableSkills = allUniqueSkills.filter(
+      skill => !userSkillNames.includes(skill.name)
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Available skills retrieved successfully',
+      data: {
+        skills: availableSkills
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get available skills error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching available skills'
     });
   }
 };
