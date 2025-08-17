@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* React Grid Layout styles */
 .react-grid-layout {
@@ -466,6 +467,130 @@ select:hover {
 
 /* End of MAPLIBRE STYLES */
 
+/* LEAFLET STYLES */
+
+/* Base body and html settings for full-height map pages */
+html, body, #root {
+  height: 100%;
+}
+
+/* Dark mode tile filtering */
+.dark .map-tiles {
+  filter: brightness(1) invert(1) contrast(1) hue-rotate(180deg) saturate(0.3);
+}
+
+/* Dark mode leaflet container */
+.dark .leaflet-container {
+  background: #1f2937 !important;
+}
+
+/* Dark mode zoom controls */
+.dark .leaflet-control-zoom {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Dark mode attribution */
+.dark .leaflet-control-attribution {
+  background: #1f2937 !important;
+  color: #9ca3af !important;
+  border: 1px solid #374151 !important;
+}
+
+.dark .leaflet-control-attribution a {
+  color: #60a5fa !important;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background-color: #1f2937;
+}
+
+.leaflet-popup-tip {
+  background-color: #ffffff;
+}
+
+.dark .leaflet-popup-tip {
+  background-color: #1f2937;
+}
+
+/* Line clamp utility for leaflet popups */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Popup content link styling */
+.leaflet-popup-content a.profile-link {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.leaflet-popup-content a.profile-link:hover {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* Fix paragraph spacing in popups */
+.leaflet-popup-content p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content h3 {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* Reduce Y-margins in popup content */
+.leaflet-popup-content .mb-2 {
+  margin-bottom: 0.25rem !important;
+}
+
+.leaflet-popup-content .my-2 {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.leaflet-popup-content .mt-2 {
+  margin-top: 0.25rem !important;
+}
+
+.leaflet-popup-content .mt-1 {
+  margin-top: 0.125rem !important;
+}
+
+/* Location Picker Modal specific styles */
+.dark .location-picker-map .leaflet-tile {
+  filter: brightness(1) invert(1) contrast(1) hue-rotate(180deg) saturate(0.3);
+}
+
+.dark .location-picker-map .leaflet-container {
+  background: #1f2937 !important;
+}
+
+.dark .location-picker-map .leaflet-control-zoom {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.dark .location-picker-map .leaflet-control-attribution {
+  background: #1f2937 !important;
+  color: #9ca3af !important;
+  border: 1px solid #374151 !important;
+}
+
+.dark .location-picker-map .leaflet-control-attribution a {
+  color: #60a5fa !important;
+}
+
+/* End of LEAFLET STYLES */
+
 /* Responsive modal improvements */
 @media (max-width: 768px) {
   .modal-content {
@@ -518,6 +643,16 @@ select:hover {
   
   body {
     @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  }
+  
+  /* Custom link styling */
+  a {
+    @apply text-purple-600 dark:text-purple-400 no-underline;
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    @apply text-purple-700 dark:text-purple-300;
   }
 }
 
@@ -608,6 +743,14 @@ select:hover {
   
   .badge-info {
     @apply inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200;
+  }
+  
+  .gradient-image {
+    @apply bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg overflow-hidden;
+  }
+  
+  .gradient-image img {
+    @apply w-full h-full object-cover grayscale mix-blend-multiply;
   }
 }
 
