@@ -15,6 +15,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hello-pangea/dnd": "^18.0.1",
     "@heroicons/react": "^2.2.0",
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
     "@types/react-router-dom": "^5.3.3",
     "leaflet": "^1.9.4",
@@ -22,7 +23,9 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-grid-layout": "^1.5.2",
+    "react-leaflet": "^5.0.0",
     "react-map-gl": "^8.0.4",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.7.1",
     "recharts": "^3.1.0"
   },
