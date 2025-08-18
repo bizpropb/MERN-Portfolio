@@ -18,6 +18,8 @@ Unit tests are useful for:
 - **Business rules**: Tax calculations, pricing algorithms, complex conditional logic
 - **Refactoring protection**: When you need to change implementation without breaking behavior
 
+> And even then, predicting all potential edgecases and misbehaviors is nearly impossible and you still have to test the software extensively just to be sure.
+
 ### Where Unit Tests Fail Miserably
 
 #### Database Testing is Impossible
