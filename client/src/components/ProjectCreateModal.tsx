@@ -179,6 +179,8 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
           <button
             onClick={onClose}
             className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+            aria-label="Close modal"
+            title="Close"
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
