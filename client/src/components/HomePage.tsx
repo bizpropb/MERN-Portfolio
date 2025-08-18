@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LatestNews from './LatestNews';
+import UserAvatar from './UserAvatar';
 
 interface User {
   _id: string;
@@ -104,20 +105,8 @@ const HomePage: React.FC = () => {
                       to={`/userspace/${user.username}/profile`}
                       className="flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 -m-2 transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
-                        {user.avatar ? (
-                          <img 
-                            src={user.avatar} 
-                            alt={`${user.firstName} ${user.lastName}`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                              {user.firstName[0]}{user.lastName[0]}
-                            </span>
-                          </div>
-                        )}
+                      <div className="w-10 h-10 flex-shrink-0">
+                        <UserAvatar user={user} size="sm" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">

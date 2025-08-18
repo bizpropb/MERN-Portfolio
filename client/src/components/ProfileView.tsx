@@ -4,6 +4,7 @@ import { UserIcon, PencilIcon, KeyIcon, TrashIcon, EyeIcon, HeartIcon, MapPinIco
 import ProfileEditModal from './ProfileEditModal';
 import ProfileChangePasswordModal from './ProfileChangePasswordModal';
 import { useAuth } from '../contexts/AuthContext';
+import UserAvatar from './UserAvatar';
 
 interface User {
   _id: string;
@@ -266,18 +267,8 @@ const ProfileView: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
           {/* Avatar */}
-          <div className="flex-shrink-0">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt={`${user.firstName} ${user.lastName}`}
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-24 h-24 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                <UserIcon className="w-12 h-12 text-white" />
-              </div>
-            )}
+          <div className="w-24 h-24 flex-shrink-0">
+            <UserAvatar user={user} size="xl" />
           </div>
 
           {/* User Info */}

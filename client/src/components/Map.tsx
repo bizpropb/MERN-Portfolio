@@ -3,6 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ExclamationTriangleIcon, MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import UserAvatar from './UserAvatar';
 
 // Fix for default markers
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -33,8 +34,8 @@ interface UserLocation {
 const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
   <div className="p-3 min-w-[200px] bg-white dark:bg-gray-800">
     <div className="flex items-center mb-2">
-      <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-        <span className="text-white font-bold text-lg">{user.firstName[0]}{user.lastName[0]}</span>
+      <div className="w-12 h-12 mr-3">
+        <UserAvatar user={user} size="lg" />
       </div>
       <div>
         <h3 className="m-0 font-bold text-gray-900 dark:text-gray-100">{user.fullName}</h3>
@@ -75,29 +76,8 @@ const UserCard: React.FC<{
     onClick={() => onClick(user)}
   >
     <div className="flex items-center space-x-3">
-      <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden">
-        {user.avatar ? (
-          <>
-            <img 
-              src={user.avatar} 
-              alt={user.fullName}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                if (e.currentTarget.nextElementSibling) {
-                  (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
-                }
-              }}
-            />
-            <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center" style={{ display: 'none' }}>
-              <span className="text-white font-bold text-sm">{user.firstName[0]}{user.lastName[0]}</span>
-            </div>
-          </>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-sm">{user.firstName[0]}{user.lastName[0]}</span>
-          </div>
-        )}
+      <div className="w-12 h-12 flex-shrink-0">
+        <UserAvatar user={user} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
@@ -345,7 +325,7 @@ const Map: React.FC = () => {
         tempDiv.innerHTML = `
           <div class="p-3 min-w-[200px] bg-white dark:bg-gray-800">
             <div class="flex items-center mb-2">
-              <div class="w-12 h-12 rounded-full mr-3 flex-shrink-0 overflow-hidden">
+              <div class="w-12 h-12 mr-3 flex-shrink-0 rounded-full overflow-hidden">
                 ${user.avatar ? `
                   <img 
                     src="${user.avatar}" 

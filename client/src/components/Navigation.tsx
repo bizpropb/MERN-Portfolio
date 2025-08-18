@@ -15,6 +15,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import UserAvatar from './UserAvatar';
 
 interface Project {
   _id: string;
@@ -118,24 +119,11 @@ const Navigation: React.FC = () => {
 
                   <Link
                     to={getMyProfilePath()}
-                    className="rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center"
+                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center overflow-hidden"
                     title={`${user.firstName} ${user.lastName}`}
                   >
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        className="w-9 h-9 rounded-full object-cover"
-                        onError={(e) => {
-                          // Fallback to initials if image fails to load
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          target.nextElementSibling?.classList.remove('hidden');
-                        }}
-                      />
-                    ) : null}
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-md italic font-bold text-gray-600 dark:text-gray-300  ${user.avatar ? 'hidden' : ''}`}>
-                      {user.firstName.charAt(0).toUpperCase()}
+                    <div className="w-full h-full">
+                      <UserAvatar user={user} size="sm" />
                     </div>
                   </Link>
 
