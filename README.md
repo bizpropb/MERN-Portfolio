@@ -136,6 +136,11 @@ docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.so
 
 ### Running the Application in dev mode
 
+Quick restart
+```bash
+docker-compose restart
+```
+
 Quick start (and rebuild) Application in dev mode (including helper script & seed):
 ```bash
 docker-compose down # Stop all containers and delete them
@@ -151,6 +156,8 @@ docker-compose down # Stop all containers and delete them
 docker-compose down -v # Stop containers and remove volumes (if needed)
 docker container prune # Remove orphaned and stopped containers
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
+
+```bash
 wsl --shutdown # Shutdown WSL to fix vmmem memory leaks (if needed)
 sleep 10 # Wait for WSL to fully shutdown
 # You need to fully quit docker desktop / the docker engine and restart it
