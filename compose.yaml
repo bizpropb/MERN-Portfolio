@@ -8,9 +8,12 @@ services:
     restart: "no"
     #command: mongod --quiet --logpath /dev/null  #uncomment this to silence mongodb logs 
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo-root-username
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo-root-password
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    secrets:
+      - mongo-root-username
+      - mongo-root-password
     ports:
       - "27017:27017"
     volumes:
@@ -25,9 +28,13 @@ services:
     container_name: pern-postgresql
     restart: "no"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER_FILE: /run/secrets/postgres-user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-password
+      POSTGRES_DB_FILE: /run/secrets/postgres-db
+    secrets:
+      - postgres-user
+      - postgres-password
+      - postgres-db
     ports:
       - "5433:5432"
     volumes:
@@ -151,3 +158,15 @@ volumes:
 networks:
   app-network:
     driver: bridge
+
+secrets:
+  mongo-root-username:
+    file: ./docker/secrets/mongo-root-username.txt
+  mongo-root-password:
+    file: ./docker/secrets/mongo-root-password.txt
+  postgres-user:
+    file: ./docker/secrets/postgres-user.txt
+  postgres-password:
+    file: ./docker/secrets/postgres-password.txt
+  postgres-db:
+    file: ./docker/secrets/postgres-db.txt
