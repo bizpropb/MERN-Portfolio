@@ -156,6 +156,8 @@ docker-compose down # Stop all containers and delete them
 docker-compose down -v # Stop containers and remove volumes (if needed)
 docker container prune # Remove orphaned and stopped containers
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
+docker system prune --volumes # Remove all orphans
+```
 
 ```bash
 wsl --shutdown # Shutdown WSL to fix vmmem memory leaks (if needed)
