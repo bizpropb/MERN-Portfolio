@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /
+
+# Allow indexing of the login page only
+Allow: /login
+
+# Explicitly block all protected routes
+Disallow: /dashboard
+Disallow: /projects
+Disallow: /skills
+Disallow: /profile
+Disallow: /myuserspace/
+Disallow: /userspace/
+Disallow: /news
+Disallow: /browse
+
+# Block all API endpoints
+Disallow: /api/
