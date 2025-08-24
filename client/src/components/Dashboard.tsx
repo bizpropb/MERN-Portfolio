@@ -64,7 +64,7 @@ const MemoizedPieChart = React.memo(({ data, getTooltipStyle }: { data: any[], g
             className="w-3 h-3 rounded-sm" 
             style={{ backgroundColor: entry.color }}
           ></div>
-          <span className="text-gray-700 dark:text-gray-300">
+          <span className="text-gray-600 dark:text-gray-300">
             {entry.name}: {entry.value}
           </span>
         </div>
@@ -465,7 +465,7 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen lightmode">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gradient-to-r from-blue-500 to-purple-600"></div>
       </div>
     );
@@ -473,7 +473,7 @@ const Dashboard: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen lightmode">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Dashboard</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
@@ -509,7 +509,7 @@ return (
           {/* Reset button */}
           <button
             onClick={resetLayout}
-            className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-purple-700 hover:text-white hover:border-transparent"
+            className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg lightmode2 text-primary border-primary hover:bg-primary hover:text-white hover:border-transparent"
             title="Reset to original layout"
           >
             <ArrowPathIcon className="w-4 h-4" />
@@ -524,22 +524,22 @@ return (
             
             <button className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg ${
               hiddenCards.size > 0
-                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white border-purple-600'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 opacity-50'
+                ? 'bg-primary text-white border-primary'
+                : 'lightmode2 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 opacity-50'
             }`}>
               <EyeIcon className="w-4 h-4" />
               <ChevronDownIcon className="w-4 h-4" />
             </button>
 
             {showDropdown && hiddenCards.size > 0 && (
-              <div className="absolute right-0 top-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-48">
+              <div className="absolute right-0 top-full lightmode2 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-48">
                 {Array.from(hiddenCards).map(cardId => {
                   const card = cardInfo[cardId as keyof typeof cardInfo];
                   return (
                     <button
                       key={cardId}
                       onClick={() => handleShowCard(cardId)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-md last:rounded-b-md text-gray-900 dark:text-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-md last:rounded-b-md"
                     >
                       {card?.title}
                     </button>
@@ -623,7 +623,7 @@ const renderCard = (
     case 'projects-status':
       return (
         <div className="h-full p-4">
-          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Projects by Status</h3>
+          <h3 className="text-xl font-semibold mb-1">Projects by Status</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
           <MemoizedPieChart data={memoizedChartData.projectsByStatus} getTooltipStyle={getTooltipStyle} />
         </div>
@@ -632,7 +632,7 @@ const renderCard = (
     case 'skills-category':
       return (
         <div className="h-full p-4">
-          <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Skillpoints by Category</h3>
+          <h3 className="text-xl font-semibold mb-1">Skillpoints by Category</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Data fetched from mongodb</p>
           <MemoizedBarChart data={memoizedChartData.skillsByCategory} getTooltipStyle={getTooltipStyle} />
         </div>
@@ -643,12 +643,12 @@ const renderCard = (
         <div className="h-full p-4">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100">Monthly Activity</h3>
+              <h3 className="text-xl font-semibold mb-1">Monthly Activity</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">Randomized sample data</p>
             </div>
             <button
               onClick={rerandomizeData}
-              className="px-3 py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white text-xs rounded-md hover:from-cyan-500 hover:via-blue-600 hover:to-purple-700 transition-all"
+              className="px-3 py-1 text-primary border border-primary text-xs rounded-md hover:bg-primary hover:text-white transition-all"
             >
               Rerandomize
             </button>
@@ -668,7 +668,7 @@ const renderCard = (
             }}>
               {stats.recentComments.map((comment) => (
                 <div key={comment.id} className="border-l-4 border-purple-500 pl-3 py-1">
-                  <p className="text-sm text-gray-800 dark:text-gray-200 mb-1">{comment.content}</p>
+                  <p className="text-sm mb-1">{comment.content}</p>
                   <div className="flex flex-col text-xs text-gray-600 dark:text-gray-400 space-y-1">
                     <div className="flex justify-between items-center">
                       <p>
@@ -685,7 +685,7 @@ const renderCard = (
                     </div>
                     {comment.createdAt && (
                       <p>
-                        On: <span className="font-medium text-gray-700 dark:text-gray-300">
+                        On: <span className="font-medium text-gray-600 dark:text-gray-300">
                           {new Date(comment.createdAt).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
@@ -697,7 +697,7 @@ const renderCard = (
                       </p>
                     )}
                     {comment.projectTitle && (
-                      <p className="text-gray-700 dark:text-gray-300 italic">
+                      <p className="text-gray-600 dark:text-gray-300 italic">
                         On project: {comment.projectTitle}
                       </p>
                     )}

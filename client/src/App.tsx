@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 
 // Initialize dark mode immediately to prevent flash
@@ -31,6 +31,92 @@ import Map from './components/Map';
 import HomePage from './components/HomePage';
 import NewsView from './components/NewsView';
 
+
+// Mouse Binary Particles Component  
+const MouseBinary: React.FC = () => {
+  const [particles, setParticles] = useState<Array<{
+    id: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    life: number;
+    maxLife: number;
+    digit: string;
+  }>>([]);
+  const nextId = useRef(0);
+
+  useEffect(() => {
+    let animationId: number;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      // Spawn more consistently - 50% chance
+      if (Math.random() > 0.5) return;
+      
+      const angle = Math.random() * Math.PI * 2; // Full 360 degrees
+      const speed = 0.2 + Math.random() * 0.3; // Slower but still moves
+      
+      const newParticle = {
+        id: nextId.current++,
+        x: e.clientX + (Math.random() - 0.5) * 15,
+        y: e.clientY + (Math.random() - 0.5) * 15,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 0,
+        maxLife: 300 + Math.random() * 200, // Back to original lifetime
+        digit: Math.random() < 0.5 ? '0' : '1' // Random 0 or 1
+      };
+      
+      setParticles(prev => [...prev.slice(-125), newParticle]); // 5x more particles (25 -> 125)
+    };
+
+    const animate = () => {
+      setParticles(prev => 
+        prev.map(p => ({
+          ...p,
+          x: p.x + p.vx,
+          y: p.y + p.vy,
+          // Remove deceleration - constant speed
+          life: p.life + 1
+        })).filter(p => p.life < p.maxLife)
+      );
+      animationId = requestAnimationFrame(animate);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-[-20]">
+      {particles.map(particle => {
+        const opacity = Math.max(0, 1 - (particle.life / particle.maxLife));
+        const size = 4 + Math.sin(particle.life * 0.2) * 1; // Back to bigger size
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute text-white font-mono text-sm select-none"
+            style={{
+              left: particle.x,
+              top: particle.y,
+              opacity: opacity * 0.7,
+              textShadow: `0 0 8px rgba(255, 255, 255, ${opacity * 0.5})`,
+              transform: `scale(${0.8 + opacity * 0.2})`
+            }}
+          >
+            {particle.digit}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 // Particle System Component
 const ParticleBackground: React.FC = () => {
@@ -69,6 +155,9 @@ const ParticleBackground: React.FC = () => {
           />
         ))}
       </div>
+      
+      {/* Mouse Binary */}
+      <MouseBinary />
       
       {/* Color Gradient Overlay - FOURTH */}
       <div 

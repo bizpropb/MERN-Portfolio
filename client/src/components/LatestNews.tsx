@@ -106,11 +106,13 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
           >
             <article>
               <div className="flex gap-4">
-                <div className="w-24 h-16 flex-shrink-0 gradient-image">
+                <div className="w-24 h-16 flex-shrink-0 rounded-lg overflow-hidden relative">
                   <img 
                     src={item.imageUrl || `https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=200&fit=crop`} 
                     alt={item.title}
+                    className="w-full h-full object-cover grayscale brightness-75"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-60 mix-blend-color"></div>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">

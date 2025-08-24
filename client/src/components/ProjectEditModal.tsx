@@ -324,8 +324,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
                       type="checkbox"
                       checked={formData.technologies.includes(tech)}
                       onChange={() => handleTechToggle(tech)}
-                      className="custom-checkbox"
-                    />
+                                          />
                     <span className="text-sm text-gray-700 dark:text-gray-300">{tech}</span>
                   </label>
                 ))}
@@ -340,8 +339,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
                   type="checkbox"
                   checked={formData.featured}
                   onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
-                  className="custom-checkbox"
-                />
+                                  />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Mark as featured project
                 </span>

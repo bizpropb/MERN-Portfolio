@@ -171,17 +171,19 @@ const NewsView: React.FC = () => {
             </div>
           </div>
           {article.imageUrl && (
-            <div className="w-full h-64 mb-4 gradient-image">
+            <div className="w-full h-64 mb-4 rounded-lg overflow-hidden relative">
               <img 
                 src={article.imageUrl} 
                 alt={article.title}
+                className="w-full h-full object-cover grayscale brightness-75"
               />
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-60 mix-blend-color"></div>
             </div>
           )}
         </header>
 
         {/* Article Content */}
-        <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md px-8 py-4 mb-12">
+        <article className="lightmode dark:darkmode rounded-lg shadow-md px-8 py-4 mb-12">
           <div className="prose prose-md dark:prose-invert max-w-none 
                           prose-headings:text-gray-900 dark:prose-headings:text-white
                           prose-p:text-gray-700 dark:prose-p:text-gray-300
