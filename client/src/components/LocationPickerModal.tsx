@@ -100,6 +100,9 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           marker.addTo(map);
           markerRef.current = marker;
 
+          // Pan and zoom to the new location
+          map.setView([lat, lng], 14);
+
           try {
             // Use reverse geocoding to get location info
             const response = await fetch(
@@ -151,7 +154,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
         }
       }
     };
-  }, [isOpen, initialLocation, selectedPosition]);
+  }, [isOpen, initialLocation]);
 
   const handleConfirm = () => {
     if (selectedPosition) {

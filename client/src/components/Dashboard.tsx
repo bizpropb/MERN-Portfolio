@@ -509,7 +509,7 @@ return (
           {/* Reset button */}
           <button
             onClick={resetLayout}
-            className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg lightmode2 text-primary border-primary hover:bg-primary hover:text-white hover:border-transparent"
+            className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg lightmode dark:darkmode text-primary border-primary hover:bg-primary hover:text-white hover:border-transparent"
             title="Reset to original layout"
           >
             <ArrowPathIcon className="w-4 h-4" />
@@ -525,14 +525,14 @@ return (
             <button className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors border shadow-lg ${
               hiddenCards.size > 0
                 ? 'bg-primary text-white border-primary'
-                : 'lightmode2 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 opacity-50'
+                : 'lightmode dark:darkmode text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 opacity-50'
             }`}>
               <EyeIcon className="w-4 h-4" />
               <ChevronDownIcon className="w-4 h-4" />
             </button>
 
             {showDropdown && hiddenCards.size > 0 && (
-              <div className="absolute right-0 top-full lightmode2 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-48">
+              <div className="absolute right-0 top-full lightmode dark:darkmode border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-48">
                 {Array.from(hiddenCards).map(cardId => {
                   const card = cardInfo[cardId as keyof typeof cardInfo];
                   return (

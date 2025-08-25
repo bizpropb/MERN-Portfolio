@@ -1,41 +1,24 @@
-/* Dark mode chart tooltip fixes */
+/* Chart tooltip fixes - Light mode first */
 .recharts-tooltip-wrapper .recharts-tooltip-content {
+  background: white !important;
+  border: 1px solid rgb(209 213 219) !important;
+  border-radius: 8px !important;
+  color: black !important;
+}
+
+.recharts-tooltip-wrapper .recharts-tooltip-label,
+.recharts-tooltip-wrapper .recharts-tooltip-item {
+  color: black !important;
+}
+
+/* Dark mode overrides */
+.dark .recharts-tooltip-wrapper .recharts-tooltip-content {
   background: rgb(31 41 55) !important;
   border: 1px solid rgb(75 85 99) !important;
-  border-radius: 8px !important;
   color: white !important;
 }
 
-.recharts-tooltip-wrapper .recharts-tooltip-label {
+.dark .recharts-tooltip-wrapper .recharts-tooltip-label,
+.dark .recharts-tooltip-wrapper .recharts-tooltip-item {
   color: white !important;
-}
-
-.recharts-tooltip-wrapper .recharts-tooltip-item {
-  color: white !important;
-}
-
-/* Light mode chart tooltip fixes */
-@media (prefers-color-scheme: light) {
-  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-content {
-    background: white !important;
-    border: 1px solid rgb(209 213 219) !important;
-    color: black !important;
-  }
-  
-  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-label {
-    color: black !important;
-  }
-  
-  html:not(.dark) .recharts-tooltip-wrapper .recharts-tooltip-item {
-    color: black !important;
-  }
-}
-
-/* Fix bar chart hover color in dark mode */
-.recharts-bar-rectangle {
-  transition: fill-opacity 0.2s ease;
-}
-
-.recharts-bar-rectangle:hover {
-  fill-opacity: 0.8 !important;
 }

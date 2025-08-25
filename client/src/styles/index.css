@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@import "./overrides/reactGridLayoutOverride.css";
 @import "./overrides/leafletOverride.css"; 
 @import "./overrides/rechartsOverride.css";
 @import "./overrides/nativeOverride.css";
@@ -83,3 +82,9 @@
     @apply lightmode dark:darkmode rounded-lg shadow-md border border-gray-200 dark:border-gray-700;
   }
 }
+
+
+
+
+/* 👇 the magic line that enables dark and light mode in imported libraries using tailwind.css*/
+@variant dark (&:where(.dark, .dark *));

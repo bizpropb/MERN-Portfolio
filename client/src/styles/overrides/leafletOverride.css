@@ -2,120 +2,53 @@
 
 /* Base body and html settings for full-height map pages */
 html, body, #root {
-  height: 100%;
+  @apply !h-full;
 }
 
 /* Dark mode tile filtering */
 .dark .map-tiles {
-  filter: brightness(1) invert(1) contrast(1) hue-rotate(180deg) saturate(0.3);
-}
-
-/* Dark mode leaflet container */
-.dark .leaflet-container {
-  background: #1f2937 !important;
+  @apply ![filter:brightness(1)_invert(1)_contrast(1)_hue-rotate(180deg)_saturate(0.3)];
 }
 
 /* Dark mode zoom controls */
 .dark .leaflet-control-zoom {
-  filter: invert(1) hue-rotate(180deg);
+  @apply ![filter:invert(1)_hue-rotate(180deg)];
 }
 
 /* Dark mode attribution */
 .dark .leaflet-control-attribution {
-  background: #1f2937 !important;
-  color: #9ca3af !important;
-  border: 1px solid #374151 !important;
+  @apply !bg-gray-800 !text-gray-400 !border !border-gray-600;
 }
 
 .dark .leaflet-control-attribution a {
-  color: #60a5fa !important;
+  @apply !text-blue-400;
 }
 
 /* Popup styling */
-.leaflet-popup-content-wrapper {
-  background-color: #ffffff;
-}
-
-.dark .leaflet-popup-content-wrapper {
-  background-color: #1f2937;
-}
-
+.leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background-color: #ffffff;
+  @apply !bg-white;
 }
 
+.dark .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip {
-  background-color: #1f2937;
+  @apply !bg-gray-800;
 }
 
-/* Line clamp utility for leaflet popups */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Popup content styling */
+.leaflet-popup-content {
+  @apply !my-1;
 }
 
-/* Popup content link styling */
 .leaflet-popup-content a.profile-link {
-  color: white !important;
-  text-decoration: none !important;
+  @apply !text-white !no-underline;
 }
 
-.leaflet-popup-content a.profile-link:hover {
-  color: white !important;
-  text-decoration: none !important;
-}
-
-/* Fix paragraph spacing in popups */
 .leaflet-popup-content p {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.leaflet-popup-content h3 {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1.2 !important;
-}
-
-/* Reduce Y-margins in popup content */
-.leaflet-popup-content .mb-2 {
-  margin-bottom: 0.25rem !important;
-}
-
-.leaflet-popup-content .my-2 {
-  margin-top: 0.25rem !important;
-  margin-bottom: 0.25rem !important;
-}
-
-.leaflet-popup-content .mt-2 {
-  margin-top: 0.25rem !important;
-}
-
-.leaflet-popup-content .mt-1 {
-  margin-top: 0.125rem !important;
+  @apply !m-0 !p-0;
 }
 
 /* Location Picker Modal specific styles */
 .dark .location-picker-map .leaflet-tile {
-  filter: brightness(1) invert(1) contrast(1) hue-rotate(180deg) saturate(0.3);
-}
-
-.dark .location-picker-map .leaflet-container {
-  background: #1f2937 !important;
-}
-
-.dark .location-picker-map .leaflet-control-zoom {
-  filter: invert(1) hue-rotate(180deg);
-}
-
-.dark .location-picker-map .leaflet-control-attribution {
-  background: #1f2937 !important;
-  color: #9ca3af !important;
-  border: 1px solid #374151 !important;
-}
-
-.dark .location-picker-map .leaflet-control-attribution a {
-  color: #60a5fa !important;
+  @apply ![filter:brightness(1)_invert(1)_contrast(1)_hue-rotate(180deg)_saturate(0.3)];
 }
