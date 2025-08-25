@@ -140,7 +140,7 @@ const ProjectsList: React.FC = () => {
           {projects.map((project) => (
             <div 
               key={project._id} 
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-200 dark:border-gray-700 overflow-hidden group"
+              className="lightmode dark:darkmode rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-200 dark:border-gray-700 overflow-hidden group"
               onClick={() => handleProjectClick(project)}
             >
               {/* Project Image */}
@@ -165,7 +165,7 @@ const ProjectsList: React.FC = () => {
 
               <div className="p-6">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  <h3 className="text-xl font-bold group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                     {project.title}
                   </h3>
                   {!project.imageUrl && project.featured && (
@@ -260,7 +260,7 @@ const ProjectsList: React.FC = () => {
                 <PlusIcon className="w-16 h-16 text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">No projects yet</h2>
+            <h2 className="text-2xl font-bold mb-4">No projects yet</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-8 text-lg max-w-md mx-auto">
               Start building your portfolio by creating your first project. Showcase your skills and creativity!
             </p>

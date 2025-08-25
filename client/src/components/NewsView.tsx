@@ -129,7 +129,7 @@ const NewsView: React.FC = () => {
       <div className="min-h-screen">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-2xl font-bold mb-4">
               {error}
             </h1>
             <button
@@ -153,7 +153,7 @@ const NewsView: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Article Header */}
         <header className="mb-4">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold mb-4">
             {article.title}
           </h1>
           <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-6">
@@ -175,9 +175,9 @@ const NewsView: React.FC = () => {
               <img 
                 src={article.imageUrl} 
                 alt={article.title}
-                className="w-full h-full object-cover grayscale brightness-75"
+                className="w-full h-full object-cover news-image"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-60 mix-blend-color"></div>
+              <div className="news-gradient"></div>
             </div>
           )}
         </header>
@@ -202,7 +202,7 @@ const NewsView: React.FC = () => {
 
         {/* Latest News Section */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-2xl font-bold mb-6">
             Other News
           </h2>
           <LatestNews limit={3} showLoadMore={true} excludeSlug={article.slug} />

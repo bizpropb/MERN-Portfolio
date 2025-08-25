@@ -60,7 +60,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
   const getProgressWidth = (level: number) => `${(level / 5) * 100}%`;
 
   return (
-    <div className={`w-full bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border transition-all duration-300 mb-6 ${
+    <div className={`w-full lightmode dark:darkmode p-6 rounded-lg shadow-lg border transition-all duration-300 mb-6 ${
       isGlowing 
         ? 'shadow-[0_0_20px_rgba(168,85,247,0.8)] border-purple-400' 
         : 'border-gray-200 dark:border-gray-700 hover:shadow-xl'
@@ -69,7 +69,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
         {/* Skill Header */}
         <div className="flex items-start justify-between mb-4"> 
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{skill.name}</h3>
+            <h3 className="text-lg font-semibold mb-1">{skill.name}</h3>
             <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
               {skill.category.charAt(0).toUpperCase() + skill.category.slice(1)}
             </span>
@@ -382,10 +382,10 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
           >
             {categories.map(category => (
-              <option key={category} value={category} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+              <option key={category} value={category} className="lightmode dark:darkmode">
                 {category === 'all' ? 'Filter by Category' : category.charAt(0).toUpperCase() + category.slice(1)}
               </option>
             ))}
@@ -396,11 +396,11 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'name' | 'level' | 'experience')}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
           >
-            <option value="level" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Sort by</option>
-            <option value="name" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Skill Name</option>
-            <option value="experience" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Years of Experience</option>
+            <option value="level" className="lightmode dark:darkmode">Sort by</option>
+            <option value="name" className="lightmode dark:darkmode">Skill Name</option>
+            <option value="experience" className="lightmode dark:darkmode">Years of Experience</option>
           </select>
         </div>
         
@@ -418,13 +418,13 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
                   }
                 }
               }}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
             >
-              <option value="Add a skill" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Add a skill</option>
+              <option value="Add a skill" className="lightmode dark:darkmode">Add a skill</option>
               {availableSkills
                 .filter(availableSkill => !skills.some(userSkill => userSkill.name === availableSkill.name))
                 .map(skill => (
-                  <option key={skill.name} value={skill.name} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                  <option key={skill.name} value={skill.name} className="lightmode dark:darkmode">
                     {skill.name}
                   </option>
                 ))

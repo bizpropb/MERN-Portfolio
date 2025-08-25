@@ -27,12 +27,12 @@ html, body, #root {
 /* Popup styling */
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  @apply !bg-white;
+  @apply !bg-gray-100;
 }
 
 .dark .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip {
-  @apply !bg-gray-800;
+  @apply !bg-gray-900;
 }
 
 /* Popup content styling */

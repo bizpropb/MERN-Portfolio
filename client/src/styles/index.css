@@ -54,17 +54,50 @@
 
 
 @utility lightmode {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
+  background-color: theme(colors.gray.200 / 50%);
+  color: theme(colors.gray.600);
+}
+
+@utility lightmode2 {
+  background-color: theme(colors.gray.100 / 50%);
+  color: theme(colors.gray.600);
 }
 
 @utility darkmode {
-  background-color: var(--color-gray-900);
-  color: var(--color-gray-100);
+  background-color: theme(colors.gray.900 / 85%);
+  color: var(--color-gray-300);
+}
+
+@utility darkmode2 {
+  background-color: theme(colors.gray.800 / 85%);
+  color: var(--color-gray-300);
 }
 
 @utility border-gradient {
   border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+}
+
+/* News image filters */
+.news-image {
+  @apply ![filter:grayscale(100%)];
+  @apply ![filter:contrast(35%)_brightness(1.8)];
+  mix-blend-mode: normal;
+}
+
+.dark .news-image {
+  @apply ![filter:brightness(1.1)];
+  mix-blend-mode: normal;
+}
+
+/* News gradient overlay */
+.news-gradient {
+  @apply absolute inset-0 bg-gradient-to-r from-cyan-200 to-fuchsia-200 opacity-60;
+  mix-blend-mode: color;
+}
+
+.dark .news-gradient {
+  @apply absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-60;
+  mix-blend-mode: color;
 }
 
 

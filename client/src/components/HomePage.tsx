@@ -81,8 +81,8 @@ const HomePage: React.FC = () => {
 
           {/* Sidebar */}
           <div className="space-y-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div className="lightmode dark:darkmode rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold mb-4">
                 Featured Developers
               </h3>
               {loading ? (
@@ -103,13 +103,13 @@ const HomePage: React.FC = () => {
                     <Link 
                       key={user._id} 
                       to={`/userspace/${user.username}/profile`}
-                      className="flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 -m-2 transition-colors"
+                      className="flex items-center space-x-3 hover:lightmode2 hover:dark:darkmode2 rounded-lg p-2 -m-2 transition-colors"
                     >
                       <div className="w-10 h-10 flex-shrink-0">
                         <UserAvatar user={user} size="sm" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        <p className="text-sm font-medium truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                           {user.firstName} {user.lastName}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -122,26 +122,26 @@ const HomePage: React.FC = () => {
               )}
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div className="lightmode dark:darkmode rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold mb-4">
                 Quick Stats
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Total Developers</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalUsers}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Total Projects</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalProjects}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Technologies</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalTechnologies}
                   </span>
                 </div>
@@ -151,8 +151,8 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Community Discussions - Full Width */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 mt-8">
-          <h2 className="text-md text-gray-900 dark:text-white mb-1 text-center">
+        <div className="lightmode dark:darkmode rounded-lg shadow-md p-3 mt-8">
+          <h2 className="text-md mb-1 text-center">
             COMMUNITY DISCUSSIONS
           </h2>
           <hr className="border-gray-300 dark:border-gray-600 mb-6" />

@@ -69,8 +69,8 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+      <div className="lightmode dark:darkmode rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold mb-4">
           Latest Updates
         </h2>
         <div className="space-y-6">
@@ -93,8 +93,8 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className="lightmode dark:darkmode rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-bold mb-4">
         Latest Updates
       </h2>
       <div className="space-y-4">
@@ -102,7 +102,7 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
           <Link
             key={item._id}
             to={`/news/${item.slug}`}
-            className="block border-b border-gray-200 dark:border-gray-700 last:border-b-0 pb-4 last:pb-0 mb-4 last:mb-0 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors p-3"
+            className="block border-b border-gray-200 dark:border-gray-700 last:border-b-0 pb-4 last:pb-0 mb-4 last:mb-0 hover:lightmode2 hover:dark:darkmode2 rounded-lg transition-colors p-3"
           >
             <article>
               <div className="flex gap-4">
@@ -110,12 +110,12 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
                   <img 
                     src={item.imageUrl || `https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=200&fit=crop`} 
                     alt={item.title}
-                    className="w-full h-full object-cover grayscale brightness-75"
+                    className="w-full h-full object-cover news-image"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-60 mix-blend-color"></div>
+                  <div className="news-gradient"></div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <h3 className="text-lg font-semibold mb-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">

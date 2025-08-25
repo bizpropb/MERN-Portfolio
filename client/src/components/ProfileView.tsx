@@ -264,7 +264,7 @@ const ProfileView: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+      <div className="lightmode dark:darkmode rounded-lg shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
           {/* Avatar */}
           <div className="w-24 h-24 flex-shrink-0">
@@ -346,7 +346,7 @@ const ProfileView: React.FC = () => {
                 <UserIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalProjects}</p>
+                <p className="text-2xl font-bold">{stats.projects.totalProjects}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Projects</p>
               </div>
             </div>
@@ -358,7 +358,7 @@ const ProfileView: React.FC = () => {
                 <EyeIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalViews}</p>
+                <p className="text-2xl font-bold">{stats.projects.totalViews}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Views</p>
               </div>
             </div>
@@ -370,7 +370,7 @@ const ProfileView: React.FC = () => {
                 <HeartIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.totalLikes}</p>
+                <p className="text-2xl font-bold">{stats.projects.totalLikes}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Likes</p>
               </div>
             </div>
@@ -382,7 +382,7 @@ const ProfileView: React.FC = () => {
                 <span className="text-gray-600 dark:text-gray-400 font-bold text-xl">★</span>
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.featuredProjects}</p>
+                <p className="text-2xl font-bold">{stats.projects.featuredProjects}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Featured</p>
               </div>
             </div>
@@ -392,13 +392,13 @@ const ProfileView: React.FC = () => {
 
       {/* Recent Projects */}
       {recentProjects.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Projects</h2>
+        <div className="lightmode dark:darkmode rounded-lg shadow-lg p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Recent Projects</h2>
           <div className="space-y-3">
             {recentProjects.map((project) => (
               <div key={project._id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">{project.title}</h3>
+                  <h3 className="font-medium">{project.title}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Updated {formatDate(project.updatedAt)}
                   </p>

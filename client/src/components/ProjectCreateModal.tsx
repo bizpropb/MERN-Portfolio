@@ -170,7 +170,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
@@ -198,7 +198,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 placeholder="Enter project title..."
               />
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -213,7 +213,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 placeholder="Describe your project..."
               />
               {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
@@ -229,7 +229,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   type="url"
                   value={formData.githubUrl}
                   onChange={(e) => setFormData(prev => ({ ...prev, githubUrl: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                   placeholder="https://github.com/username/repo"
                 />
                 {errors.githubUrl && <p className="text-red-500 text-sm mt-1">{errors.githubUrl}</p>}
@@ -243,7 +243,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   type="url"
                   value={formData.liveUrl}
                   onChange={(e) => setFormData(prev => ({ ...prev, liveUrl: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                   placeholder="https://yourproject.com"
                 />
                 {errors.liveUrl && <p className="text-red-500 text-sm mt-1">{errors.liveUrl}</p>}
@@ -259,7 +259,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 type="url"
                 value={formData.imageUrl}
                 onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 placeholder="https://example.com/image.jpg"
               />
               {errors.imageUrl && <p className="text-red-500 text-sm mt-1">{errors.imageUrl}</p>}
@@ -274,7 +274,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as any }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 >
                   <option value="planning">Planning</option>
                   <option value="in-progress">In Progress</option>
@@ -290,7 +290,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as any }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -309,7 +309,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 />
               </div>
 
@@ -321,7 +321,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                 />
                 {errors.endDate && <p className="text-red-500 text-sm mt-1">{errors.endDate}</p>}
               </div>

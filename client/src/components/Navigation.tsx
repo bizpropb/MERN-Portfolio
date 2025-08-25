@@ -61,7 +61,7 @@ const Navigation: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700">
+      <nav className="lightmode dark:darkmode shadow-lg border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">

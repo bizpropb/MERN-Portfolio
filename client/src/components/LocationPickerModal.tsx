@@ -172,9 +172,9 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          <h3 className="text-lg font-bold mb-4">
             Select Your Location
           </h3>
           
@@ -195,29 +195,29 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           {/* Location Info */}
           {selectedPosition && (
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
-              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Selected Location:</h4>
+              <h4 className="font-medium mb-2">Selected Location:</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-600 dark:text-gray-400">Latitude:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="ml-2">
                     {selectedPosition.lat.toFixed(6)}
                   </span>
                 </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-400">Longitude:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="ml-2">
                     {selectedPosition.lng.toFixed(6)}
                   </span>
                 </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-400">City:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="ml-2">
                     {isLoading ? 'Loading...' : locationInfo.city || 'Unknown'}
                   </span>
                 </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-400">Country:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="ml-2">
                     {isLoading ? 'Loading...' : locationInfo.country || 'Unknown'}
                   </span>
                 </div>

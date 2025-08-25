@@ -77,7 +77,7 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
               />
             </div>
             
@@ -91,7 +91,7 @@ const Login: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
               />
             </div>
           </div>
@@ -152,11 +152,11 @@ const Login: React.FC = () => {
               <button
                 key={index}
                 onClick={() => handleDemoUserSelect(user.email)}
-                className="w-full text-left px-3 py-2 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="w-full text-left px-3 py-2 text-xs lightmode dark:darkmode border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{user.name}</span>
+                    <span className="font-medium">{user.name}</span>
                     <br />
                     <span className="text-gray-500 dark:text-gray-400">{user.email}</span>
                   </div>

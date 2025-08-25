@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+    <footer className="lightmode dark:darkmode border-t border-gray-200 dark:border-gray-700 mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Creator Info */}
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
 
           {/* Project Info */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">MERN Stack Demonstration</h3>
+            <h3 className="text-lg font-semibold">MERN Stack Demonstration</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               This portfolio application showcases development skills using MongoDB, Express.js, React, and Node.js. 
               It represents a snapshot of technical capabilities.
@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
           {/* Legal & Disclaimers */}
           <div className="flex flex-col justify-between space-y-3">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Important Notice</h3>
+              <h3 className="text-lg font-semibold">Important Notice</h3>
               <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2 mt-3">
                 <div className="text-xs text-gray-600 dark:text-gray-400">
                   This application is a demonstration project and not intended for production use.

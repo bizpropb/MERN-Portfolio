@@ -660,7 +660,7 @@ const renderCard = (
     case 'recent-comments':
       return (
         <div className="h-full p-4">
-          <h3 className="text-xl font-semibold mb-2 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100">Recent Comments</h3>
+          <h3 className="text-xl font-semibold mb-2">Recent Comments</h3>
           {stats.recentComments.length > 0 ? (
             <div className="space-y-2 max-h-[calc(100%-3rem)] overflow-y-auto pr-2" style={{
               scrollbarWidth: 'thin',

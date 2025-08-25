@@ -32,13 +32,13 @@ interface UserLocation {
 }
 
 const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
-  <div className="p-3 min-w-[200px] bg-white dark:bg-gray-800">
+  <div className="p-3 min-w-[200px] lightmode dark:darkmode">
     <div className="flex items-center mb-2">
       <div className="w-12 h-12 mr-3">
         <UserAvatar user={user} size="lg" />
       </div>
       <div>
-        <h3 className="m-0 font-bold text-gray-900 dark:text-gray-100">{user.fullName}</h3>
+        <h3 className="m-0 font-bold">{user.fullName}</h3>
         <p className="m-0 text-sm text-gray-600 dark:text-gray-300">
           {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
         </p>
@@ -81,7 +81,7 @@ const UserCard: React.FC<{
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{user.fullName}</h3>
+          <h3 className="font-semibold truncate">{user.fullName}</h3>
           {user.username && (
             <span className="text-xs text-gray-500 dark:text-gray-400">@{user.username}</span>
           )}
@@ -323,7 +323,7 @@ const Map: React.FC = () => {
         // Create React-rendered popup content
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = `
-          <div class="p-3 min-w-[200px] bg-white dark:bg-gray-800">
+          <div class="p-3 min-w-[200px] lightmode dark:darkmode">
             <div class="flex items-center mb-2">
               <div class="w-12 h-12 mr-3 flex-shrink-0 rounded-full overflow-hidden">
                 ${user.avatar ? `
@@ -343,7 +343,7 @@ const Map: React.FC = () => {
                 `}
               </div>
               <div class="flex flex-col justify-center">
-                <h3 class="font-bold text-gray-900 dark:text-gray-100">${user.fullName}</h3>
+                <h3 class="font-bold">${user.fullName}</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300">
                   ${user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
                 </p>
@@ -418,7 +418,7 @@ const Map: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   placeholder="Search by name, username, or location..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 lightmode dark:darkmode placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                 />
                 {searchLoading && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -467,20 +467,20 @@ const Map: React.FC = () => {
           {/* Status overlays */}
           <div className="absolute top-4 right-4 space-y-2 z-[1000]">
             {/* User count */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
+            <div className="lightmode dark:darkmode rounded-lg shadow-lg p-3">
               <div className="flex items-center space-x-2">
                 <MapPinIcon className="w-5 h-5 text-red-500" />
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <span className="text-sm font-medium">
                   {users.filter(u => u.location?.latitude && u.location?.longitude).length} Users on Map
                 </span>
               </div>
             </div>
             
             {/* Map status */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
+            <div className="lightmode dark:darkmode rounded-lg shadow-lg p-3">
               <div className="flex items-center space-x-2">
                 <div className={`w-3 h-3 rounded-full ${mapReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <span className="text-sm font-medium">
                   Map {mapReady ? 'Ready' : 'Loading'}
                 </span>
               </div>

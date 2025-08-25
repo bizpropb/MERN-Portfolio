@@ -214,7 +214,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
@@ -222,7 +222,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               {project.title}
             </h2>
             {project.featured && (
-              <span className="badge bg-gradient-to-r from-purple-500 to-pink-500 text-white">★ Featured</span>
+              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium">★ Featured</span>
             )}
           </div>
           <div className="flex items-center space-x-2">
@@ -259,7 +259,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             )}
 
             {/* Project Stats */}
-            <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center justify-between mb-6 p-4 lightmode dark:darkmode rounded-lg">
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-2">
                   <EyeIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -290,7 +290,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             {/* Project Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Description</h3>
+                <h3 className="text-lg font-semibold mb-3">Description</h3>
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{project.description}</p>
                 
                 {/* Links */}
@@ -319,7 +319,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Technologies</h3>
+                <h3 className="text-lg font-semibold mb-3">Technologies</h3>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.technologies.map((tech, index) => (
                     <span
@@ -334,7 +334,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 {/* Dates */}
                 {(project.startDate || project.endDate) && (
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Timeline</h3>
+                    <h3 className="text-lg font-semibold">Timeline</h3>
                     {project.startDate && (
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <CalendarIcon className="w-4 h-4" />
@@ -359,7 +359,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               </h3>
               
               {/* New Comment Form */}
-              <form onSubmit={handleSubmitComment} className="mb-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <form onSubmit={handleSubmitComment} className="mb-8 p-4 lightmode dark:darkmode rounded-lg">
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Your Comment
@@ -369,7 +369,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts about this project..."
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
                   />
                 </div>
                 
@@ -424,10 +424,10 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 <div className="space-y-6">
                   {comments.map((comment) => (
                     <div key={comment._id} className="border-l-4 border-purple-500 pl-4">
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                      <div className="lightmode dark:darkmode rounded-lg p-4 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900 dark:text-white">
+                            <span className="font-medium">
                               {comment.userId.firstName} {comment.userId.lastName}
                             </span>
                             {comment.rating && (
@@ -452,13 +452,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
 
                         {/* Reply Form */}
                         {replyingTo === comment._id && (
-                          <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <div className="mt-4 p-3 lightmode dark:darkmode rounded-lg">
                             <textarea
                               value={replyContent}
                               onChange={(e) => setReplyContent(e.target.value)}
                               placeholder="Write your reply..."
                               rows={2}
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors mb-2"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors mb-2"
                             />
                             <div className="flex space-x-2">
                               <button
@@ -482,9 +482,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                         {comment.replies && comment.replies.length > 0 && (
                           <div className="mt-4 ml-4 space-y-3">
                             {comment.replies.map((reply) => (
-                              <div key={reply._id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                              <div key={reply._id} className="lightmode dark:darkmode rounded-lg p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="font-medium text-gray-900 dark:text-white text-sm">
+                                  <span className="font-medium text-sm">
                                     {reply.userId.firstName} {reply.userId.lastName}
                                   </span>
                                   <span className="text-xs text-gray-500 dark:text-gray-400">

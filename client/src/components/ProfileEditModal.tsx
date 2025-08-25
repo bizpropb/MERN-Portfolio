@@ -56,9 +56,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Edit Profile</h3>
+          <h3 className="text-lg font-bold mb-2">Edit Profile</h3>
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -68,7 +68,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={editData.username}
                 onChange={(e) => setEditData(prev => ({ ...prev, username: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -81,7 +81,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={editData.firstName}
                 onChange={(e) => setEditData(prev => ({ ...prev, firstName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -94,7 +94,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={editData.lastName}
                 onChange={(e) => setEditData(prev => ({ ...prev, lastName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -107,7 +107,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 value={editData.bio}
                 onChange={(e) => setEditData(prev => ({ ...prev, bio: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="Tell us about yourself..."
               />
             </div>
@@ -120,7 +120,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="url"
                 value={editData.avatar}
                 onChange={(e) => setEditData(prev => ({ ...prev, avatar: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 lightmode dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="https://example.com/avatar.jpg"
               />
             </div>
@@ -136,7 +136,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               {editData.location?.latitude && editData.location?.longitude ? (
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-3">
                   <div className="text-sm">
-                    <div className="font-medium text-gray-900 dark:text-white mb-1">
+                    <div className="font-medium mb-1">
                       Current Location:
                     </div>
                     <div className="text-gray-600 dark:text-gray-400">
