@@ -1,0 +1,66 @@
+/* LEAFLET STYLES */
+
+/* Base body and html settings for full-height map pages */
+html, body, #root {
+  @apply !h-full;
+}
+
+/* Dark mode tile filtering */
+.dark .map-tiles {
+  @apply ![filter:brightness(1)_invert(1)_contrast(1)_hue-rotate(180deg)_saturate(0.3)];
+}
+
+/* Dark mode zoom controls */
+.dark .leaflet-control-zoom {
+  @apply ![filter:invert(1)_hue-rotate(180deg)];
+}
+
+/* Dark mode attribution */
+.dark .leaflet-control-attribution {
+  @apply !bg-gray-800 !text-gray-400 !border !border-gray-600;
+}
+
+.dark .leaflet-control-attribution a {
+  @apply !text-blue-400;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  @apply !bg-gray-200;
+}
+
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  @apply !bg-gray-900;
+}
+
+/* Popup content styling */
+.leaflet-popup-content {
+  @apply !my-1;
+}
+
+.leaflet-popup-content a.profile-link {
+  @apply !text-white !no-underline;
+}
+
+.leaflet-popup-content p {
+  @apply !m-0 !p-0;
+}
+
+/* Location Picker Modal specific styles */
+.dark .location-picker-map .leaflet-tile {
+  @apply ![filter:brightness(1)_invert(1)_contrast(1)_hue-rotate(180deg)_saturate(0.3)];
+}
+
+/* --- Tile placeholder color (white flash fix) ------------------ */
+
+/* Light mode */
+.leaflet-container {
+  background: #f5f5f5;
+}
+
+/* Dark mode */
+.dark .leaflet-container {
+  background: #1e1e1e;   /* or any dark gray you like */
+}

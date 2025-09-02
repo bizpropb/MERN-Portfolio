@@ -34,6 +34,7 @@ interface Comment {
     _id: string;
     firstName: string;
     lastName: string;
+    username?: string;
   };
   createdAt: string;
   replies: Comment[];
@@ -41,44 +42,78 @@ interface Comment {
 }
 
 interface ProjectModalProps {
-  project: Project;
+  project?: Project;
+  projectId?: string;
   isOpen: boolean;
   onClose: () => void;
-  onEdit: () => void;
-  currentUserId: string;
-  onProjectUpdate: (updatedProject: Project) => void;
+  onEdit?: () => void;
+  currentUserId?: string;
+  onProjectUpdate?: (updatedProject: Project) => void;
 }
 
 const ProjectModal: React.FC<ProjectModalProps> = ({
-  project,
+  project: initialProject,
+  projectId,
   isOpen,
   onClose,
   onEdit,
   currentUserId,
   onProjectUpdate
 }) => {
+  const [project, setProject] = useState<Project | null>(initialProject || null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState<number | null>(null);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(project.likes);
+  const [likesCount, setLikesCount] = useState(project?.likes || 0);
+  const [isLoadingProject, setIsLoadingProject] = useState(false);
 
-  const isOwner = project.userId._id === currentUserId;
+  const isOwner = project?.userId._id === currentUserId;
 
   useEffect(() => {
     if (isOpen) {
-      fetchComments();
+      if (projectId && !project) {
+        fetchProject();
+      }
+      if (project?._id) {
+        fetchComments();
+      }
     }
-  }, [isOpen, project._id]);
+  }, [isOpen, project?._id, projectId]);
+
+  const fetchProject = async () => {
+    if (!projectId) return;
+    
+    try {
+      setIsLoadingProject(true);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5001/api/projects/${projectId}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setProject(data.data.project);
+        setLikesCount(data.data.project.likes);
+      }
+    } catch (error) {
+      console.error('Error fetching project:', error);
+    } finally {
+      setIsLoadingProject(false);
+    }
+  };
 
   const fetchComments = async () => {
+    if (!project?._id) return;
+    
     try {
       setLoadingComments(true);
-      const response = await fetch(`http://localhost:5000/api/comments/project/${project._id}`);
+      const response = await fetch(`http://localhost:5001/api/comments/project/${project._id}`);
       const data = await response.json();
       
       if (data.success) {
@@ -99,7 +134,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       setIsSubmittingComment(true);
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/comments/project/${project._id}`, {
+      const response = await fetch(`http://localhost:5001/api/comments/project/${project._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +169,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/comments/project/${project._id}`, {
+      const response = await fetch(`http://localhost:5001/api/comments/project/${project._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +199,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   const handleLike = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/projects/${project._id}/like`, {
+      const response = await fetch(`http://localhost:5001/api/projects/${project._id}/like`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -185,20 +220,20 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'badge-success';
-      case 'in-progress': return 'badge-warning';
-      case 'planning': return 'badge-info';
-      case 'archived': return 'badge-error';
-      default: return 'badge-info';
+      case 'completed': return 'badge bg-emerald-600';
+      case 'in-progress': return 'badge bg-yellow-600';
+      case 'planning': return 'badge bg-blue-600';
+      case 'archived': return 'badge bg-gray-600';
+      default: return 'badge bg-gray-600';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'text-red-500 dark:text-red-400';
-      case 'medium': return 'text-yellow-500 dark:text-yellow-400';
-      case 'low': return 'text-green-500 dark:text-green-400';
-      default: return 'text-gray-500 dark:text-gray-400';
+      case 'high': return 'px-2 py-1 badge bg-rose-600';
+      case 'medium': return 'px-2 py-1 badge bg-yellow-600';
+      case 'low': return 'px-2 py-1 badge bg-emerald-600';
+      default: return 'px-2 py-1 badge bg-gray-600';
     }
   };
 
@@ -212,24 +247,38 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Show loading state if project is being fetched
+  if (isLoadingProject || !project) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+        <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl p-8" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+            <span className="ml-3">Loading project...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center space-x-4">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl  lightmode-text-primary dark:darkmode-text-primary">
               {project.title}
             </h2>
             {project.featured && (
-              <span className="badge bg-gradient-to-r from-purple-500 to-pink-500 text-white">★ Featured</span>
+              <span className="px-3 py-1 badge bg-primary ">★ Featured</span>
             )}
           </div>
           <div className="flex items-center space-x-2">
             {isOwner && (
               <button
                 onClick={onEdit}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="p-2 text-primary hover:text-primary-highlight"
                 title="Edit Project"
               >
                 <PencilIcon className="w-5 h-5" />
@@ -237,7 +286,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              className="p-2 text-primary hover:text-red-500"
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
@@ -259,22 +308,22 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             )}
 
             {/* Project Stats */}
-            <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center justify-between mb-6 p-4 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-2">
-                  <EyeIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{project.views} views</span>
+                  <EyeIcon className="w-5 h-5 lightmode-text-secondary dark:darkmode-text-secondary" />
+                  <span className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">{project.views} views</span>
                 </div>
                 <button
                   onClick={handleLike}
                   className="flex items-center space-x-2 hover:text-red-500 transition-colors"
                 >
                   {isLiked ? (
-                    <HeartIconSolid className="w-5 h-5 text-red-500" />
+                    <HeartIconSolid className="w-5 h-5 lightmode-text-secondary dark:darkmode-text-secondary" />
                   ) : (
-                    <HeartIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                    <HeartIcon className="w-5 h-5 lightmode-text-secondary dark:darkmode-text-secondary" />
                   )}
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{likesCount} likes</span>
+                  <span className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">{likesCount} likes</span>
                 </button>
               </div>
               <div className="flex items-center space-x-4">
@@ -290,8 +339,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             {/* Project Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Description</h3>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{project.description}</p>
+                <h3 className="text-lg font-semibold mb-3">Description</h3>
+                <p className="lightmode-text-secondary dark:darkmode-text-secondary leading-relaxed">{project.description}</p>
                 
                 {/* Links */}
                 <div className="mt-4 space-y-2">
@@ -300,7 +349,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center text-cyan-600 dark:text-cyan-400 hover:underline"
+                      className="inline-flex items-center text-primary hover:text-primary-highlight hover:underline"
                     >
                       View on GitHub →
                     </a>
@@ -310,7 +359,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-purple-600 dark:text-purple-400 hover:underline"
+                      className="block text-primary hover:text-primary-highlight hover:underline"
                     >
                       Live Demo →
                     </a>
@@ -319,12 +368,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Technologies</h3>
+                <h3 className="text-lg font-semibold mb-3">Technologies</h3>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.technologies.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm rounded-full"
+                      className="px-3 py-1 badge-mode text-sm rounded-full"
                     >
                       {tech}
                     </span>
@@ -334,15 +383,15 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 {/* Dates */}
                 {(project.startDate || project.endDate) && (
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Timeline</h3>
+                    <h3 className="text-lg font-semibold">Timeline</h3>
                     {project.startDate && (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                         <CalendarIcon className="w-4 h-4" />
                         <span>Started: {formatDate(project.startDate)}</span>
                       </div>
                     )}
                     {project.endDate && (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                         <CalendarIcon className="w-4 h-4" />
                         <span>Completed: {formatDate(project.endDate)}</span>
                       </div>
@@ -353,15 +402,15 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             </div>
 
             {/* Comments Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
-              <h3 className="text-xl font-semibold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent mb-6">
+            <div className="border-t pt-8">
+              <h3 className="text-xl font-semibold mb-6 lightmode-text-primary dark:darkmode-text-primary">
                 Comments & Feedback
               </h3>
               
               {/* New Comment Form */}
-              <form onSubmit={handleSubmitComment} className="mb-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <form onSubmit={handleSubmitComment} className="mb-8 p-4 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                     Your Comment
                   </label>
                   <textarea
@@ -369,36 +418,42 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts about this project..."
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                    className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                   />
                 </div>
                 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Rating (Optional)
+                  <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
+                    Rating <span className="text-primary">*</span>
                   </label>
                   <div className="flex space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setNewRating(newRating === star ? null : star)}
-                        className={`w-8 h-8 text-2xl ${
-                          newRating && star <= newRating
-                            ? 'text-yellow-400'
-                            : 'text-gray-300 dark:text-gray-600'
-                        } hover:text-yellow-400 transition-colors`}
-                      >
-                        ★
-                      </button>
-                    ))}
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const isLit = hoveredRating 
+                        ? star <= hoveredRating 
+                        : newRating && star <= newRating;
+                      
+                      return (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setNewRating(newRating === star ? null : star)}
+                          onMouseEnter={() => setHoveredRating(star)}
+                          onMouseLeave={() => setHoveredRating(null)}
+                          className={`w-8 h-8 text-2xl transition-colors ${
+                            isLit ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
+                          }`}
+                        >
+                          ★
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmittingComment || !newComment.trim()}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                  disabled={isSubmittingComment || !newComment.trim() || !newRating}
+                  className="px-4 py-2 btn-primary-filled shadow-lg"
                 >
                   {isSubmittingComment ? (
                     <>
@@ -417,19 +472,28 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
                 </div>
               ) : comments.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+                <p className="lightmode-text-primary dark:darkmode-text-primary text-center py-8">
                   No comments yet. Be the first to share your thoughts!
                 </p>
               ) : (
                 <div className="space-y-6">
                   {comments.map((comment) => (
-                    <div key={comment._id} className="border-l-4 border-purple-500 pl-4">
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                    <div key={comment._id} className="border-l-4 border-primary pl-4">
+                      <div className="lightmode dark:darkmode rounded-lg p-4 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900 dark:text-white">
-                              {comment.userId.firstName} {comment.userId.lastName}
-                            </span>
+                            {comment.userId.username ? (
+                              <a
+                                href={`/userspace/${comment.userId.username}/profile`}
+                                className="font-medium text-primary hover:text-primary-highlight transition-colors duration-200"
+                              >
+                                {comment.userId.username}
+                              </a>
+                            ) : (
+                              <span className="font-medium">
+                                {comment.userId.username}
+                              </span>
+                            )}
                             {comment.rating && (
                               <div className="flex text-yellow-400">
                                 {'★'.repeat(comment.rating)}
@@ -437,41 +501,41 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                               </div>
                             )}
                           </div>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                          <span className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                             {formatDate(comment.createdAt)}
                           </span>
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300 mb-3">{comment.content}</p>
+                        <p className="lightmode-text-secondary dark:darkmode-text-secondary mb-3">{comment.content}</p>
                         
                         <button
                           onClick={() => setReplyingTo(replyingTo === comment._id ? null : comment._id)}
-                          className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
+                          className="text-sm text-primary hover:text-primary-highlight"
                         >
                           Reply
                         </button>
 
                         {/* Reply Form */}
                         {replyingTo === comment._id && (
-                          <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <div className="mt-4 p-3 lightmode dark:darkmode rounded-lg">
                             <textarea
                               value={replyContent}
                               onChange={(e) => setReplyContent(e.target.value)}
                               placeholder="Write your reply..."
                               rows={2}
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors mb-2"
+                              className="w-full px-3 py-2 border lightmode-text-secondary dark:darkmode-text-secondary dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors mb-2"
                             />
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleSubmitReply(comment._id)}
                                 disabled={!replyContent.trim()}
-                                className="px-3 py-1 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-3 py-1 btn-primary-filled text-xs"
                               >
                                 Post Reply
                               </button>
                               <button
                                 onClick={() => setReplyingTo(null)}
-                                className="px-3 py-1 bg-gray-500 text-white rounded-md text-sm hover:bg-gray-600"
-                              >
+                                className="text-xs px-4 py-2 lightmode dark:darkmode text-lightmode-text-primary dark:darkmode-text-primary rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight transition-colors"
+                                >
                                 Cancel
                               </button>
                             </div>
@@ -482,16 +546,25 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                         {comment.replies && comment.replies.length > 0 && (
                           <div className="mt-4 ml-4 space-y-3">
                             {comment.replies.map((reply) => (
-                              <div key={reply._id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                              <div key={reply._id} className="lightmode dark:darkmode rounded-lg p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="font-medium text-gray-900 dark:text-white text-sm">
-                                    {reply.userId.firstName} {reply.userId.lastName}
-                                  </span>
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {reply.userId.username ? (
+                                    <a
+                                      href={`/userspace/${reply.userId.username}/profile`}
+                                      className="font-medium text-sm text-primary hover:text-primary-highlight transition-colors duration-200"
+                                    >
+                                      {reply.userId.username}
+                                    </a>
+                                  ) : (
+                                    <span className="font-medium text-sm">
+                                      {reply.userId.username}
+                                    </span>
+                                  )}
+                                  <span className="text-xs lightmode-text-primary dark:darkmode-text-primary">
                                     {formatDate(reply.createdAt)}
                                   </span>
                                 </div>
-                                <p className="text-gray-700 dark:text-gray-300 text-sm">{reply.content}</p>
+                                <p className="lightmode-text-primary dark:darkmode-text-primary text-sm">{reply.content}</p>
                               </div>
                             ))}
                           </div>

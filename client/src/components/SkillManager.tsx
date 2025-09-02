@@ -45,7 +45,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
     if (level <= 1) return 'text-red-500';
     if (level <= 2) return 'text-orange-500';
     if (level <= 3) return 'text-yellow-500';
-    if (level <= 4) return 'text-blue-500';
+    if (level <= 4) return 'text-lime-500';
     return 'text-green-500';
   };
 
@@ -60,17 +60,17 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
   const getProgressWidth = (level: number) => `${(level / 5) * 100}%`;
 
   return (
-    <div className={`w-full bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border transition-all duration-300 mb-6 ${
+    <div className={`w-full lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary p-6 rounded-lg shadow-lg border transition-all duration-300 mb-6 ${
       isGlowing 
-        ? 'shadow-[0_0_20px_rgba(168,85,247,0.8)] border-purple-400' 
-        : 'border-gray-200 dark:border-gray-700 hover:shadow-xl'
+        ? 'shadow-[0_0_20px_rgba(168,85,247,0.8)] border-1 !border-primary transition-all duration-500' 
+        : 'border hover:shadow-xl transition-all duration-500'
     }`}>
       <div className="">
         {/* Skill Header */}
         <div className="flex items-start justify-between mb-4"> 
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{skill.name}</h3>
-            <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
+            <h3 className="text-lg font-semibold mb-1">{skill.name}</h3>
+            <span className="inline-block px-2 py-1 text-xs font-medium lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-full">
               {skill.category.charAt(0).toUpperCase() + skill.category.slice(1)}
             </span>
           </div>
@@ -83,7 +83,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
             {!readonly && onDelete && (
               <button
                 onClick={() => onDelete(skill._id)}
-                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                className="w-6 h-6 flex items-center justify-center lightmode-text-secondary dark:darkmode-text-secondary hover:text-danger rounded"
                 title="Remove skill"
               >
                 ×
@@ -102,12 +102,12 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
                 onMouseEnter={() => !readonly && setHoverRating(star)}
                 onMouseLeave={() => setHoverRating(0)}
                 disabled={readonly || isUpdating}
-                className={`text-2xl transition-all duration-200 ${
+                className={`text-2xl transition-all duration-300 ${
                   readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'
                 } ${
                   star <= (hoverRating || currentRating)
                     ? getRatingColor(hoverRating || currentRating)
-                    : 'text-gray-300 dark:text-gray-600'
+                    : 'lightmode-text-secondary dark:darkmode-text-secondary opacity-50'
                 }`}
               >
                 ★
@@ -115,25 +115,25 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
             ))}
             {isUpdating && (
               <div className="ml-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-4 w-4"></div>
               </div>
             )}
           </div>
     
           {/* Progress Bar */}
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+          <div className="w-full lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-full h-2 mb-2">
             <div
               className={`h-2 rounded-full transition-all duration-500 ${
                 currentRating <= 1 ? 'bg-red-500' :
                 currentRating <= 2 ? 'bg-orange-500' :
                 currentRating <= 3 ? 'bg-yellow-500' :
-                currentRating <= 4 ? 'bg-blue-500' : 'bg-green-500'
+                currentRating <= 4 ? 'bg-lime-500' : 'bg-green-500'
               }`}
               style={{ width: getProgressWidth(hoverRating || currentRating) }}
             ></div>
           </div>
     
-          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex justify-between text-xs lightmode-text-secondary dark:darkmode-text-secondary">
             <span>Beginner</span>
             <span>Expert</span>
           </div>
@@ -141,7 +141,7 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
     
         {/* Skill Description */}
         {skill.description && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{skill.description}</p>
+          <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mb-4">{skill.description}</p>
         )}
     
     
@@ -151,15 +151,13 @@ const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onD
             <button
               onClick={() => handleRatingClick(Math.min(5, currentRating + 1))}
               disabled={currentRating >= 5 || isUpdating}
-              className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
+              className="flex-1 px-3 py-2 text-sm btn-primary-filled">
               Level Up
             </button>
             <button
               onClick={() => handleRatingClick(Math.max(1, currentRating - 1))}
               disabled={currentRating <= 1 || isUpdating}
-              className="flex-1 px-3 py-2 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
+              className="flex-1 px-3 py-2 text-sm btn-muted-filled">
               Level Down
             </button>
           </div>
@@ -208,7 +206,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
       }
 
       const token = localStorage.getItem('token');
-      const endpoint = `http://localhost:5000/api/user/${username}/skills`;
+      const endpoint = `http://localhost:5001/api/user/${username}/skills`;
       
       const response = await fetch(endpoint, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -233,14 +231,18 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
   const fetchAvailableSkills = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/skills/available', {
+      const response = await fetch('http://localhost:5001/api/skills/available', {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       const data = await response.json();
+      console.log('Available skills response:', data);
       
       if (data.success) {
         setAvailableSkills(data.data.skills);
+        console.log('Available skills set:', data.data.skills);
+      } else {
+        console.error('Failed to fetch available skills:', data.message);
       }
     } catch (err) {
       console.error('Available skills fetch error:', err);
@@ -251,7 +253,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:5000/api/skills', {
+      const response = await fetch('http://localhost:5001/api/skills', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -288,7 +290,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
   const updateSkillRating = async (skillId: string, newLevel: number) => {
     const token = localStorage.getItem('token');
     
-    const response = await fetch(`http://localhost:5000/api/skills/${skillId}`, {
+    const response = await fetch(`http://localhost:5001/api/skills/${skillId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -319,7 +321,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
   const deleteSkill = async (skillId: string) => {
     const token = localStorage.getItem('token');
     
-    const response = await fetch(`http://localhost:5000/api/skills/${skillId}`, {
+    const response = await fetch(`http://localhost:5001/api/skills/${skillId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
@@ -382,10 +384,10 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+            className="skillmanager-dropdown w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
           >
             {categories.map(category => (
-              <option key={category} value={category} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+              <option key={category} value={category} className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">
                 {category === 'all' ? 'Filter by Category' : category.charAt(0).toUpperCase() + category.slice(1)}
               </option>
             ))}
@@ -396,11 +398,11 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'name' | 'level' | 'experience')}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+            className="skillmanager-dropdown w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
           >
-            <option value="level" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Sort by</option>
-            <option value="name" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Skill Name</option>
-            <option value="experience" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Years of Experience</option>
+            <option value="level" className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">Sort by</option>
+            <option value="name" className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">Skill Name</option>
+            <option value="experience" className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">Years of Experience</option>
           </select>
         </div>
         
@@ -418,13 +420,13 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
                   }
                 }
               }}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 dark:hover:border-gray-500"
+              className="skillmanager-dropdown w-full px-3 py-2 border text-sm  lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
             >
-              <option value="Add a skill" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Add a skill</option>
+              <option value="Add a skill" className="lightmode dark:darkmode">Add a skill</option>
               {availableSkills
                 .filter(availableSkill => !skills.some(userSkill => userSkill.name === availableSkill.name))
                 .map(skill => (
-                  <option key={skill.name} value={skill.name} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                  <option key={skill.name} value={skill.name} className="lightmode dark:darkmode">
                     {skill.name}
                   </option>
                 ))

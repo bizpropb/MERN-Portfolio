@@ -54,13 +54,13 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-end justify-center bg-gray-50 dark:bg-gray-900 pb-16">
+    <div className="min-h-screen flex items-end justify-center lightmode dark:bg-transparent opacity-70 dark:opacity-90 pb-12">
       <div className="max-w-md w-full space-y-2">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold gradient-text">
-            DevHub LOGIN
+            DevHub Login
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-center text-sm lightmode-text-secondary dark:darkmode-text-secondary">
             Demo credentials are pre-filled
           </p>
         </div>
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
         <form className="mt-2 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-3">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="email" className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary">
                 Email
               </label>
               <input
@@ -77,12 +77,12 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="input-field"
+                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
               />
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="password" className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary">
                 Password
               </label>
               <input
@@ -91,40 +91,42 @@ const Login: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="input-field"
+                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
               />
             </div>
           </div>
 
           {error && (
-            <div className="text-red-600 dark:text-red-400 text-sm text-center">
+            <div className="text-danger text-sm text-center">
               {error}
             </div>
           )}
           
           {isRateLimit && (
-            <div className="text-red-600 dark:text-red-400 text-xs text-center font-medium bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-2 mt-2">
+            <div className="text-danger text-xs text-center font-medium lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary border border-danger rounded-md p-2 mt-2">
               ⚠️ Rate limit hit - The logins are right there, Mr. Haxxor! (,,⩌'︿'⩌,,)
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="group relative w-full btn-primary disabled:opacity-50"
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-7/8 hover:w-full px-4 py-2 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary gradient-border gradient-SignIn  focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 transition-all duration-600 flex items-center justify-center border-2"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
         </form>
         
         {/* Registration Link */}
         <div className="text-center">
           <button
             onClick={handleRegistrationClick}
-            className={`text-sm font-medium transition-colors ${
+            className={`text-sm ${
               registrationClicked 
-                ? "text-red-900 dark:text-red-400 cursor-default" 
-                : "text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300"
+                ? "text-danger cursor-default" 
+                : "text-primary hover:text-primary-highlight"
             }`}
           >
             {registrationClicked 
@@ -136,38 +138,33 @@ const Login: React.FC = () => {
         
         {/* Demo Users Section */}
         <div className="mt-8">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
-                Try these demo accounts
-              </span>
-            </div>
+          <div className="text-center text-sm">
+            <span className="lightmode-text-secondary dark:darkmode-text-secondary">
+              Try these demo accounts
+            </span>
           </div>
           
-          <div className="mt-6 grid grid-cols-1 gap-2">
+          <div className="mt-2 grid grid-cols-1 gap-2">
             {demoUsers.map((user, index) => (
               <button
                 key={index}
                 onClick={() => handleDemoUserSelect(user.email)}
-                className="w-full text-left px-3 py-2 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="w-full text-left px-3 py-2 text-xs border lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary  rounded-md hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{user.name}</span>
+                    <span className="font-medium">{user.name}</span>
                     <br />
-                    <span className="text-gray-500 dark:text-gray-400">{user.email}</span>
+                    <span className="lightmode-text-secondary dark:darkmode-text-secondary">{user.email}</span>
                   </div>
-                  <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">@{user.username}</span>
+                  <span className="text-xs text-info font-mono">@{user.username}</span>
                 </div>
               </button>
             ))}
           </div>
           
-          <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
-            <p>All demo accounts use password: <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">password123</span></p>
+          <div className="mt-4 text-center text-xs lightmode-text-secondary dark:darkmode-text-secondary">
+            <p>All demo accounts use password: <span className="font-mono lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary px-1 rounded">password123</span></p>
             <p className="mt-1">Click any user above to auto-fill login credentials!</p>
           </div>
         </div>

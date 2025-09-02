@@ -3,11 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   SunIcon, 
   MoonIcon, 
-  ChartBarIcon, 
-  FolderIcon, 
-  WrenchScrewdriverIcon, 
-  UserIcon,
-  MagnifyingGlassIcon,
   HomeIcon,
   MapIcon,
   NewspaperIcon
@@ -61,21 +56,21 @@ const Navigation: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700">
+      <nav className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary shadow-lg border-b">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
-              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+              <Link to="/" className="text-xl  gradient-text font-bold">
                 DevHub
               </Link>
               
               <div className="hidden md:flex space-x-6">
                 <Link
                   to="/"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
                     isActive('/')
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
+                      : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
                   }`}
                 >
                   <HomeIcon className="w-4 h-4" />
@@ -83,10 +78,10 @@ const Navigation: React.FC = () => {
                 </Link>
                 <Link
                   to="/news"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
                     isActive('/news')
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
+                      : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
                   }`}
                 >
                   <NewspaperIcon className="w-4 h-4" />
@@ -94,10 +89,10 @@ const Navigation: React.FC = () => {
                 </Link>
                 <Link
                   to="/browse"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
                     isActive('/browse')
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
+                      : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
                   }`}
                 >
                   <MapIcon className="w-4 h-4" />
@@ -112,14 +107,14 @@ const Navigation: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <Link
                     to={getMyProfilePath()}
-                    className="text-sm font-bold italic text-purple-500 hidden sm:block hover:text-purple-400 transition-colors"
+                    className="text-sm text-primary hidden sm:block hover:text-primary-highlight dark:hover:text-primary-highlight"
                   >
-                    {user.username.toUpperCase()}
+                    {user.username}
                   </Link>
 
                   <Link
                     to={getMyProfilePath()}
-                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center overflow-hidden"
+                    className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden"
                     title={`${user.firstName} ${user.lastName}`}
                   >
                     <div className="w-full h-full">
@@ -130,19 +125,19 @@ const Navigation: React.FC = () => {
                   {/* Dark Mode Toggle */}
                   <button
                     onClick={toggleDarkMode}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    className="p-2 rounded-lg hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary dark:hover:text-primary-highlight"
                     aria-label="Toggle dark mode"
                   >
                     {isDark ? (
-                      <SunIcon className="w-5 h-5 text-white" />
+                      <SunIcon className="w-5 h-5 text-primary hover:text-primary-highlight" />
                     ) : (
-                      <MoonIcon className="w-5 h-5 text-gray-700" />
+                      <MoonIcon className="w-5 h-5 text-primary hover:text-primary-highlight" />
                     )}
                   </button>
 
                   <button
                     onClick={logout}
-                    className="px-3 py-2 text-sm flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:text-red-600 rounded-lg transition-all duration-500"
+                    className="px-3 py-2 text-sm flex items-center gap-2 rounded-lg hover:lightmode-highlight dark:hover:darkmode-highlight text-primary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300"
                   >
                     <ArrowRightOnRectangleIcon className="w-4 h-4" />
                     Logout

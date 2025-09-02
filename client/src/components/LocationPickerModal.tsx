@@ -100,6 +100,9 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           marker.addTo(map);
           markerRef.current = marker;
 
+          // Pan and zoom to the new location
+          map.setView([lat, lng], 14);
+
           try {
             // Use reverse geocoding to get location info
             const response = await fetch(
@@ -151,7 +154,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
         }
       }
     };
-  }, [isOpen, initialLocation, selectedPosition]);
+  }, [isOpen, initialLocation]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -169,20 +172,20 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          <h3 className="text-lg  mb-4">
             Select Your Location
           </h3>
           
           <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
               Click on the map to select your location
             </p>
           </div>
 
           {/* Map Container */}
-          <div className="h-96 mb-4 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+          <div className="h-96 mb-4 rounded-lg overflow-hidden border">
             <div 
               ref={mapRef} 
               className="location-picker-map w-full h-full"
@@ -191,30 +194,30 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
           {/* Location Info */}
           {selectedPosition && (
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
-              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Selected Location:</h4>
+            <div className="lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg p-4 mb-4">
+              <h4 className="font-medium mb-2">Selected Location:</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Latitude:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary">Latitude:</span>
+                  <span className="ml-2">
                     {selectedPosition.lat.toFixed(6)}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Longitude:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary">Longitude:</span>
+                  <span className="ml-2">
                     {selectedPosition.lng.toFixed(6)}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">City:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary">City:</span>
+                  <span className="ml-2">
                     {isLoading ? 'Loading...' : locationInfo.city || 'Unknown'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Country:</span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary">Country:</span>
+                  <span className="ml-2">
                     {isLoading ? 'Loading...' : locationInfo.country || 'Unknown'}
                   </span>
                 </div>
@@ -227,13 +230,13 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
             <button
               onClick={handleConfirm}
               disabled={!selectedPosition || isLoading}
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-md hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50 transition-all duration-200"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white rounded-md hover:text-primary-highlight disabled:opacity-50 transition-all duration-200"
             >
               Confirm Location
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 lightmode dark:darkmode text-white rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight transition-colors"
             >
               Cancel
             </button>

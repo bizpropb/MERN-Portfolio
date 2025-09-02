@@ -32,29 +32,29 @@ interface UserLocation {
 }
 
 const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
-  <div className="p-3 min-w-[200px] bg-white dark:bg-gray-800">
+  <div className="p-3 min-w-[200px] lightmode dark:darkmode text-primary hover:text-primary-highlight">
     <div className="flex items-center mb-2">
       <div className="w-12 h-12 mr-3">
         <UserAvatar user={user} size="lg" />
       </div>
       <div>
-        <h3 className="m-0 font-bold text-gray-900 dark:text-gray-100">{user.fullName}</h3>
-        <p className="m-0 text-sm text-gray-600 dark:text-gray-300">
+        <h3 className="m-0 ">{user.fullName}</h3>
+        <p className="m-0 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
           {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
         </p>
       </div>
     </div>
     {user.bio && (
-      <p className="my-2 text-sm text-gray-700 dark:text-gray-200">{user.bio}</p>
+      <p className="my-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">{user.bio}</p>
     )}
-    <p className="mt-1 mb-0 text-xs text-gray-500 dark:text-gray-400">
+    <p className="mt-1 mb-0 text-xs lightmode-text-secondary dark:darkmode-text-secondary">
       Member since {new Date(user.memberSince).toLocaleDateString()}
     </p>
     {user.username && (
       <div className="mt-2">
         <a 
           href={`/userspace/${user.username}/profile`}
-          className="inline-block px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-md transition-colors duration-200"
+          className="inline-block px-3 py-1 !text-primary hover:!text-white btn-primary"
         >
           View Profile
         </a>
@@ -70,7 +70,7 @@ const UserCard: React.FC<{
   onClick: (user: UserLocation) => void;
 }> = ({ user, onHover, onLeave, onClick }) => (
   <div 
-    className="p-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-200"
+    className="p-3 border-b lightmode dark:darkmode hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary cursor-pointer transition-colors duration-200"
     onMouseEnter={() => onHover(user)}
     onMouseLeave={onLeave}
     onClick={() => onClick(user)}
@@ -81,16 +81,16 @@ const UserCard: React.FC<{
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{user.fullName}</h3>
+          <h3 className="font-semibold truncate text-primary hover:text-primary-highlight">{user.fullName}</h3>
           {user.username && (
-            <span className="text-xs text-gray-500 dark:text-gray-400">@{user.username}</span>
+            <span className="text-xs text-blue-500">@{user.username}</span>
           )}
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
+        <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary truncate">
           {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
         </p>
         {user.bio && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{user.bio}</p>
+          <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary mt-1 line-clamp-2">{user.bio}</p>
         )}
       </div>
     </div>
@@ -129,7 +129,7 @@ const Map: React.FC = () => {
       const token = localStorage.getItem('token');
       
       // Always search ALL users (including those without locations)
-      const response = await fetch('http://localhost:5000/api/dashboard/all-users', {
+      const response = await fetch('http://localhost:5001/api/dashboard/all-users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -177,7 +177,7 @@ const Map: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/dashboard/all-users', {
+        const response = await fetch('http://localhost:5001/api/dashboard/all-users', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -204,7 +204,9 @@ const Map: React.FC = () => {
   // Map interaction handlers
   const handleUserHover = useCallback((user: UserLocation) => {
     if (mapInstanceRef.current && user.location?.latitude && user.location?.longitude) {
-      mapInstanceRef.current.panTo([user.location.latitude, user.location.longitude]);
+      mapInstanceRef.current.panTo([user.location.latitude, user.location.longitude], {
+        duration: 1.0 // Half the default pan speed (default is 0.5, so 1.0 is slower)
+      });
     }
   }, []);
 
@@ -323,7 +325,7 @@ const Map: React.FC = () => {
         // Create React-rendered popup content
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = `
-          <div class="p-3 min-w-[200px] bg-white dark:bg-gray-800">
+          <div class="p-3 min-w-[200px] lightmode dark:darkmode lightmode-text-primary dark:darkmode-text-primary !text-primary">
             <div class="flex items-center mb-2">
               <div class="w-12 h-12 mr-3 flex-shrink-0 rounded-full overflow-hidden">
                 ${user.avatar ? `
@@ -333,31 +335,31 @@ const Map: React.FC = () => {
                     class="w-full h-full object-cover"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
                   />
-                  <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center" style="display: none;">
-                    <span class="text-white font-bold text-lg">${user.firstName[0]}${user.lastName[0]}</span>
+                  <div class="w-full h-full bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-full flex items-center justify-center" style="display: none;">
+                    <span class="text-white  text-lg">${user.firstName[0]}${user.lastName[0]}</span>
                   </div>
                 ` : `
-                  <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <span class="text-white font-bold text-lg">${user.firstName[0]}${user.lastName[0]}</span>
+                  <div class="w-full h-full bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-full flex items-center justify-center">
+                    <span class="text-white  text-lg">${user.firstName[0]}${user.lastName[0]}</span>
                   </div>
                 `}
               </div>
               <div class="flex flex-col justify-center">
-                <h3 class="font-bold text-gray-900 dark:text-gray-100">${user.fullName}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
+                <h3 class="">${user.fullName}</h3>
+                <p class="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                   ${user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
                 </p>
               </div>
             </div>
-            ${user.bio ? `<p class="my-2 text-sm text-gray-700 dark:text-gray-200">${user.bio}</p>` : ''}
-            <p class="mt-1 mb-0 text-xs text-gray-500 dark:text-gray-400 text-right">
+            ${user.bio ? `<p class="my-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">${user.bio}</p>` : ''}
+            <p class="mt-1 mb-0 text-xs lightmode-text-secondary dark:darkmode-text-secondary text-right">
               Member since ${new Date(user.memberSince).toLocaleDateString()}
             </p>
             ${user.username ? `
               <div class="mt-2 text-right">
                 <a 
                   href="/userspace/${user.username}/profile"
-                  class="profile-link inline-block px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-md transition-colors duration-200"
+                  class="profile-link inline-block px-3 py-1 !text-primary hover:!text-white btn-primary"
                 >
                   View Profile
                 </a>
@@ -385,7 +387,7 @@ const Map: React.FC = () => {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-        <span className="ml-3 text-gray-600">Loading map and users...</span>
+        <span className="ml-3 lightmode-text-secondary dark:darkmode-text-secondary">Loading map and users...</span>
       </div>
     );
   }
@@ -393,10 +395,10 @@ const Map: React.FC = () => {
   return (
     <div className="h-[93vh] flex flex-col">
       {/* Disclaimer */}
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+      <div className="lightmode dark:darkmode border-b px-4 py-3">
         <div className="flex items-center space-x-2 max-w-7xl mx-auto">
-          <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+          <ExclamationTriangleIcon className="w-5 h-5 lightmode-text-secondary dark:darkmode-text-secondary flex-shrink-0" />
+          <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
             <strong>Fictional Data:</strong> All user locations and data depicted on this map are entirely fictional and created for demonstration purposes only.
           </p>
         </div>
@@ -405,37 +407,37 @@ const Map: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex relative min-h-0">
         {/* Sidebar */}
-        <div className="w-96 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg z-[1000] h-full">
+        <div className="w-96 lightmode dark:darkmode border-r shadow-lg z-[1000] h-full">
           <div className="h-full flex flex-col">
             {/* Search Header */}
-            <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex-shrink-0 p-4 border-b lightmode dark:darkmode">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                  <MagnifyingGlassIcon className="h-5 w-5 lightmode-text-secondary dark:darkmode-text-secondary" />
                 </div>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   placeholder="Search by name, username, or location..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="text-sm block w-full pl-10 pr-3 py-2 border rounded-md leading-5 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary placeholder:lightmode-text-secondary dark:placeholder:darkmode-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 />
                 {searchLoading && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Users List */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto min-h-0 lightmode dark:darkmode">
               {filteredUsers.length === 0 ? (
-                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                <div className="p-4 text-center lightmode-text-secondary dark:darkmode-text-secondary">
                   {searchQuery ? 'No users found matching your search.' : 'No users to display.'}
                 </div>
               ) : (
-                <div>
+                <div className="lightmode dark:darkmode">
                   {filteredUsers.map((user) => (
                     <UserCard
                       key={user._id}
@@ -450,8 +452,8 @@ const Map: React.FC = () => {
             </div>
 
             {/* Results Count */}
-            <div className="flex-shrink-0 p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+            <div className="flex-shrink-0 p-3 border-t lightmode dark:darkmode">
+              <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary text-center">
                 {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
                 {searchQuery && ` for "${searchQuery}"`}
               </p>
@@ -461,26 +463,26 @@ const Map: React.FC = () => {
 
 
         {/* Map Container */}
-        <div className="flex-1 relative">
+        <div className="flex-1">
           <div ref={mapRef} className="w-full h-full" />
           
           {/* Status overlays */}
           <div className="absolute top-4 right-4 space-y-2 z-[1000]">
             {/* User count */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
+            <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-3">
               <div className="flex items-center space-x-2">
-                <MapPinIcon className="w-5 h-5 text-red-500" />
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <MapPinIcon className="w-5 h-5 text-danger" />
+                <span className="text-sm font-medium">
                   {users.filter(u => u.location?.latitude && u.location?.longitude).length} Users on Map
                 </span>
               </div>
             </div>
             
             {/* Map status */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3">
-              <div className="flex items-center space-x-2">
-                <div className={`w-3 h-3 rounded-full ${mapReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-3">
+              <div className="ml-1 flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${mapReady ? 'bg-success' : 'bg-danger'}`} />
+                <span className="text-sm font-medium">
                   Map {mapReady ? 'Ready' : 'Loading'}
                 </span>
               </div>

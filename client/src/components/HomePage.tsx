@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import LatestNews from './LatestNews';
+import NewsLatest from './NewsLatest';
 import UserAvatar from './UserAvatar';
 
 interface User {
@@ -34,7 +34,7 @@ const HomePage: React.FC = () => {
   const fetchData = async () => {
     try {
       // Fetch users for featured developers and stats
-      const usersResponse = await fetch('http://localhost:5000/api/dashboard/map-users', {
+      const usersResponse = await fetch('http://localhost:5001/api/dashboard/map-users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const usersData = await usersResponse.json();
@@ -76,23 +76,23 @@ const HomePage: React.FC = () => {
           
           {/* Main Content Area - Latest Updates */}
           <div className="lg:col-span-2">
-            <LatestNews limit={3} showLoadMore={true} />
+            <NewsLatest limit={3} showLoadMore={true} />
           </div>
 
           {/* Sidebar */}
           <div className="space-y-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-md p-6">
+              <h3 className="text-xl  mb-4">
                 Featured Developers
               </h3>
               {loading ? (
                 <div className="space-y-3">
                   {[1,2,3,4,5].map(i => (
                     <div key={i} className="animate-pulse flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                      <div className="w-10 h-10 lightmode-highlight lightmode-text-primary dark:darkmode-highlight darkmode-text-primary rounded-full"></div>
                       <div className="flex-1">
-                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-1"></div>
-                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                        <div className="h-4 lightmode-highlight lightmode-text-primary dark:darkmode-highlight darkmode-text-primary rounded w-3/4 mb-1"></div>
+                        <div className="h-3 lightmode-highlight lightmode-text-primary dark:darkmode-highlight darkmode-text-primary rounded w-1/2"></div>
                       </div>
                     </div>
                   ))}
@@ -103,16 +103,16 @@ const HomePage: React.FC = () => {
                     <Link 
                       key={user._id} 
                       to={`/userspace/${user.username}/profile`}
-                      className="flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 -m-2 transition-colors"
+                      className="flex items-center space-x-3 hover:lightmode-highlight hover:dark:darkmode-highlight rounded-lg p-2 -m-2 transition-colors"
                     >
                       <div className="w-10 h-10 flex-shrink-0">
                         <UserAvatar user={user} size="sm" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        <p className="text-sm font-medium truncate text-primary hover:text-primary-highlight">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary truncate">
                           @{user.username}
                         </p>
                       </div>
@@ -122,26 +122,26 @@ const HomePage: React.FC = () => {
               )}
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-md p-6">
+              <h3 className="text-xl  mb-4">
                 Quick Stats
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Total Developers</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary text-sm">Total Developers</span>
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalUsers}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Total Projects</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary text-sm">Total Projects</span>
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalProjects}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Technologies</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="lightmode-text-secondary dark:darkmode-text-secondary text-sm">Technologies</span>
+                  <span className="font-semibold">
                     {loading ? '...' : stats.totalTechnologies}
                   </span>
                 </div>
@@ -151,12 +151,12 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Community Discussions - Full Width */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 mt-8">
-          <h2 className="text-md text-gray-900 dark:text-white mb-1 text-center">
+        <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-md p-3 mt-8">
+          <h2 className="text-lg mb-1 text-center font-">
             COMMUNITY DISCUSSIONS
           </h2>
-          <hr className="border-gray-300 dark:border-gray-600 mb-6" />
-          <pre className="text-xs font-mono text-gray-600 dark:text-gray-400 overflow-x-auto whitespace-pre text-center">
+          <hr className="mb-6" />
+          <pre className="text-xs !font-mono overflow-x-hidden whitespace-pre text-center lightmode-text-secondary dark:darkmode-text-secondary">
 {` ██████╗ ██████╗ ███╗   ███╗███╗   ███╗██╗███╗   ██╗ ██████╗     ███████╗ ██████╗  ██████╗ ███╗   ██╗██╗
 ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██║████╗  ██║██╔════╝     ██╔════╝██╔═══██╗██╔═══██╗████╗  ██║██║
 ██║     ██║   ██║██╔████╔██║██╔████╔██║██║██╔██╗ ██║██║  ███╗    ███████╗██║   ██║██║   ██║██╔██╗ ██║██║

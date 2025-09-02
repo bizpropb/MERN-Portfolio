@@ -28,13 +28,13 @@ const NavigationSubUserspace: React.FC = () => {
   if (!username) return null;
 
   return (
-    <nav className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <nav className="lightmode dark:darkmode border-b">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center py-2">
           <div className="flex items-center space-x-6">
             <Link 
               to={getProfilePath()}
-              className="text-sm font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+              className="text-sm "
             >
             &lt;/&gt; userspace
             </Link>
@@ -42,10 +42,10 @@ const NavigationSubUserspace: React.FC = () => {
             <div className="flex space-x-4">
               <Link
                 to={getDashboardPath()}
-                className={`flex items-center space-x-2 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
                   isActive(getDashboardPath())
-                    ? 'text-purple-600 dark:text-purple-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                    ? '!text-primary-highlight !'
+                    : 'text-primary hover:text-primary-highlight'
                 }`}
               >
                 <ChartBarIcon className="w-3 h-3" />
@@ -53,10 +53,10 @@ const NavigationSubUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getProjectsPath()}
-                className={`flex items-center space-x-2 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
                   isActive(getProjectsPath())
-                    ? 'text-purple-600 dark:text-purple-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                    ? '!text-primary-highlight !'
+                    : 'text-primary hover:text-primary-highlight'
                 }`}
               >
                 <FolderIcon className="w-3 h-3" />
@@ -64,10 +64,10 @@ const NavigationSubUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getSkillsPath()}
-                className={`flex items-center space-x-2 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
                   isActive(getSkillsPath())
-                    ? 'text-purple-600 dark:text-purple-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                    ? '!text-primary-highlight !'
+                    : 'text-primary hover:text-primary-highlight'
                 }`}
               >
                 <WrenchScrewdriverIcon className="w-3 h-3" />
@@ -75,10 +75,10 @@ const NavigationSubUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getProfilePath()}
-                className={`flex items-center space-x-2 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
                   isActive(getProfilePath())
-                    ? 'text-purple-600 dark:text-purple-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                    ? '!text-primary-highlight !'
+                    : 'text-primary hover:text-primary-highlight'
                 }`}
               >
                 <UserIcon className="w-3 h-3" />

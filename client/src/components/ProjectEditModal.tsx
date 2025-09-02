@@ -119,7 +119,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
         endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
       };
 
-      const response = await fetch(`http://localhost:5000/api/projects/${project._id}`, {
+      const response = await fetch(`http://localhost:5001/api/projects/${project._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -157,15 +157,15 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-2xl  lightmode-text-primary dark:darkmode-text-primary">
             Edit Project
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+            className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:text-primary-highlight"
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
@@ -176,14 +176,14 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                 Project Title *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 placeholder="Enter project title..."
               />
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -191,14 +191,14 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                 Description *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 placeholder="Describe your project..."
               />
               {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
@@ -207,28 +207,28 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
             {/* URLs */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   GitHub URL
                 </label>
                 <input
                   type="url"
                   value={formData.githubUrl}
                   onChange={(e) => setFormData(prev => ({ ...prev, githubUrl: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                   placeholder="https://github.com/username/repo"
                 />
                 {errors.githubUrl && <p className="text-red-500 text-sm mt-1">{errors.githubUrl}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   Live Demo URL
                 </label>
                 <input
                   type="url"
                   value={formData.liveUrl}
                   onChange={(e) => setFormData(prev => ({ ...prev, liveUrl: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                   placeholder="https://yourproject.com"
                 />
                 {errors.liveUrl && <p className="text-red-500 text-sm mt-1">{errors.liveUrl}</p>}
@@ -237,14 +237,14 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
 
             {/* Image URL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                 Project Image URL
               </label>
               <input
                 type="url"
                 value={formData.imageUrl}
                 onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 placeholder="https://example.com/image.jpg"
               />
               {errors.imageUrl && <p className="text-red-500 text-sm mt-1">{errors.imageUrl}</p>}
@@ -253,13 +253,13 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
             {/* Status and Priority */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   Status *
                 </label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as any }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 >
                   <option value="planning">Planning</option>
                   <option value="in-progress">In Progress</option>
@@ -269,13 +269,13 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   Priority
                 </label>
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as any }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -287,26 +287,26 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
             {/* Dates */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   Start Date
                 </label>
                 <input
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                   End Date
                 </label>
                 <input
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                  className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 />
                 {errors.endDate && <p className="text-red-500 text-sm mt-1">{errors.endDate}</p>}
               </div>
@@ -314,19 +314,18 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
 
             {/* Technologies */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium lightmode-text-primary dark:darkmode-text-primary mb-2">
                 Technologies Used *
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-40 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md p-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-40 overflow-y-auto border rounded-md p-3">
                 {TECH_OPTIONS.map((tech) => (
                   <label key={tech} className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.technologies.includes(tech)}
                       onChange={() => handleTechToggle(tech)}
-                      className="custom-checkbox"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{tech}</span>
+                    <span className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">{tech}</span>
                   </label>
                 ))}
               </div>
@@ -340,9 +339,8 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
                   type="checkbox"
                   checked={formData.featured}
                   onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
-                  className="custom-checkbox"
                 />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium lightmode-text-secondary dark:darkmode-text-secondary">
                   Mark as featured project
                 </span>
               </label>
@@ -353,7 +351,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium rounded-md hover:from-cyan-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
+                className="btn-primary-filled w-full px-4 py-2 shadow-lg flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>

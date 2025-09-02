@@ -41,15 +41,15 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, className = "", size = "m
             }}
           />
           <div 
-            className={`w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center ${getSizeClasses()}`}
+            className={`w-full h-full border-2 border-primary text-primary rounded-full flex items-center justify-center ${getSizeClasses()}`}
             style={{ display: 'none' }}
           >
-            <span className="text-white font-bold">{initials}</span>
+            <span className="">{initials}</span>
           </div>
         </>
       ) : (
-        <div className={`w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center ${getSizeClasses()}`}>
-          <span className="text-white font-bold">{initials}</span>
+        <div className={`w-full h-full border-2 border-primary text-primary rounded-full flex items-center justify-center ${getSizeClasses()}`}>
+          <span className="">{initials}</span>
         </div>
       )}
     </div>
