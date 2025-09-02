@@ -149,7 +149,7 @@ describe('ProjectCreateModal Unit Tests', () => {
 
     // Verify the API was called correctly
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:5000/api/projects',
+      'http://localhost:5001/api/projects',
       expect.objectContaining({
         method: 'POST',
         headers: {

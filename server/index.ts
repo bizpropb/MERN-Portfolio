@@ -51,7 +51,7 @@ const limiter = rateLimit({
 
 // Apply middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000', // Default to localhost:3000 if not set
+  origin: process.env.CLIENT_URL || 'http://localhost:3001', // Default to localhost:3001 if not set
   credentials: true, // Allow cookies to be sent cross-origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -146,18 +146,14 @@ app.use((_req: Request, res: Response) => {
 });
 
 // Get port from environment variables or use default
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 /**
  * Start the Express server
  */
 const server = app.listen(PORT, () => {
-  console.log(`\n🚀 Server running in ${NODE_ENV} mode on port ${PORT}`);
-  console.log(`📊 Database: ${process.env.DATABASE_TYPE || 'Not configured'}`);
-  console.log(`🔗 Client URL: ${process.env.CLIENT_URL || 'Not configured'}`);
-  console.log(`🌐 API Base URL: http://localhost:${PORT}/api/test`);
-  console.log(`📚 API Docs: http://localhost:${PORT}/api-docs\n`);
+  // Server started successfully
 });
 
 // Handle unhandled promise rejections
