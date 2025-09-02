@@ -689,7 +689,7 @@ export const getSkillAnalytics = async (req: Request, res: Response): Promise<vo
 /**
  * @async
  * @function getAvailableSkills
- * @description Get all available skills from the seed data for skill selection
+ * @description Get all available skills from the predefined skill list for skill selection
  * @param {Request} req - Express request object
  * @param {Response} res - Express response object
  * @returns {Promise<void>}
@@ -704,27 +704,155 @@ export const getAvailableSkills = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    // Get all unique skill names and categories from the database
-    const allUniqueSkills = await Skill.aggregate([
-      {
-        $group: {
-          _id: {
-            name: '$name',
-            category: '$category'
-          }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          name: '$_id.name',
-          category: '$_id.category'
-        }
-      },
-      {
-        $sort: { category: 1, name: 1 }
-      }
-    ]);
+    // Comprehensive predefined skill list from seed data and more
+    const predefinedSkills = [
+      // Frontend
+      { name: 'React', category: 'frontend' },
+      { name: 'Vue.js', category: 'frontend' },
+      { name: 'Angular', category: 'frontend' },
+      { name: 'TypeScript', category: 'frontend' },
+      { name: 'JavaScript', category: 'frontend' },
+      { name: 'Next.js', category: 'frontend' },
+      { name: 'Nuxt.js', category: 'frontend' },
+      { name: 'Tailwind CSS', category: 'frontend' },
+      { name: 'Styled Components', category: 'frontend' },
+      { name: 'Material-UI', category: 'frontend' },
+      { name: 'Ant Design', category: 'frontend' },
+      { name: 'Bootstrap', category: 'frontend' },
+      { name: 'Sass', category: 'frontend' },
+      { name: 'Less', category: 'frontend' },
+      { name: 'Webpack', category: 'frontend' },
+      { name: 'Vite', category: 'frontend' },
+      { name: 'Parcel', category: 'frontend' },
+      { name: 'ESLint', category: 'frontend' },
+      { name: 'Prettier', category: 'frontend' },
+      
+      // Backend
+      { name: 'Node.js', category: 'backend' },
+      { name: 'Express.js', category: 'backend' },
+      { name: 'Fastify', category: 'backend' },
+      { name: 'Koa.js', category: 'backend' },
+      { name: 'NestJS', category: 'backend' },
+      { name: 'Python', category: 'backend' },
+      { name: 'Django', category: 'backend' },
+      { name: 'Flask', category: 'backend' },
+      { name: 'FastAPI', category: 'backend' },
+      { name: 'Java', category: 'backend' },
+      { name: 'Spring Boot', category: 'backend' },
+      { name: 'C#', category: 'backend' },
+      { name: '.NET Core', category: 'backend' },
+      { name: 'ASP.NET', category: 'backend' },
+      { name: 'Go', category: 'backend' },
+      { name: 'Gin', category: 'backend' },
+      { name: 'Rust', category: 'backend' },
+      { name: 'PHP', category: 'backend' },
+      { name: 'Laravel', category: 'backend' },
+      { name: 'Symfony', category: 'backend' },
+      { name: 'Ruby', category: 'backend' },
+      { name: 'Ruby on Rails', category: 'backend' },
+      
+      // Database
+      { name: 'MongoDB', category: 'database' },
+      { name: 'PostgreSQL', category: 'database' },
+      { name: 'MySQL', category: 'database' },
+      { name: 'SQLite', category: 'database' },
+      { name: 'Redis', category: 'database' },
+      { name: 'Elasticsearch', category: 'database' },
+      { name: 'Firebase', category: 'database' },
+      { name: 'Supabase', category: 'database' },
+      { name: 'DynamoDB', category: 'database' },
+      { name: 'Cassandra', category: 'database' },
+      { name: 'Neo4j', category: 'database' },
+      { name: 'InfluxDB', category: 'database' },
+      
+      // Cloud
+      { name: 'AWS', category: 'cloud' },
+      { name: 'Azure', category: 'cloud' },
+      { name: 'Google Cloud', category: 'cloud' },
+      { name: 'Vercel', category: 'cloud' },
+      { name: 'Netlify', category: 'cloud' },
+      { name: 'Heroku', category: 'cloud' },
+      { name: 'DigitalOcean', category: 'cloud' },
+      { name: 'Linode', category: 'cloud' },
+      { name: 'Cloudflare', category: 'cloud' },
+      { name: 'AWS Lambda', category: 'cloud' },
+      { name: 'AWS EC2', category: 'cloud' },
+      { name: 'AWS S3', category: 'cloud' },
+      { name: 'AWS RDS', category: 'cloud' },
+      
+      // Tools
+      { name: 'Git', category: 'tools' },
+      { name: 'GitHub', category: 'tools' },
+      { name: 'GitLab', category: 'tools' },
+      { name: 'Bitbucket', category: 'tools' },
+      { name: 'Docker', category: 'tools' },
+      { name: 'Kubernetes', category: 'tools' },
+      { name: 'Jenkins', category: 'tools' },
+      { name: 'GitHub Actions', category: 'tools' },
+      { name: 'GitLab CI', category: 'tools' },
+      { name: 'CircleCI', category: 'tools' },
+      { name: 'Travis CI', category: 'tools' },
+      { name: 'Terraform', category: 'tools' },
+      { name: 'Ansible', category: 'tools' },
+      { name: 'Chef', category: 'tools' },
+      { name: 'Puppet', category: 'tools' },
+      { name: 'Vagrant', category: 'tools' },
+      { name: 'VS Code', category: 'tools' },
+      { name: 'IntelliJ IDEA', category: 'tools' },
+      { name: 'Postman', category: 'tools' },
+      { name: 'Insomnia', category: 'tools' },
+      { name: 'Figma', category: 'tools' },
+      { name: 'Adobe XD', category: 'tools' },
+      { name: 'Sketch', category: 'tools' },
+      { name: 'Jira', category: 'tools' },
+      { name: 'Confluence', category: 'tools' },
+      { name: 'Slack', category: 'tools' },
+      { name: 'Discord', category: 'tools' },
+      { name: 'Notion', category: 'tools' },
+      
+      // Mobile
+      { name: 'React Native', category: 'mobile' },
+      { name: 'Flutter', category: 'mobile' },
+      { name: 'Ionic', category: 'mobile' },
+      { name: 'Expo', category: 'mobile' },
+      { name: 'Swift', category: 'mobile' },
+      { name: 'Kotlin', category: 'mobile' },
+      { name: 'Java (Android)', category: 'mobile' },
+      { name: 'Xamarin', category: 'mobile' },
+      { name: 'Cordova', category: 'mobile' },
+      { name: 'PhoneGap', category: 'mobile' },
+      
+      // Other
+      { name: 'GraphQL', category: 'other' },
+      { name: 'REST API', category: 'other' },
+      { name: 'gRPC', category: 'other' },
+      { name: 'WebSocket', category: 'other' },
+      { name: 'Socket.io', category: 'other' },
+      { name: 'JWT', category: 'other' },
+      { name: 'OAuth', category: 'other' },
+      { name: 'Stripe', category: 'other' },
+      { name: 'PayPal', category: 'other' },
+      { name: 'Twilio', category: 'other' },
+      { name: 'SendGrid', category: 'other' },
+      { name: 'Mailgun', category: 'other' },
+      { name: 'Cloudinary', category: 'other' },
+      { name: 'Algolia', category: 'other' },
+      { name: 'Auth0', category: 'other' },
+      { name: 'Clerk', category: 'other' },
+      { name: 'Prisma', category: 'other' },
+      { name: 'Sequelize', category: 'other' },
+      { name: 'Mongoose', category: 'other' },
+      { name: 'Drizzle', category: 'other' },
+      { name: 'tRPC', category: 'other' },
+      { name: 'Zod', category: 'other' },
+      { name: 'Jest', category: 'other' },
+      { name: 'Vitest', category: 'other' },
+      { name: 'Cypress', category: 'other' },
+      { name: 'Playwright', category: 'other' },
+      { name: 'Puppeteer', category: 'other' },
+      { name: 'Storybook', category: 'other' },
+      { name: 'Chromatic', category: 'other' }
+    ];
 
     // Get skills the current user already has
     const userSkills = await Skill.find({ 
@@ -735,7 +863,7 @@ export const getAvailableSkills = async (req: Request, res: Response): Promise<v
     const userSkillNames = userSkills.map(skill => skill.name);
 
     // Filter out skills the user already has
-    const availableSkills = allUniqueSkills.filter(
+    const availableSkills = predefinedSkills.filter(
       skill => !userSkillNames.includes(skill.name)
     );
 
