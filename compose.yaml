@@ -23,26 +23,6 @@ services:
     networks:
       - app-network
 
-  # PostgreSQL
-  postgresql:
-    image: postgres:16
-    container_name: pern-postgresql
-    restart: "no"
-    environment:
-      POSTGRES_USER_FILE: /run/secrets/postgres-user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-password
-      POSTGRES_DB_FILE: /run/secrets/postgres-db
-    secrets:
-      - postgres-user
-      - postgres-password
-      - postgres-db
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgresql_data:/var/lib/postgresql/data
-      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/postgres-init.sql:ro
-    networks:
-      - app-network
 
   # Node.js Backend Server
   server:
@@ -57,22 +37,16 @@ services:
       - PORT=${PORT}
       - DATABASE_TYPE=${DATABASE_TYPE}
       - MONGODB_URI=${MONGODB_URI}
-      - POSTGRESQL_HOST=${POSTGRESQL_HOST}
-      - POSTGRESQL_PORT=${POSTGRESQL_PORT}
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
       - CLIENT_URL=${CLIENT_URL}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRE=${JWT_EXPIRE}
     ports:
-      - "5000:5000"
+      - "5001:5001"
     volumes:
       - ./server:/app
       - server_node_modules:/app/node_modules
     depends_on:
       - mongodb
-      - postgresql
     networks:
       - app-network
 
@@ -86,8 +60,9 @@ services:
     restart: "no"
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - PORT=3001
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - ./client:/app
       - client_node_modules:/app/node_modules
@@ -113,20 +88,6 @@ services:
     networks:
       - app-network   
 
-  # PostgreSQL Admin UI
-  pgadmin:
-    image: dpage/pgadmin4:8.1
-    container_name: pgadmin
-    restart: "no"
-    ports:
-      - "8082:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgresql
 
   # Database Seeding Service
   seed:
@@ -154,8 +115,6 @@ services:
 volumes:
   mongodb_data:
   mongodb_configdb:
-  postgresql_data:
-  pgadmin_data:
   server_node_modules:
   client_node_modules:
   seed_node_modules:
@@ -169,9 +128,3 @@ secrets:
     file: ./docker/secrets/mongo-root-username.txt
   mongo-root-password:
     file: ./docker/secrets/mongo-root-password.txt
-  postgres-user:
-    file: ./docker/secrets/postgres-user.txt
-  postgres-password:
-    file: ./docker/secrets/postgres-password.txt
-  postgres-db:
-    file: ./docker/secrets/postgres-db.txt

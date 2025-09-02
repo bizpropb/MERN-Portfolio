@@ -12,7 +12,7 @@ RUN npm install
 # Development stage
 FROM base AS development
 COPY . .
-EXPOSE 3000
+EXPOSE 3001
 VOLUME ["/app/node_modules"]
 CMD ["npm", "run", "dev"]
 
@@ -20,5 +20,5 @@ CMD ["npm", "run", "dev"]
 FROM base AS production
 COPY . .
 RUN npm run build
-EXPOSE 3000
-CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+EXPOSE 3001
+CMD ["npx", "serve", "-s", "build", "-l", "3001"]

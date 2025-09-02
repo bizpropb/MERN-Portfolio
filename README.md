@@ -76,7 +76,6 @@ This project demonstrates proficiency in modern full-stack development:
 
 This application serves as both a **functional platform** and a **comprehensive code demonstration** of modern MERN stack development practices, including Docker containerization, responsive design, and scalable architecture patterns.
 
-*Note: PostgreSQL is included in the stack for polyglot database demonstration purposes.*
 
 
 ```
@@ -102,7 +101,6 @@ Hit CTRL + SHIFT + V to open the .md-formatter for VS CODE.
 - `docker-compose.yml` - Orchestrates the multi-container application
 - `/docker` - Contains database initialization scripts:
   - `mongo-init.js` - Sets up initial MongoDB collections and indexes for the portfolio database
-  - `postgres-init.sql` - Creates initial PostgreSQL tables and sample data for the portfolio database
 - `startup.sh` - A helper script that you should run after starting the compose
 
 ## Prerequisites
@@ -144,6 +142,7 @@ docker-compose restart
 Quick start (and rebuild) Application in dev mode (including helper script & seed):
 ```bash
 docker-compose down # Stop all containers and delete them
+docker volume rm mern-portfolio_client_node_modules mern-portfolio_server_node_modules # These are cache volumes. I named them to be orderly, but this makes them persistent. Remove them on rebuilds to prevent issues.
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
 docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
 docker exec -it mern-server npm run seed

@@ -3,13 +3,9 @@ version: '3.8'
 services:
   mongodb:
     restart: unless-stopped
-  postgresql:
-    restart: unless-stopped
   server:
     restart: unless-stopped
   client:
     restart: unless-stopped
   mongo-express:
-    restart: unless-stopped
-  pgadmin:
     restart: unless-stopped
