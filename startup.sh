@@ -17,17 +17,11 @@ else
     echo "   ❌ MongoDB:                Not running"
 fi
 
-# PostgreSQL  
-if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "pern-postgresql.*Up"; then
-    echo "   ✔️ Postgre SQL Admin UI:   http://localhost:8082 (pgAdmin - user: .env / password: .env)"
-else
-    echo "   ❌ PostgreSQL:             Not running"   
-fi
 
 # Server
 if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "mern-server.*Up"; then
-    echo "   ✔️ Swagger Server API:     http://localhost:5000/api-docs"
-    echo "   ✔️ Test API:               http://localhost:5000/api/test"
+    echo "   ✔️ Swagger Server API:     http://localhost:5001/api-docs"
+    echo "   ✔️ Test API:               http://localhost:5001/api/test"
 else
     echo "   ❌ Server:                 Not running"
 fi
@@ -35,18 +29,18 @@ fi
 
 # Client
 if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "mern-client.*Up"; then
-    echo "   ✔️ Client App:             http://localhost:3000"
+    echo "   ✔️ Client App:             http://localhost:3001"
 else
     echo "   ❌ Client:                 Not running"
 fi
-echo "   >>⚠️  Ports aren't auto-synced with compose.yaml, when in doubt look there."
+echo "   >>⚠️  Ports aren't auto-synced, when in doubt check docker desktop."
 
 echo ""
 echo "🔧 Quick Commands:"
 echo "   docker ps -a                       # List all containers (check if something broke)"
 echo "   docker logs mern-server             # View server logs (change name to any container)"
 echo "   docker-compose logs -f             # Follow the logs (display and update logs in realtime)"
-echo "   netstat -ano | findstr :5000       # Check if port (5000) is in use"  
+echo "   netstat -ano | findstr :5001       # Check if port (5001) is in use"  
 echo "   >>⚠️  compose.prod container will try to auto-restart and claim ports - Keep in mind when 'npm run dev'"
 echo ""
 echo "🔧 Advanced Commands:"

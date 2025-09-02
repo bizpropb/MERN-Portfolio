@@ -35,7 +35,6 @@ Environment variables (if any) should be set in `.env` file (see .env.example)
 
 ## Project Structure
 ```
-//Todo: update this section
 src/
   controllers/  # Route controllers
   models/       # MongoDB models
