@@ -43,7 +43,7 @@ const seedData = {
     {
       email: 'demo@devhub.com',
       password: 'password123',
-      username: 'demo',
+      username: 'demo_dan',
       firstName: 'Daniel',
       lastName: 'Demo',
       bio: 'Full-stack developer passionate about building amazing web applications. I love learning new technologies and solving complex problems.',
@@ -72,7 +72,8 @@ const seedData = {
       bio: 'Backend engineer focused on scalable architecture and performance optimization.',
       role: 'user',
       isVerified: true,
-      location: { latitude: 51.5074, longitude: -0.1278, city: 'London', country: 'United Kingdom' }
+      location: { latitude: 51.5074, longitude: -0.1278, city: 'London', country: 'United Kingdom' },
+      avatar: 'https://images.stockcake.com/public/a/a/6/aa6489a2-1f3d-444c-a590-e2253a644cdf_large/neon-street-wanderer-stockcake.jpg'
     },
     {
       email: 'alex.reviewer@example.com',
@@ -437,17 +438,21 @@ Let's also acknowledge that dark mode just looks more professional in video call
 
 ## How we actually built this
 
-Our dark mode implementation uses CSS custom properties and Tailwind's dark mode utilities. Nothing revolutionary here, just solid engineering.
+Our dark mode implementation uses custom Tailwind utilities and a React context provider. We created semantic color utilities that work consistently across the entire application.
 
-\`\`\`css
-/* Context provider for state management */
+\`\`\`
+// React context for state management
 const { isDark, toggleDarkMode } = useDarkMode();
 
-/* Tailwind handles the heavy lifting */
-<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+// Custom utility classes handle theming automatically
+<div className="lightmode dark:darkmode lightmode-text-primary dark:darkmode-text-primary">
+  <button className="lightmode-highlight dark:darkmode-highlight">
+    Button with proper theming
+  </button>
+</div>
 \`\`\`
 
-The system remembers your preference across sessions, automatically applies it to all pages, and respects your system settings if you haven't made a manual choice. Pretty standard stuff, but it works reliably.
+The system remembers your preference across sessions, automatically applies it to all pages, and defaults to dark mode for new users. Pretty standard stuff, but it works reliably.
 
 ## Finding the toggle
 
