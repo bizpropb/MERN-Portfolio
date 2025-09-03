@@ -41,6 +41,33 @@ const Navigation: React.FC = () => {
   const { isDark, toggleDarkMode } = useDarkMode();
   const location = useLocation();
   
+  // PARTICLE ANIMATION TOGGLE STATE - STORED IN LOCALSTORAGE
+  const [particlesEnabled, setParticlesEnabled] = useState(() => {
+    const saved = localStorage.getItem('particlesEnabled');
+    return saved !== null ? JSON.parse(saved) : true; // DEFAULT TO ENABLED
+  });
+  
+  // TOGGLE PARTICLE ANIMATIONS AND SAVE TO LOCALSTORAGE
+  const toggleParticles = () => {
+    const newState = !particlesEnabled;
+    setParticlesEnabled(newState);
+    localStorage.setItem('particlesEnabled', JSON.stringify(newState));
+    
+    // ADD/REMOVE CSS CLASS TO DISABLE ONLY PARTICLE ANIMATIONS
+    if (newState) {
+      document.documentElement.classList.remove('particles-disabled');
+    } else {
+      document.documentElement.classList.add('particles-disabled');
+    }
+  };
+  
+  // SET INITIAL STATE ON MOUNT
+  React.useEffect(() => {
+    if (!particlesEnabled) {
+      document.documentElement.classList.add('particles-disabled');
+    }
+  }, []);
+  
   const isActive = (path: string) => {
     if (path === '/news') {
       return location.pathname.startsWith('/news');
@@ -122,11 +149,28 @@ const Navigation: React.FC = () => {
                     </div>
                   </Link>
 
+                  {/* Particle Animation Toggle */}
+                  <button
+                    onClick={toggleParticles}
+                    className="p-2 rounded-lg hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary dark:hover:text-primary-highlight"
+                    aria-label={particlesEnabled ? "Particles on" : "Particles off"}
+                    title={particlesEnabled ? "Particles on" : "Particles off"}
+                  >
+                    <span className={`w-5 h-5 flex items-center justify-center text-sm font-bold ${
+                      particlesEnabled 
+                        ? 'text-primary hover:text-primary-highlight' 
+                        : 'lightmode-text-primary dark:darkmode-text-primary'
+                    }`}>
+                      A
+                    </span>
+                  </button>
+
                   {/* Dark Mode Toggle */}
                   <button
                     onClick={toggleDarkMode}
                     className="p-2 rounded-lg hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary dark:hover:text-primary-highlight"
-                    aria-label="Toggle dark mode"
+                    aria-label={isDark ? "Toggle light mode" : "Toggle dark mode"}
+                    title={isDark ? "Toggle light mode" : "Toggle dark mode"}
                   >
                     {isDark ? (
                       <SunIcon className="w-5 h-5 text-primary hover:text-primary-highlight" />

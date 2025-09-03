@@ -250,4 +250,12 @@
 @variant dark (&:where(.dark, .dark *));
 
 /*----------------------------------------------------*/
+
+/* PARTICLE ANIMATION TOGGLE - DISABLE ONLY VORTEX PARTICLE ANIMATIONS WHEN PARTICLES-DISABLED CLASS IS PRESENT */
+.particles-disabled .vortex-particle {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/*----------------------------------------------------*/
 /* ASCII-Font: https://patorjk.com/software/taag/ -> [Small] */

@@ -50,6 +50,9 @@ const MouseBinary: React.FC = () => {
     let animationId: number;
     
     const handleMouseMove = (e: MouseEvent) => {
+      // CHECK IF PARTICLES ARE DISABLED - NO PARTICLES IF DISABLED
+      if (document.documentElement.classList.contains('particles-disabled')) return;
+      
       // Spawn more consistently - 25% chance  
       if (Math.random() > 0.25) return;
       
@@ -71,15 +74,22 @@ const MouseBinary: React.FC = () => {
     };
 
     const animate = () => {
-      setParticles(prev => 
-        prev.map(p => ({
-          ...p,
-          x: p.x + p.vx,
-          y: p.y + p.vy,
-          // Remove deceleration - constant speed
-          life: p.life + 1
-        })).filter(p => p.life < p.maxLife)
-      );
+      // CHECK IF PARTICLES ARE DISABLED
+      if (document.documentElement.classList.contains('particles-disabled')) {
+        // CLEAR ALL PARTICLES WHEN PARTICLES DISABLED
+        setParticles([]);
+      } else {
+        // NORMAL ANIMATION UPDATE WHEN ENABLED
+        setParticles(prev => 
+          prev.map(p => ({
+            ...p,
+            x: p.x + p.vx,
+            y: p.y + p.vy,
+            // Remove deceleration - constant speed
+            life: p.life + 1
+          })).filter(p => p.life < p.maxLife)
+        );
+      }
       animationId = requestAnimationFrame(animate);
     };
 
@@ -144,7 +154,7 @@ const ParticleBackground: React.FC = () => {
         {[...Array(100)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-0"
+            className="absolute w-1 h-1 bg-white rounded-full opacity-0 vortex-particle"
             style={{
               left: `${Math.random() * 100}%`,
               bottom: `${Math.random() * 30}%`,
