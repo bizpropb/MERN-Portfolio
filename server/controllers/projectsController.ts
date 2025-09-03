@@ -201,7 +201,7 @@ export const getProjectsByUsername = async (req: Request, res: Response): Promis
 /**
  * @async
  * @function getProject
- * @description Get a single project by ID and increment view count
+ * @description Get a single project by ID and increment view count (for own projects)
  * @param {Request} req - Express request object with project ID parameter
  * @param {Response} res - Express response object
  * @returns {Promise<void>}
@@ -252,6 +252,57 @@ export const getProject = async (req: Request, res: Response): Promise<void> => 
 
   } catch (error: any) {
     console.error('Get project error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching project'
+    });
+  }
+};
+
+/**
+ * @async
+ * @function getProjectById
+ * @description Get any project by ID (can be from any user) and increment view count
+ * @param {Request} req - Express request object with project ID parameter
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>}
+ * @param {string} req.params.id - The project ID
+ */
+export const getProjectById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid project ID'
+      });
+      return;
+    }
+
+    const project = await Project.findById(id).populate('userId', 'firstName lastName email');
+
+    if (!project) {
+      res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+      return;
+    }
+
+    // Increment view count
+    project.views += 1;
+    await project.save();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        project
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get project by ID error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error fetching project'

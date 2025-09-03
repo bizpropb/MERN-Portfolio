@@ -79,7 +79,7 @@ const ProfileView: React.FC = () => {
     confirmNewPassword: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<RecentProject | null>(null);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
 
   // Check if the current user is viewing their own profile
@@ -248,8 +248,8 @@ const ProfileView: React.FC = () => {
     }
   };
 
-  const handleProjectClick = (projectId: string) => {
-    setSelectedProjectId(projectId);
+  const handleProjectClick = (project: RecentProject) => {
+    setSelectedProject(project);
     setProjectModalOpen(true);
   };
 
@@ -408,7 +408,7 @@ const ProfileView: React.FC = () => {
                 <div>
                   <h3 
                     className="font-medium cursor-pointer text-primary hover:text-primary-highlight transition-colors duration-200"
-                    onClick={() => handleProjectClick(project._id)}
+                    onClick={() => handleProjectClick(project)}
                   >
                     {project.title}
                   </h3>
@@ -450,13 +450,13 @@ const ProfileView: React.FC = () => {
       )}
 
       {/* Project Modal */}
-      {selectedProjectId && (
+      {selectedProject && (
         <ProjectModal
-          projectId={selectedProjectId}
+          projectId={selectedProject._id}
           isOpen={projectModalOpen}
           onClose={() => {
             setProjectModalOpen(false);
-            setSelectedProjectId(null);
+            setSelectedProject(null);
           }}
         />
       )}

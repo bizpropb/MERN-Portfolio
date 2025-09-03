@@ -1,7 +1,8 @@
 import express from 'express';
 import { 
   getProjects, 
-  getProject, 
+  getProject,
+  getProjectById, 
   createProject, 
   updateProject, 
   deleteProject,
@@ -21,6 +22,9 @@ import { projectSchemas } from '../utils/validation';
  */
 
 const router = express.Router();
+
+// Public route for getting any project by ID (without authentication required)
+router.get('/public/:id', getProjectById);
 
 // Apply authentication middleware to all routes
 router.use(protect);

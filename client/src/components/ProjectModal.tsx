@@ -92,7 +92,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
     try {
       setIsLoadingProject(true);
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/projects/${projectId}`, {
+      const response = await fetch(`http://localhost:5001/api/projects/public/${projectId}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       const data = await response.json();
