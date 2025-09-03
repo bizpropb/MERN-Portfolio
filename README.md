@@ -158,8 +158,6 @@ docker-compose build --no-cache # Rebuild all containers (with clean cache)
 docker system prune --volumes # Remove all orphans
 ```
 
-```bash
-wsl --shutdown # Shutdown WSL to fix vmmem memory leaks (if needed)
-sleep 10 # Wait for WSL to fully shutdown
-# You need to fully quit docker desktop / the docker engine and restart it
+```
+# If vmmem RAM-Usage spikes in taskmanager just restart docker by rightclicking the tray icon
 ```
