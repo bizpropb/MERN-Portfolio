@@ -77,7 +77,7 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+                className="text-sm w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
               />
             </div>
             
@@ -91,7 +91,7 @@ const Login: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+                className="text-sm w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
               />
             </div>
           </div>
@@ -112,7 +112,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-7/8 hover:w-full px-4 py-2 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary gradient-border gradient-SignIn  focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 transition-all duration-600 flex items-center justify-center border-2"
+              className="text-sm w-7/8 hover:w-full px-4 py-2 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary gradient-border gradient-SignIn  focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 transition-all duration-600 flex items-center justify-center border-2"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
               <button
                 key={index}
                 onClick={() => handleDemoUserSelect(user.email)}
-                className="w-full text-left px-3 py-2 text-xs border lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary  rounded-md hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary transition-colors"
+                className="text-sm w-full text-left px-3 py-2 text-xs border lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary  rounded-md hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -164,7 +164,7 @@ const Login: React.FC = () => {
           </div>
           
           <div className="mt-4 text-center text-xs lightmode-text-secondary dark:darkmode-text-secondary">
-            <p>All demo accounts use password: <span className="font-mono lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary px-1 rounded">password123</span></p>
+            <p>All demo accounts use password: <span className="font-mono text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary px-1 rounded">password123</span></p>
             <p className="mt-1">Click any user above to auto-fill login credentials!</p>
           </div>
         </div>

@@ -13,23 +13,23 @@ const Footer: React.FC = () => {
             <div>
               <div className="flex items-center space-x-2">
                 <CodeBracketIcon className="w-5 h-5 lightmode-text-primary dark:darkmode-text-primary"/>
-                <h3 className="text-lg font-semibold lightmode-text-primary dark:darkmode-text-primary">
+                <h3 className="text-xs font-semibold lightmode-text-primary dark:darkmode-text-primary">
                   Created By Pascal Bossert
                 </h3>
               </div>
-              <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mt-3">
+              <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary mt-3">
                 Full-Stack Developer passionate about modern web technologies and clean code architecture.
               </p>
               <a 
                 href="https://github.com/bizpropb/MERN-Portfolio" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mt-3 inline-block text-primary hover:text-primary-highlight"
+                className="text-xs lightmode-text-secondary dark:darkmode-text-secondary mt-3 inline-block text-primary hover:text-primary-highlight"
               >
                 https://github.com/bizpropb/MERN-Portfolio
               </a>
             </div>
-            <div className="flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
+            <div className="flex items-center space-x-2 text-xs lightmode-text-secondary dark:darkmode-text-secondary">
               <span>© {currentYear} Pascal Bossert.</span>
               <span>Built with</span>
               <HeartIcon className="w-4 h-4 text-danger" />
@@ -39,8 +39,8 @@ const Footer: React.FC = () => {
 
           {/* Project Info */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold lightmode-text-primary dark:darkmode-text-primary">MERN Stack Demonstration</h3>
-            <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
+            <h3 className="text-xs font-semibold lightmode-text-primary dark:darkmode-text-primary">MERN Stack Demonstration</h3>
+            <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary">
               This portfolio application showcases development skills using MongoDB, Express.js, React, and Node.js. 
               It represents a snapshot of technical capabilities.
             </p>
@@ -66,8 +66,8 @@ const Footer: React.FC = () => {
           {/* Legal & Disclaimers */}
           <div className="flex flex-col justify-between space-y-3">
             <div>
-              <h3 className="text-lg font-semibold lightmode-text-primary dark:darkmode-text-primary">Important Notice</h3>
-              <div className="text-sm lightmode-text-secondary dark:darkmode-text-secondary space-y-2 mt-3">
+              <h3 className="text-xs font-semibold lightmode-text-primary dark:darkmode-text-primary">Important Notice</h3>
+              <div className="text-xs lightmode-text-secondary dark:darkmode-text-secondary space-y-2 mt-3">
                 <div className="text-xs lightmode-text-secondary dark:darkmode-text-secondary">
                   This application is a demonstration project and not intended for production use.
                   The application may use incomplete or insecure features for demonstration purposes.  
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-6 text-sm">
+            <div className="flex items-center space-x-6 text-xs">
               <span className="lightmode-text-secondary dark:darkmode-text-secondary">
                 MERN Stack Portfolio Demo
               </span>

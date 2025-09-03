@@ -384,7 +384,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
+            className="skillmanager-dropdown w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
           >
             {categories.map(category => (
               <option key={category} value={category} className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">
@@ -398,7 +398,7 @@ const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'name' | 'level' | 'experience')}
-            className="w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
+            className="skillmanager-dropdown w-full px-3 py-2 border text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary "
           >
             <option value="level" className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">Sort by</option>
             <option value="name" className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary">Skill Name</option>

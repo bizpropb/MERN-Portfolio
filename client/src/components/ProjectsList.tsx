@@ -178,7 +178,7 @@ const ProjectsList: React.FC = () => {
                   )}
                 </div>
 
-                <p className="lightmode-text-secondary dark:darkmode-text-secondary mb-4 line-clamp-3 leading-relaxed">
+                <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mb-4 line-clamp-3 leading-relaxed">
                   {project.description}
                 </p>
                 

@@ -186,10 +186,10 @@ const NewsView: React.FC = () => {
         <article className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-md px-8 py-4 mb-12">
           <div className="prose prose-md dark:prose-invert max-w-none 
                           prose-headings:lightmode-text-primary dark:prose-headings:darkmode-text-primary
-                          prose-p:lightmode-text-secondary dark:prose-p:darkmode-text-secondary
+                          prose-p:text-sm lightmode-text-secondary dark:prose-p:darkmode-text-secondary
                           prose-p:leading-normal prose-p:mb-3
-                          prose-li:lightmode-text-secondary dark:prose-li:darkmode-text-secondary
-                          prose-strong:lightmode-text-secondary dark:prose-strong:darkmode-text-secondary
+                          prose-li:text-sm lightmode-text-secondary dark:prose-li:darkmode-text-secondary
+                          prose-strong:text-sm lightmode-text-secondary dark:prose-strong:darkmode-text-secondary
                           prose-h1:text-2xl prose-h1: prose-h1:mb-5 prose-h1:mt-1
                           prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-3 prose-h2:mt-1
                           prose-h3:text-lg prose-h3:font-medium prose-h3:mb-2 prose-h3:mt-1

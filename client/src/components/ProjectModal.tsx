@@ -341,7 +341,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div>
                 <h3 className="text-lg font-semibold mb-3">Description</h3>
-                <p className="lightmode-text-secondary dark:darkmode-text-secondary leading-relaxed">{project.description}</p>
+                <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary leading-relaxed">{project.description}</p>
                 
                 {/* Links */}
                 <div className="mt-4 space-y-2">
@@ -350,7 +350,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center text-primary hover:text-primary-highlight hover:underline"
+                      className="text-sm inline-flex items-center text-primary hover:text-primary-highlight hover:underline"
                     >
                       View on GitHub →
                     </a>
@@ -360,7 +360,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-primary hover:text-primary-highlight hover:underline"
+                      className="text-sm block text-primary hover:text-primary-highlight hover:underline"
                     >
                       Live Demo →
                     </a>
@@ -386,13 +386,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                   <div className="space-y-2">
                     <h3 className="text-lg font-semibold">Timeline</h3>
                     {project.startDate && (
-                      <div className="flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
+                      <div className="text-sm flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                         <CalendarIcon className="w-4 h-4" />
                         <span>Started: {formatDate(project.startDate)}</span>
                       </div>
                     )}
                     {project.endDate && (
-                      <div className="flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
+                      <div className="text-sm flex items-center space-x-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">
                         <CalendarIcon className="w-4 h-4" />
                         <span>Completed: {formatDate(project.endDate)}</span>
                       </div>
@@ -419,7 +419,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts about this project..."
                     rows={3}
-                    className="w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+                    className="text-sm w-full px-3 py-2 border lightmode lightmode-text-secondary dark:darkmode dark:darkmode-text-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                   />
                 </div>
                 
@@ -458,7 +458,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 >
                   {isSubmittingComment ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
+                      <div className="text-sm animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
                       Submitting...
                     </>
                   ) : (
@@ -473,7 +473,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
                 </div>
               ) : comments.length === 0 ? (
-                <p className="lightmode-text-primary dark:darkmode-text-primary text-center py-8">
+                <p className="text-sm lightmode-text-primary dark:darkmode-text-primary text-center py-8">
                   No comments yet. Be the first to share your thoughts!
                 </p>
               ) : (
@@ -506,7 +506,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                             {formatDate(comment.createdAt)}
                           </span>
                         </div>
-                        <p className="lightmode-text-secondary dark:darkmode-text-secondary mb-3">{comment.content}</p>
+                        <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mb-3">{comment.content}</p>
                         
                         <button
                           onClick={() => setReplyingTo(replyingTo === comment._id ? null : comment._id)}
@@ -523,7 +523,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                               onChange={(e) => setReplyContent(e.target.value)}
                               placeholder="Write your reply..."
                               rows={2}
-                              className="w-full px-3 py-2 border lightmode-text-secondary dark:darkmode-text-secondary dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors mb-2"
+                              className="text-sm w-full px-3 py-2 border lightmode-text-secondary dark:darkmode-text-secondary dark:darkmode rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors mb-2"
                             />
                             <div className="flex space-x-2">
                               <button
@@ -565,7 +565,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                                     {formatDate(reply.createdAt)}
                                   </span>
                                 </div>
-                                <p className="lightmode-text-primary dark:darkmode-text-primary text-sm">{reply.content}</p>
+                                <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">{reply.content}</p>
                               </div>
                             ))}
                           </div>

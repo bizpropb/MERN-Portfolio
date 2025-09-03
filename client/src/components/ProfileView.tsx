@@ -296,9 +296,9 @@ const ProfileView: React.FC = () => {
                 </span>
               )}
             </div>
-            <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mb-2">{user.email}</p>
+            <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary mb-2">{user.email}</p>
             {user.bio && (
-              <p className="lightmode-text-secondary dark:darkmode-text-secondary mb-3">{user.bio}</p>
+              <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary mb-3">{user.bio}</p>
             )}
             {user.location && (
               <div className="flex items-center space-x-2 mb-3">
@@ -412,7 +412,7 @@ const ProfileView: React.FC = () => {
                   >
                     {project.title}
                   </h3>
-                  <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
+                  <p className="text-xs lightmode-text-secondary dark:darkmode-text-secondary">
                     Updated {formatDate(project.updatedAt)}
                   </p>
                 </div>

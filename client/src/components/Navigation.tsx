@@ -94,7 +94,7 @@ const Navigation: React.FC = () => {
               <div className="hidden md:flex space-x-6">
                 <Link
                   to="/"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
+                  className={`text-xs flex items-center space-x-2 px-3 py-2 rounded-md  ${
                     isActive('/')
                       ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
                       : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
@@ -105,7 +105,7 @@ const Navigation: React.FC = () => {
                 </Link>
                 <Link
                   to="/news"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
+                  className={`text-xs flex items-center space-x-2 px-3 py-2 rounded-md  ${
                     isActive('/news')
                       ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
                       : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
@@ -116,7 +116,7 @@ const Navigation: React.FC = () => {
                 </Link>
                 <Link
                   to="/browse"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm  ${
+                  className={`text-xs flex items-center space-x-2 px-3 py-2 rounded-md  ${
                     isActive('/browse')
                       ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary text-primary'
                       : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary text-primary hover:text-primary-highlight'
@@ -134,7 +134,7 @@ const Navigation: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <Link
                     to={getMyProfilePath()}
-                    className="text-sm text-primary hidden sm:block hover:text-primary-highlight dark:hover:text-primary-highlight"
+                    className="text-xs text-primary hidden sm:block hover:text-primary-highlight dark:hover:text-primary-highlight"
                   >
                     {user.username}
                   </Link>
@@ -156,7 +156,7 @@ const Navigation: React.FC = () => {
                     aria-label={particlesEnabled ? "Particles on" : "Particles off"}
                     title={particlesEnabled ? "Particles on" : "Particles off"}
                   >
-                    <span className={`w-5 h-5 flex items-center justify-center text-sm font-bold ${
+                    <span className={`text-xs w-5 h-5 flex items-center justify-center font-bold ${
                       particlesEnabled 
                         ? 'text-primary hover:text-primary-highlight' 
                         : 'lightmode-text-primary dark:darkmode-text-primary'
@@ -168,20 +168,20 @@ const Navigation: React.FC = () => {
                   {/* Dark Mode Toggle */}
                   <button
                     onClick={toggleDarkMode}
-                    className="p-2 rounded-lg hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary dark:hover:text-primary-highlight"
+                    className="text-xs p-2 rounded-lg hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary dark:hover:text-primary-highlight"
                     aria-label={isDark ? "Toggle light mode" : "Toggle dark mode"}
                     title={isDark ? "Toggle light mode" : "Toggle dark mode"}
                   >
                     {isDark ? (
-                      <SunIcon className="w-5 h-5 text-primary hover:text-primary-highlight" />
+                      <SunIcon className="text-xs w-5 h-5 text-primary hover:text-primary-highlight" />
                     ) : (
-                      <MoonIcon className="w-5 h-5 text-primary hover:text-primary-highlight" />
+                      <MoonIcon className="text-xs w-5 h-5 text-primary hover:text-primary-highlight" />
                     )}
                   </button>
 
                   <button
                     onClick={logout}
-                    className="px-3 py-2 text-sm flex items-center gap-2 rounded-lg hover:lightmode-highlight dark:hover:darkmode-highlight text-primary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300"
+                    className="px-3 py-2 text-xs flex items-center gap-2 rounded-lg hover:lightmode-highlight dark:hover:darkmode-highlight text-primary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300"
                   >
                     <ArrowRightOnRectangleIcon className="w-4 h-4" />
                     Logout
