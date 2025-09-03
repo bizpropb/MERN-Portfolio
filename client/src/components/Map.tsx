@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ExclamationTriangleIcon, MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -52,12 +53,12 @@ const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
     </p>
     {user.username && (
       <div className="mt-2">
-        <a 
-          href={`/userspace/${user.username}/profile`}
+        <Link 
+          to={`/userspace/${user.username}/profile`}
           className="inline-block px-3 py-1 !text-primary hover:!text-white btn-primary"
         >
           View Profile
-        </a>
+        </Link>
       </div>
     )}
   </div>
@@ -99,6 +100,7 @@ const UserCard: React.FC<{
 
 const Map: React.FC = () => {
   const { isDark } = useDarkMode();
+  const navigate = useNavigate();
   
   // Manage page scrolling behavior for full-height map
   useEffect(() => {
@@ -357,12 +359,12 @@ const Map: React.FC = () => {
             </p>
             ${user.username ? `
               <div class="mt-2 text-right">
-                <a 
-                  href="/userspace/${user.username}/profile"
-                  class="profile-link inline-block px-3 py-1 !text-primary hover:!text-white btn-primary"
+                <button 
+                  data-username="${user.username}"
+                  class="profile-link inline-block px-3 py-1 !text-primary hover:!text-white btn-primary cursor-pointer"
                 >
                   View Profile
-                </a>
+                </button>
               </div>
             ` : ''}
           </div>
@@ -371,6 +373,24 @@ const Map: React.FC = () => {
         marker.bindPopup(tempDiv.innerHTML, { 
           maxWidth: 300,
           className: 'custom-popup'
+        });
+
+        // Add click handler for profile links
+        marker.on('popupopen', () => {
+          const popup = marker.getPopup();
+          const popupElement = popup?.getElement();
+          if (popupElement) {
+            const profileLink = popupElement.querySelector('.profile-link');
+            if (profileLink) {
+              profileLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const username = (e.target as HTMLElement).getAttribute('data-username');
+                if (username) {
+                  navigate(`/userspace/${username}/profile`);
+                }
+              });
+            }
+          }
         });
         
         marker.addTo(map);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import { EyeSlashIcon, EyeIcon, ChevronDownIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { FolderIcon, WrenchScrewdriverIcon, EyeIcon as EyeIconSolid, HeartIcon } from '@heroicons/react/24/solid';
@@ -726,12 +726,12 @@ const renderCard = (
                   <div className="flex flex-col text-xs lightmode-text-ter dark:darkmode-text-secondary space-y-1">
                     <div className="flex justify-between items-center">
                       <p>
-                        By: <a 
-                          href={`/userspace/${comment.userName}/profile`}
+                        By: <Link 
+                          to={`/userspace/${comment.userName}/profile`}
                           className="font-medium text-primary hover:text-primary-highlight transition-colors duration-200"
                         >
                           {comment.userName || 'Anonymous'}
-                        </a>
+                        </Link>
                         {comment.rating > 0 && (
                           <span className="ml-2">
                             <span className="text-warning">{'★'.repeat(comment.rating)}</span>

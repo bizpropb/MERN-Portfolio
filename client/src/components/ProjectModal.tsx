@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { XMarkIcon, PencilIcon, EyeIcon, HeartIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 
@@ -483,12 +484,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
                             {comment.userId.username ? (
-                              <a
-                                href={`/userspace/${comment.userId.username}/profile`}
+                              <Link
+                                to={`/userspace/${comment.userId.username}/profile`}
                                 className="font-medium text-primary hover:text-primary-highlight transition-colors duration-200"
                               >
                                 {comment.userId.username}
-                              </a>
+                              </Link>
                             ) : (
                               <span className="font-medium">
                                 {comment.userId.username}
@@ -549,12 +550,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                               <div key={reply._id} className="lightmode dark:darkmode rounded-lg p-3">
                                 <div className="flex items-center justify-between mb-2">
                                   {reply.userId.username ? (
-                                    <a
-                                      href={`/userspace/${reply.userId.username}/profile`}
+                                    <Link
+                                      to={`/userspace/${reply.userId.username}/profile`}
                                       className="font-medium text-sm text-primary hover:text-primary-highlight transition-colors duration-200"
                                     >
                                       {reply.userId.username}
-                                    </a>
+                                    </Link>
                                   ) : (
                                     <span className="font-medium text-sm">
                                       {reply.userId.username}
