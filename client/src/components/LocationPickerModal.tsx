@@ -28,6 +28,7 @@ interface LocationPickerModalProps {
   };
 }
 
+// Interactive map modal for selecting geographical location with reverse geocoding
 const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   isOpen,
   onClose,
@@ -156,6 +157,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
     };
   }, [isOpen, initialLocation]);
 
+  // Confirms the selected location and passes it to parent component
   const handleConfirm = () => {
     if (selectedPosition) {
       onLocationSelect({

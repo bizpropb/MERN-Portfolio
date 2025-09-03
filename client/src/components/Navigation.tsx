@@ -36,6 +36,7 @@ interface Project {
   updatedAt: string;
 }
 
+// Main navigation bar with user profile, theme toggle, and particle animation controls
 const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useDarkMode();
@@ -47,7 +48,7 @@ const Navigation: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : true; // DEFAULT TO ENABLED
   });
   
-  // TOGGLE PARTICLE ANIMATIONS AND SAVE TO LOCALSTORAGE
+  // Toggles particle animation effects and saves preference to localStorage
   const toggleParticles = () => {
     const newState = !particlesEnabled;
     setParticlesEnabled(newState);
@@ -68,6 +69,7 @@ const Navigation: React.FC = () => {
     }
   }, []);
   
+  // Determines if the current route matches the given path for navigation highlighting
   const isActive = (path: string) => {
     if (path === '/news') {
       return location.pathname.startsWith('/news');
@@ -75,7 +77,7 @@ const Navigation: React.FC = () => {
     return location.pathname === path;
   };
   
-  // Always route to logged-in user's own profile
+  // Generates the profile URL path for the currently logged-in user
   const getMyProfilePath = () => {
     return user?.username ? `/myuserspace/${user.username}/profile` : '/profile';
   };

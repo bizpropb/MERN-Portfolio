@@ -16,6 +16,7 @@ vi.mock('../contexts/AuthContext', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => children
 }))
 
+// Test wrapper component providing required context providers for modal testing
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
     <DarkModeProvider>

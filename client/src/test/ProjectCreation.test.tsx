@@ -7,7 +7,7 @@ import { AuthProvider } from '../contexts/AuthContext'
 import { DarkModeProvider } from '../contexts/DarkModeContext'
 import ProjectCreateModal from '../components/ProjectCreateModal'
 
-// Test wrapper component
+// Provides necessary context providers for testing React components
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
     <DarkModeProvider>

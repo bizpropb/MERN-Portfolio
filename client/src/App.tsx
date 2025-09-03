@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 
-// Initialize dark mode immediately to prevent flash
+// Immediately initialize dark mode theme from localStorage to prevent flash of wrong theme
 (() => {
   const savedTheme = localStorage.getItem('theme');
   const shouldBeDark = savedTheme === 'dark' || (!savedTheme && true);
@@ -32,7 +32,7 @@ import HomePage from './components/HomePage';
 import NewsView from './components/NewsView';
 
 
-// Mouse Binary Particles Component  
+// Creates animated binary digits (0s and 1s) that follow mouse movement and fade out over time
 const MouseBinary: React.FC = () => {
   const [particles, setParticles] = useState<Array<{
     id: number;
@@ -128,7 +128,7 @@ const MouseBinary: React.FC = () => {
   );
 };
 
-// Particle System Component
+// Renders the complete background particle system including image overlay, vortex particles, and gradient effects
 const ParticleBackground: React.FC = () => {
   return (
     <>
@@ -182,7 +182,7 @@ const ParticleBackground: React.FC = () => {
   );
 };
 
-// Dashboard Redirect Component
+// Redirects authenticated users to their personalized dashboard URL based on their username
 const DashboardRedirect: React.FC = () => {
   const { user } = useAuth();
   
@@ -193,7 +193,7 @@ const DashboardRedirect: React.FC = () => {
   return <Navigate to={`/myuserspace/${user.username}/dashboard`} replace />;
 };
 
-// Sub Navigation Component with conditional rendering
+// Renders appropriate sub-navigation based on current route (userspace vs myuserspace)
 const ConditionalSubNavigation: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
@@ -220,7 +220,7 @@ const ConditionalSubNavigation: React.FC = () => {
   return null;
 };
 
-// Conditional Footer Component
+// Shows or hides footer based on current route (hidden on browse/map page)
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
   
@@ -232,7 +232,7 @@ const ConditionalFooter: React.FC = () => {
   return <Footer />;
 };
 
-// Main App Component
+// Root application component that sets up routing, authentication, and renders the main layout
 const App: React.FC = () => {
   return (
     <DarkModeProvider>

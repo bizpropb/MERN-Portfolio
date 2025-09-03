@@ -39,6 +39,7 @@ const TECH_OPTIONS = [
   'Docker', 'Kubernetes', 'GraphQL', 'Redis', 'Elasticsearch', 'Other'
 ];
 
+// Modal form for creating new projects with technology selection and project details
 const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
   isOpen,
   onClose,

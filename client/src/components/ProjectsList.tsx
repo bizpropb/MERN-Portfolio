@@ -37,6 +37,7 @@ interface User {
   email: string;
 }
 
+// Projects listing component with grid view, filtering, and project management capabilities
 const ProjectsList: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const { user: currentUser } = useAuth();

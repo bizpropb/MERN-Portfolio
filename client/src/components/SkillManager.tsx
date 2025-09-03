@@ -22,6 +22,7 @@ interface SkillRatingProps {
   isGlowing?: boolean;
 }
 
+// Individual skill rating component with interactive star rating and delete functionality
 const SkillRatingComponent: React.FC<SkillRatingProps> = ({ skill, onUpdate, onDelete, readonly = false, isGlowing = false }) => {
   const [currentRating, setCurrentRating] = useState(skill.proficiencyLevel);
   const [hoverRating, setHoverRating] = useState(0);
@@ -173,6 +174,7 @@ interface SkillsManagerProps {
   readonly?: boolean;
 }
 
+// Main skills management component with categorized skill display and CRUD operations
 const SkillsManager: React.FC<SkillsManagerProps> = ({ userId, readonly = false }) => {
   const { username } = useParams<{ username: string }>();
   const { user: currentUser } = useAuth();

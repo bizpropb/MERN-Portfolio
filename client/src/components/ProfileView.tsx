@@ -51,6 +51,7 @@ interface RecentProject {
   updatedAt: string;
 }
 
+// User profile page component displaying profile information, stats, and recent projects with editing capabilities
 const ProfileView: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const { user: currentUser } = useAuth();
@@ -89,6 +90,7 @@ const ProfileView: React.FC = () => {
     fetchProfile();
   }, [username]);
 
+  // Fetches user profile data, statistics, and recent projects from the API
   const fetchProfile = async () => {
     try {
       if (!username) {

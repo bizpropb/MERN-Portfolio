@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 
+// Sub-navigation component for logged-in user's own userspace sections (dashboard, projects, skills, profile)
 const NavigationSubMyUserspace: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();

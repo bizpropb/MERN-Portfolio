@@ -19,6 +19,7 @@ interface Stats {
   totalTechnologies: number;
 }
 
+// Main landing page component that displays featured developers, stats, and latest news
 const HomePage: React.FC = () => {
   const { token } = useAuth();
   const [featuredUsers, setFeaturedUsers] = useState<User[]>([]);
@@ -31,6 +32,7 @@ const HomePage: React.FC = () => {
     }
   }, [token]);
 
+  // Fetches featured users and platform statistics from the API
   const fetchData = async () => {
     try {
       // Fetch users for featured developers and stats

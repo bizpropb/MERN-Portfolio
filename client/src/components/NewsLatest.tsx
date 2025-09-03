@@ -19,6 +19,7 @@ interface LatestNewsProps {
   excludeSlug?: string;
 }
 
+// Displays latest news articles with optional load more functionality and article exclusion
 const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true, excludeSlug }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const LatestNews: React.FC<LatestNewsProps> = ({ limit = 3, showLoadMore = true,
     }
   }, [token, excludeSlug]);
 
+  // Fetches latest news articles from API with optional slug exclusion
   const fetchNews = async () => {
     try {
       let url = `http://localhost:5001/api/news/latest?limit=${limit}`;

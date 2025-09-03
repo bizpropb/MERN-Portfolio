@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Startup status script for MERN Stack Portfolio application
+# Displays service status and provides helpful Docker commands for development
+
 clear
 echo ""
 echo "===================================================================================="

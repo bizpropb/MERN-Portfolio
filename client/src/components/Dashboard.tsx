@@ -37,7 +37,7 @@ interface LayoutItem {
   h: number;
 }
 
-// Memoized chart components to prevent unnecessary re-renders
+// Optimized pie chart component that prevents re-renders when data hasn't changed
 const MemoizedPieChart = React.memo(({ data }: { data: any[] }) => (
   <div className="h-full flex flex-col">
     <ResponsiveContainer width="100%" height="75%">
@@ -73,6 +73,7 @@ const MemoizedPieChart = React.memo(({ data }: { data: any[] }) => (
   </div>
 ));
 
+// Optimized bar chart component with gradient styling and hover effects
 const MemoizedBarChart = React.memo(({ data }: { data: any[] }) => (
   <ResponsiveContainer width="100%" height="80%">
     <BarChart data={data}>
@@ -101,6 +102,7 @@ const MemoizedBarChart = React.memo(({ data }: { data: any[] }) => (
   </ResponsiveContainer>
 ));
 
+// Custom tooltip component for pie charts with dark mode support
 const PieChartTooltip: React.FC<any> = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
 
@@ -117,6 +119,7 @@ const PieChartTooltip: React.FC<any> = ({ active, payload }) => {
   );
 };
 
+// Custom tooltip component for bar charts with styled presentation
 const BarChartTooltip: React.FC<any> = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
@@ -131,6 +134,7 @@ const BarChartTooltip: React.FC<any> = ({ active, payload, label }) => {
   );
 };
 
+// Custom tooltip component for line charts showing multiple data points
 const LineChartTooltip: React.FC<any> = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
@@ -150,6 +154,7 @@ const LineChartTooltip: React.FC<any> = ({ active, payload, label }) => {
   );
 };
 
+// Optimized line chart component for displaying time-series data
 const MemoizedLineChart = React.memo(({ data }: { data: any[] }) => (
   <ResponsiveContainer width="100%" height="75%">
     <LineChart data={data}>
@@ -163,6 +168,7 @@ const MemoizedLineChart = React.memo(({ data }: { data: any[] }) => (
   </ResponsiveContainer>
 ));
 
+// Main dashboard component with draggable widgets, charts, and user statistics
 const Dashboard: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -245,7 +251,7 @@ const Dashboard: React.FC = () => {
       : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
   });
 
-  // Save layout to localStorage
+  // Persists dashboard layout configuration and hidden cards to browser storage
   const saveLayoutToStorage = (layouts: any, hiddenCards: Set<string>) => {
     try {
       localStorage.setItem('dashboard-layouts', JSON.stringify(layouts));
@@ -255,7 +261,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Load layout from localStorage
+  // Restores previously saved dashboard layout and hidden cards from browser storage
   const loadLayoutFromStorage = () => {
     try {
       const savedLayouts = localStorage.getItem('dashboard-layouts');
@@ -275,7 +281,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Reset layout to original
+  // Resets dashboard layout to default configuration and clears saved preferences
   const resetLayout = () => {
     setLayouts(originalLayouts);
     setHiddenCards(new Set());
@@ -301,6 +307,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  // Generates sample monthly activity data for demonstration purposes
   const generateRandomMonthlyData = () => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     return months.map(month => ({
@@ -356,6 +363,7 @@ const Dashboard: React.FC = () => {
     }
   }, [username]);
 
+  // Fetches user dashboard statistics and recent comments from API endpoints
   const fetchDashboardData = async () => {
     try {
       if (!username) {
@@ -459,6 +467,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  // Regenerates sample monthly data and updates the dashboard display
   const rerandomizeData = () => {
     const newData = generateRandomMonthlyData();
     setMonthlyData(newData);
@@ -470,6 +479,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  // Hides a dashboard card and saves its size for potential restoration
   const handleHideCard = (cardId: string) => {
     // Store current size before hiding
     const currentLayouts = layouts;
@@ -494,6 +504,7 @@ const Dashboard: React.FC = () => {
     saveLayoutToStorage(layouts, newHiddenCards);
   };
 
+  // Shows a previously hidden dashboard card and restores its original position
   const handleShowCard = (cardId: string) => {
     const newHiddenCards = new Set(hiddenCards);
     newHiddenCards.delete(cardId);
@@ -513,6 +524,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  // Handles drag-and-drop layout changes and persists them to storage
   const handleLayoutChange = (layout: any, layouts: any) => {
     setLayouts(layouts);
     // Save to localStorage whenever layout changes
@@ -648,6 +660,7 @@ return (
   );
 };
 
+// Renders individual dashboard cards based on card type and provided data
 const renderCard = (
   cardId: string,
   stats: DashboardStats,
@@ -780,6 +793,7 @@ interface StatCardProps {
   icon: React.ReactNode;
 }
 
+// Reusable card component for displaying statistics with icons
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
   <div className="flex items-center h-full p-4">
     <div className="border border-primary p-3 rounded-full text-primary mr-4 shadow-lg">

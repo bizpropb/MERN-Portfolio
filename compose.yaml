@@ -1,7 +1,9 @@
+# Docker Compose configuration for MERN Stack Portfolio application
+# Includes MongoDB database, Node.js server, React client, MongoDB admin interface, and database seeding
 version: '3.8'
 
 services:
-  # MongoDB
+  # MongoDB database service with authentication and data persistence
   mongodb:
     image: mongo:7.0
     container_name: mern-mongodb

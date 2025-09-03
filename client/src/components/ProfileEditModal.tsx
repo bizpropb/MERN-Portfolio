@@ -25,6 +25,7 @@ interface ProfileEditModalProps {
   isSubmitting: boolean;
 }
 
+// Modal form for editing user profile information including location selection
 const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,
   onClose,
@@ -35,6 +36,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 }) => {
   const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
 
+  // Updates profile data with selected location coordinates and address info
   const handleLocationSelect = (location: {
     latitude: number;
     longitude: number;

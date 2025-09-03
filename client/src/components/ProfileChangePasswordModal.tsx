@@ -15,6 +15,7 @@ interface ProfileChangePasswordModalProps {
   isSubmitting: boolean;
 }
 
+// Modal component that displays a security notice about disabled password change functionality
 const ProfileChangePasswordModal: React.FC<ProfileChangePasswordModalProps> = ({
   isOpen,
   onClose,

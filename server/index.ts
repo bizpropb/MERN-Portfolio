@@ -153,7 +153,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
  * Start the Express server
  */
 const server = app.listen(PORT, () => {
-  // Server started successfully
+  console.log(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`);
 });
 
 // Handle unhandled promise rejections

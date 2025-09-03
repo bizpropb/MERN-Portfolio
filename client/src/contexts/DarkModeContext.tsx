@@ -7,6 +7,7 @@ interface DarkModeContextType {
 
 const DarkModeContext = createContext<DarkModeContextType | null>(null);
 
+// Custom hook to access dark mode context with error handling
 export const useDarkMode = () => {
   const context = useContext(DarkModeContext);
   if (!context) {
@@ -19,6 +20,7 @@ interface DarkModeProviderProps {
   children: React.ReactNode;
 }
 
+// Dark mode provider component that manages theme state and localStorage persistence
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
   const [isDark, setIsDark] = useState(true); // Default to dark mode
 
@@ -33,6 +35,7 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) 
     document.documentElement.classList.toggle('dark', shouldBeDark);
   }, []);
 
+  // Toggles between light and dark themes and saves preference to localStorage
   const toggleDarkMode = () => {
     const newDarkState = !isDark;
     setIsDark(newDarkState);

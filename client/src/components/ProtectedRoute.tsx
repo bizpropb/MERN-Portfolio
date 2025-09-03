@@ -6,6 +6,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+// Route wrapper that redirects unauthenticated users to login page
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
 

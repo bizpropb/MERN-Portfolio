@@ -52,6 +52,7 @@ interface ProjectModalProps {
   onProjectUpdate?: (updatedProject: Project) => void;
 }
 
+// Detailed project viewer modal with comments, likes, and editing capabilities
 const ProjectModal: React.FC<ProjectModalProps> = ({
   project: initialProject,
   projectId,

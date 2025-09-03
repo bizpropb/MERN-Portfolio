@@ -40,6 +40,7 @@ const TECH_OPTIONS = [
   'Docker', 'Kubernetes', 'GraphQL', 'Redis', 'Elasticsearch', 'Other'
 ];
 
+// Modal form for editing existing project details including technologies and project metadata
 const ProjectEditForm: React.FC<ProjectEditFormProps> = ({
   project,
   isOpen,

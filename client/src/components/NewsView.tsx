@@ -16,6 +16,7 @@ interface NewsArticle {
   views: number;
 }
 
+// News article viewer component that displays individual articles or the latest article by default
 const NewsView: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { token } = useAuth();
@@ -50,10 +51,12 @@ const NewsView: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Smoothly scrolls page to top when user clicks scroll-to-top button
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Fetches specific news article by its slug from the API
   const fetchArticleBySlug = async (articleSlug: string) => {
     try {
       const response = await fetch(`http://localhost:5001/api/news/${articleSlug}`, {
@@ -74,6 +77,7 @@ const NewsView: React.FC = () => {
     }
   };
 
+  // Fetches and displays the most recent news article when no specific slug is provided
   const fetchLatestArticle = async () => {
     try {
       const response = await fetch(`http://localhost:5001/api/news/latest?limit=1`, {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { CodeBracketIcon, HeartIcon } from '@heroicons/react/24/outline';
 
+// Application footer with creator info, project details, and legal disclaimers
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 

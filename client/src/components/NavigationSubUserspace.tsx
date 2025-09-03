@@ -7,6 +7,7 @@ import {
   UserIcon
 } from '@heroicons/react/24/outline';
 
+// Sub-navigation component for viewing other users' public userspace sections (dashboard, projects, skills, profile)
 const NavigationSubUserspace: React.FC = () => {
   const location = useLocation();
   

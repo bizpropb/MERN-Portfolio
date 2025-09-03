@@ -38,6 +38,7 @@ interface PopupCardProps {
   onViewProfile: () => void;
 }
 
+// User profile card displayed in map popup when clicking on user markers
 const PopupCard: React.FC<PopupCardProps> = ({ user, onViewProfile }) => (
   <div className="p-3 w-[280px] lightmode dark:darkmode text-primary">
     <div className="flex items-center mb-2">
@@ -70,6 +71,7 @@ const PopupCard: React.FC<PopupCardProps> = ({ user, onViewProfile }) => (
   </div>
 );
 
+// User list item component with hover and click interactions for map sidebar
 const UserCard: React.FC<{ 
   user: UserLocation; 
   onHover: (user: UserLocation) => void;
@@ -104,6 +106,7 @@ const UserCard: React.FC<{
   </div>
 );
 
+// Interactive map component displaying user locations with sidebar list and search functionality
 const Map: React.FC = () => {
   const navigate = useNavigate();
   

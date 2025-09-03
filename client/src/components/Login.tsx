@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
+// User authentication component with demo login options and form validation
 const Login: React.FC = () => {
   const [email, setEmail] = useState('demo@devhub.com');
   const [password, setPassword] = useState('password123');
@@ -12,6 +13,7 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Handles login form submission and authentication process
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -42,6 +44,7 @@ const Login: React.FC = () => {
     { email: 'mike.engineer@example.com', name: 'Mike Engineer', username: 'mike_engineer' }
   ];
 
+  // Auto-fills login form with selected demo user credentials
   const handleDemoUserSelect = (email: string) => {
     setEmail(email);
     setPassword('password123');
@@ -49,6 +52,7 @@ const Login: React.FC = () => {
     setIsRateLimit(false);
   };
 
+  // Shows registration disabled message for demo purposes
   const handleRegistrationClick = () => {
     setRegistrationClicked(true);
   };

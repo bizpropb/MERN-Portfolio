@@ -11,7 +11,9 @@ interface UserAvatarProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
+// Displays user avatar image or initials fallback with multiple size options
 const UserAvatar: React.FC<UserAvatarProps> = ({ user, className = "", size = "md" }) => {
+  // Returns appropriate CSS classes based on avatar size setting
   const getSizeClasses = () => {
     switch (size) {
       case 'sm': return 'text-xs';

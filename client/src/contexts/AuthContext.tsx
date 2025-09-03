@@ -20,6 +20,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+// Custom hook to access authentication context with error handling
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -32,6 +33,7 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+// Authentication provider component that manages user state and token persistence
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
