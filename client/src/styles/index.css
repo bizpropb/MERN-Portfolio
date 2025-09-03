@@ -6,6 +6,7 @@
 @import "./overrides/leafletOverride.css"; 
 @import "./overrides/rechartsOverride.css";
 @import "./overrides/nativeOverride.css";
+@import "./overrides/keyframes.css";
 
 /*========================================================
   _____ _  _ ___ __  __ ___ 
@@ -249,5 +250,4 @@
 @variant dark (&:where(.dark, .dark *));
 
 /*----------------------------------------------------*/
-
 /* ASCII-Font: https://patorjk.com/software/taag/ -> [Small] */
