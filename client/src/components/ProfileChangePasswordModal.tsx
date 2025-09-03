@@ -36,7 +36,7 @@ const ProfileChangePasswordModal: React.FC<ProfileChangePasswordModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-full px-4 py-2 btn-primary"
+            className="w-full px-4 py-2 btn-primary text-xs"
           >
             Okay
           </button>

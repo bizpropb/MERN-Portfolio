@@ -348,9 +348,9 @@ const ProfileView: React.FC = () => {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg shadow-lg p-6">
+          <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="shadow-lg p-3 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
+              <div className="shadow-lg p-3 lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg">
                 <UserIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
@@ -360,9 +360,9 @@ const ProfileView: React.FC = () => {
             </div>
           </div>
 
-          <div className="lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg shadow-lg p-6">
+          <div className="lightmode dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="shadow-lg p-3 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
+              <div className="shadow-lg p-3 lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg">
                 <EyeIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
@@ -372,9 +372,9 @@ const ProfileView: React.FC = () => {
             </div>
           </div>
 
-          <div className="lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg shadow-lg p-6">
+          <div className="lightmode dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="shadow-lg p-3 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
+              <div className="shadow-lg p-3 lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg">
                 <HeartIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
@@ -384,9 +384,9 @@ const ProfileView: React.FC = () => {
             </div>
           </div>
 
-          <div className="lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg shadow-lg p-6">
+          <div className="lightmode dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-6">
             <div className="flex items-center space-x-3">
-              <div className="px-4 shadow-lg p-3 lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg">
+              <div className="px-4 shadow-lg p-3 lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary rounded-lg">
                 <span className="lightmode-text-secondary dark:darkmode-text-secondary  text-xl">★</span>
               </div>
               <div>

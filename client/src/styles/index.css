@@ -210,16 +210,19 @@
 
 /* buttons */
 .btn-primary {
-  @apply border border-primary text-primary rounded hover:text-white hover:bg-primary-highlight disabled:opacity-33 disabled:bg-primary;
+  @apply border text-xs border-primary text-primary rounded hover:text-white hover:bg-primary-highlight disabled:opacity-33 disabled:bg-primary;
+  font-family: "Orbitron", sans-serif;
 }
 
 /* buttons */
 .btn-primary-filled {
-  @apply bg-primary text-white rounded hover:bg-primary-highlight disabled:opacity-33 disabled:bg-primary;
+  @apply bg-primary text-white text-xs rounded hover:bg-primary-highlight disabled:opacity-33 disabled:bg-primary;
+  font-family: "Orbitron", sans-serif;
 }
 
 .btn-muted-filled {
-  @apply bg-muted text-white rounded hover:bg-muted-highlight disabled:opacity-33 disabled:bg-muted;
+  @apply bg-muted text-white text-xs rounded hover:bg-muted-highlight disabled:opacity-33 disabled:bg-muted;
+  font-family: "Orbitron", sans-serif;
 }
 
 /*========================================================

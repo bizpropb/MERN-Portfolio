@@ -8,11 +8,36 @@ select {
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
+  background-color: rgb(229 231 235 / 80%);
+  border-color: rgb(107 114 128);
+  color: rgb(55 65 81);
+  font-family: "Orbitron", sans-serif;
 }
 
-/* Dark mode arrow */
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+select option {
+  background-color: rgb(229 231 235 / 80%);
+  color: rgb(55 65 81);
+  font-family: "Orbitron", sans-serif;
+}
+
+/* Dark mode */
 .dark select {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234B5563' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-color: rgb(17 24 39 / 80%);
+  border-color: rgb(55 65 81);
+  color: rgb(209 213 219);
+  font-family: "Orbitron", sans-serif;
+}
+
+.dark select option {
+  background-color: rgb(17 24 39 / 80%);
+  color: rgb(209 213 219);
+  font-family: "Orbitron", sans-serif;
 }
 
 /* Fix hover states */
@@ -96,19 +121,6 @@ input[type="checkbox"]:checked {
   box-shadow: 0 0 0 2px rgb(129 140 248 / 0.5) !important;
 }
 
-/* SkillManager dropdown styling */
-.skillmanager-dropdown {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-}
-
-.dark .skillmanager-dropdown {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234B5563' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-}
 
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {

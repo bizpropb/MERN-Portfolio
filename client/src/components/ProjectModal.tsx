@@ -510,7 +510,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                         
                         <button
                           onClick={() => setReplyingTo(replyingTo === comment._id ? null : comment._id)}
-                          className="text-sm text-primary hover:text-primary-highlight"
+                          className="text-xs text-primary hover:text-primary-highlight"
                         >
                           Reply
                         </button>

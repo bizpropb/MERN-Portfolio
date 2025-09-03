@@ -167,7 +167,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <button
                 type="button"
                 onClick={() => setIsLocationPickerOpen(true)}
-                className="btn-primary w-full px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+                className="text-xs btn-primary w-full px-4 py-2 rounded-md flex items-center justify-center space-x-2"
               >
                 <MapPinIcon className="w-4 h-4" />
                 <span>{editData.location?.latitude ? 'Change Location' : 'Select Location on Map'}</span>
@@ -181,14 +181,14 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     ...prev,
                     location: { latitude: '', longitude: '', city: '', country: '' }
                   }))}
-                  className="text-primary w-full mt-2 px-4 py-2 text-sm text-danger hover:text-red-500"
+                  className="text-xs text-primary w-full mt-2 px-4 py-2 text-sm text-danger hover:text-red-500"
                 >
                   Clear Location
                 </button>
               )}
             </div>
 
-            <div className="flex space-x-3 pt-4">
+            <div className="text-xs flex space-x-3 pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -199,7 +199,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 lightmode dark:darkmode text-lightmode-text-primary dark:darkmode-text-primary rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight transition-colors"
+                className="text-xs px-4 py-2 lightmode dark:darkmode text-lightmode-text-primary dark:darkmode-text-primary rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight transition-colors"
               >
                 Cancel
               </button>
