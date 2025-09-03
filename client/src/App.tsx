@@ -158,7 +158,7 @@ const ParticleBackground: React.FC = () => {
             style={{
               left: `${Math.random() * 100}%`,
               bottom: `${Math.random() * 30}%`,
-              animation: `vortex-${i % 4} ${30 + Math.random() * 20}s infinite linear`,
+              animation: `vortex-${i % 4} ${20 + Math.random() * 10}s infinite linear`,
               animationDelay: `${Math.random() * 10}s`,
               boxShadow: '0 0 6px rgba(255, 255, 255, 0.8)'
             }}
