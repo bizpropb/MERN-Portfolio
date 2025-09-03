@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ExclamationTriangleIcon, MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import UserAvatar from './UserAvatar';
+import { createRoot, type Root } from 'react-dom/client';
 
 // Fix for default markers
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -32,8 +33,13 @@ interface UserLocation {
   lastLogin?: string;
 }
 
-const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
-  <div className="p-3 min-w-[200px] lightmode dark:darkmode text-primary hover:text-primary-highlight">
+interface PopupCardProps {
+  user: UserLocation;
+  onViewProfile: () => void;
+}
+
+const PopupCard: React.FC<PopupCardProps> = ({ user, onViewProfile }) => (
+  <div className="p-3 w-[280px] lightmode dark:darkmode text-primary">
     <div className="flex items-center mb-2">
       <div className="w-12 h-12 mr-3">
         <UserAvatar user={user} size="lg" />
@@ -52,13 +58,13 @@ const PopupCard: React.FC<{ user: UserLocation }> = ({ user }) => (
       Member since {new Date(user.memberSince).toLocaleDateString()}
     </p>
     {user.username && (
-      <div className="mt-2">
-        <Link 
-          to={`/userspace/${user.username}/profile`}
+      <div className="mt-2 text-right">
+        <button
+          onClick={onViewProfile}
           className="inline-block px-3 py-1 !text-primary hover:!text-white btn-primary"
         >
           View Profile
-        </Link>
+        </button>
       </div>
     )}
   </div>
@@ -99,7 +105,6 @@ const UserCard: React.FC<{
 );
 
 const Map: React.FC = () => {
-  const { isDark } = useDarkMode();
   const navigate = useNavigate();
   
   // Manage page scrolling behavior for full-height map
@@ -288,129 +293,68 @@ const Map: React.FC = () => {
 
   // Add markers for users
   useEffect(() => {
-    if (!mapReady || !mapInstanceRef.current || users.length === 0) return;
+  if (!mapReady || !mapInstanceRef.current || users.length === 0) return;
 
-    const map = mapInstanceRef.current;
-    
-    // Clear existing markers
-    Object.values(markersRef.current).forEach(marker => {
-      map.removeLayer(marker);
+  const map = mapInstanceRef.current;
+
+  // Clear old markers
+  Object.values(markersRef.current).forEach((m) => map.removeLayer(m));
+  markersRef.current = {};
+
+  // Red marker icon
+  const redIcon = L.icon({
+    iconUrl:
+      'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  users.forEach((user) => {
+    if (
+      !user.location ||
+      typeof user.location.latitude !== 'number' ||
+      typeof user.location.longitude !== 'number'
+    )
+      return;
+
+    const { latitude, longitude } = user.location;
+    if (
+      isNaN(latitude) ||
+      isNaN(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    )
+      return;
+
+    const marker = L.marker([latitude, longitude], { icon: redIcon });
+
+    // Empty container that Leaflet will insert into the DOM
+    const popupContainer = document.createElement('div');
+    marker.bindPopup(popupContainer, { maxWidth: 320, minWidth: 280, className: 'custom-popup' });
+
+    // React portal: mount PopupCard into the container
+    let root: Root | null = null;
+    marker.on('popupopen', () => {
+      if (!root) root = createRoot(popupContainer);
+      root.render(
+        <PopupCard 
+          user={user} 
+          onViewProfile={() => navigate(`/userspace/${user.username}/profile`)} 
+        />
+      );
     });
-    markersRef.current = {};
 
-    // Create red marker icon
-    const redIcon = L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+    marker.addTo(map);
+    markersRef.current[user._id] = marker;
+  });
+}, [users, mapReady, navigate]); // <- navigate is now a dependency
 
-    // Add markers for valid users
-    users.forEach((user) => {
-      if (!user.location || typeof user.location.latitude !== 'number' || typeof user.location.longitude !== 'number') {
-        return;
-      }
-
-      const { latitude, longitude } = user.location;
-      if (isNaN(latitude) || isNaN(longitude) || 
-          latitude < -90 || latitude > 90 || 
-          longitude < -180 || longitude > 180) {
-        return;
-      }
-
-      try {
-        const marker = L.marker([latitude, longitude], { icon: redIcon });
-        
-        // Create React-rendered popup content
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = `
-          <div class="p-3 min-w-[200px] lightmode dark:darkmode lightmode-text-primary dark:darkmode-text-primary !text-primary">
-            <div class="flex items-center mb-2">
-              <div class="w-12 h-12 mr-3 flex-shrink-0 rounded-full overflow-hidden">
-                ${user.avatar ? `
-                  <img 
-                    src="${user.avatar}" 
-                    alt="${user.fullName}"
-                    class="w-full h-full object-cover"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-                  />
-                  <div class="w-full h-full bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-full flex items-center justify-center" style="display: none;">
-                    <span class="text-white  text-lg">${user.firstName[0]}${user.lastName[0]}</span>
-                  </div>
-                ` : `
-                  <div class="w-full h-full bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-full flex items-center justify-center">
-                    <span class="text-white  text-lg">${user.firstName[0]}${user.lastName[0]}</span>
-                  </div>
-                `}
-              </div>
-              <div class="flex flex-col justify-center">
-                <h3 class="">${user.fullName}</h3>
-                <p class="text-sm lightmode-text-secondary dark:darkmode-text-secondary">
-                  ${user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not set'}
-                </p>
-              </div>
-            </div>
-            ${user.bio ? `<p class="my-2 text-sm lightmode-text-secondary dark:darkmode-text-secondary">${user.bio}</p>` : ''}
-            <p class="mt-1 mb-0 text-xs lightmode-text-secondary dark:darkmode-text-secondary text-right">
-              Member since ${new Date(user.memberSince).toLocaleDateString()}
-            </p>
-            ${user.username ? `
-              <div class="mt-2 text-right">
-                <button 
-                  data-username="${user.username}"
-                  class="profile-link inline-block px-3 py-1 !text-primary hover:!text-white btn-primary cursor-pointer"
-                >
-                  View Profile
-                </button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-        
-        marker.bindPopup(tempDiv.innerHTML, { 
-          maxWidth: 300,
-          className: 'custom-popup'
-        });
-
-        // Add click handler for profile links
-        marker.on('popupopen', () => {
-          const popup = marker.getPopup();
-          const popupElement = popup?.getElement();
-          if (popupElement) {
-            const profileLink = popupElement.querySelector('.profile-link');
-            if (profileLink) {
-              profileLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const username = (e.target as HTMLElement).getAttribute('data-username');
-                if (username) {
-                  navigate(`/userspace/${username}/profile`);
-                }
-              });
-            }
-          }
-        });
-        
-        marker.addTo(map);
-        markersRef.current[user._id] = marker;
-        
-      } catch (error) {
-        console.error(`Error adding marker for ${user.fullName}:`, error);
-      }
-    });
-    
-  }, [users, mapReady]);
-
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-        <span className="ml-3 lightmode-text-secondary dark:darkmode-text-secondary">Loading map and users...</span>
-      </div>
-    );
-  }
 
   return (
     <div className="h-[93vh] flex flex-col">
