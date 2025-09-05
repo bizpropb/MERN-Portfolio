@@ -173,7 +173,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         <div className="p-6">
           <h3 className="text-lg  mb-4">
@@ -232,13 +232,13 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
             <button
               onClick={handleConfirm}
               disabled={!selectedPosition || isLoading}
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white rounded-md hover:text-primary-highlight disabled:opacity-50 transition-all duration-200"
+              className="btn-primary-filled flex-1 px-4 py-2 rounded-md disabled:opacity-50"
             >
               Confirm Location
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 lightmode dark:darkmode text-white rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight transition-colors"
+              className="btn-muted-filled px-4 py-2 rounded-md"
             >
               Cancel
             </button>

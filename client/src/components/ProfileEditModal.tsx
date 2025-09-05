@@ -194,7 +194,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-4 py-2 btn-primary"
+                className="flex-1 px-4 py-2 btn-primary-filled"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

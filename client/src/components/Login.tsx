@@ -168,7 +168,7 @@ const Login: React.FC = () => {
           </div>
           
           <div className="mt-4 text-center text-xs lightmode-text-secondary dark:darkmode-text-secondary">
-            <p>All demo accounts use password: <span className="font-mono text-sm lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary px-1 rounded">password123</span></p>
+            <p>All demo accounts use password: <span className="font-mono text-xs lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary px-1 rounded">password123</span></p>
             <p className="mt-1">Click any user above to auto-fill login credentials!</p>
           </div>
         </div>
