@@ -59,7 +59,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-end justify-center lightmode dark:bg-transparent opacity-70 dark:opacity-90 pb-12">
-      <div className="max-w-md w-full space-y-2">
+      <div className="max-w-md w-full min-w-0 mx-4 sm:mx-0 space-y-2">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold gradient-text">
             DevHub Login

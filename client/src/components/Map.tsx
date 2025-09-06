@@ -225,6 +225,13 @@ const Map: React.FC = () => {
   }, []);
 
   const handleUserClick = useCallback((user: UserLocation) => {
+    // On mobile (when map is hidden), navigate directly to profile
+    if (window.innerWidth < 640) {
+      navigate(`/userspace/${user.username}/profile`);
+      return;
+    }
+
+    // On desktop, interact with map as usual
     if (mapInstanceRef.current && user.location?.latitude && user.location?.longitude) {
       const marker = markersRef.current[user._id];
       if (marker) {
@@ -232,7 +239,7 @@ const Map: React.FC = () => {
         marker.openPopup();
       }
     }
-  }, []);
+  }, [navigate]);
 
   // Initialize map
   useEffect(() => {
@@ -360,7 +367,7 @@ const Map: React.FC = () => {
 
 
   return (
-    <div className="h-[93vh] flex flex-col">
+      <div className="h-screen flex flex-col">
       {/* Disclaimer */}
       <div className="lightmode dark:darkmode border-b px-4 py-3">
         <div className="flex items-center space-x-2 max-w-7xl mx-auto">
@@ -374,7 +381,7 @@ const Map: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex relative min-h-0">
         {/* Sidebar */}
-        <div className="w-96 lightmode dark:darkmode border-r shadow-lg z-[1000] h-full">
+        <div className="w-full sm:w-96 lightmode dark:darkmode sm:border-r shadow-lg z-[1000] h-full">
           <div className="h-full flex flex-col">
             {/* Search Header */}
             <div className="flex-shrink-0 p-4 border-b lightmode dark:darkmode">
@@ -429,8 +436,8 @@ const Map: React.FC = () => {
         </div>
 
 
-        {/* Map Container */}
-        <div className="flex-1">
+        {/* Map Container - Hidden on mobile */}
+        <div className="flex-1 hidden sm:block">
           <div ref={mapRef} className="w-full h-full" />
           
           {/* Status overlays */}

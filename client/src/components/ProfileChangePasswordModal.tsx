@@ -28,7 +28,7 @@ const ProfileChangePasswordModal: React.FC<ProfileChangePasswordModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+      <div className="lightmode dark:darkmode rounded-lg shadow-xl max-w-lg w-full min-w-0 mx-2 sm:mx-0" onClick={(e) => e.stopPropagation()}>
         <div className="p-6 text-center">
           <h3 className="text-lg mb-4 lightmode-text-primary dark:darkmode-text-primary">Disabled Feature</h3>
           <p className="text-danger text-sm font-medium mb-6 whitespace-nowrap">

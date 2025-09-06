@@ -31,13 +31,14 @@ const NavigationSubMyUserspace: React.FC = () => {
               to={getProfilePath()}
               className="text-sm "
             >
-              &lt;/&gt; my userspace
+              <span className="hidden sm:inline">&lt;/&gt; my userspace</span>
+              <span className="sm:hidden">&lt;/&gt;</span>
             </Link>
             
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 sm:space-x-4">
               <Link
                 to={getDashboardPath()}
-                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-1 sm:px-2 py-1 text-xs font-medium ${
                   isActive(getDashboardPath())
                     ? '!text-primary-highlight !'
                     : 'text-primary hover:text-primary-highlight'
@@ -48,7 +49,7 @@ const NavigationSubMyUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getProjectsPath()}
-                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-1 sm:px-2 py-1 text-xs font-medium ${
                   isActive(getProjectsPath())
                     ? '!text-primary-highlight !'
                     : 'text-primary hover:text-primary-highlight'
@@ -59,7 +60,7 @@ const NavigationSubMyUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getSkillsPath()}
-                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-1 sm:px-2 py-1 text-xs font-medium ${
                   isActive(getSkillsPath())
                     ? '!text-primary-highlight !'
                     : 'text-primary hover:text-primary-highlight'
@@ -70,7 +71,7 @@ const NavigationSubMyUserspace: React.FC = () => {
               </Link>
               <Link
                 to={getProfilePath()}
-                className={`flex items-center space-x-2 px-2 py-1 text-xs font-medium ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-1 sm:px-2 py-1 text-xs font-medium ${
                   isActive(getProfilePath())
                     ? '!text-primary-highlight !'
                     : 'text-primary hover:text-primary-highlight'

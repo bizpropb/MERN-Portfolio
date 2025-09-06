@@ -601,7 +601,7 @@ return (
             </button>
 
             {showDropdown && hiddenCards.size > 0 && (
-              <div className="absolute right-0 top-full lightmode dark:darkmode text-primary border rounded-md shadow-lg z-10 min-w-48">
+              <div className="absolute right-0 top-full lightmode dark:darkmode text-primary border rounded-md shadow-lg z-10 max-w-48 w-max">
                 {Array.from(hiddenCards).map(cardId => {
                   const card = cardInfo[cardId as keyof typeof cardInfo];
                   return (

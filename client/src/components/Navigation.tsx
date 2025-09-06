@@ -5,7 +5,9 @@ import {
   MoonIcon, 
   HomeIcon,
   MapIcon,
-  NewspaperIcon
+  NewspaperIcon,
+  Bars3Icon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useDarkMode } from '../contexts/DarkModeContext';
@@ -41,6 +43,9 @@ const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useDarkMode();
   const location = useLocation();
+  
+  // MOBILE MENU STATE
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // PARTICLE ANIMATION TOGGLE STATE - STORED IN LOCALSTORAGE
   const [particlesEnabled, setParticlesEnabled] = useState(() => {
@@ -89,9 +94,23 @@ const Navigation: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
-              <Link to="/" className="text-xl  gradient-text font-bold">
+              {/* Logo - hidden on mobile */}
+              <Link to="/" className="text-xl gradient-text font-bold hidden sm:block">
                 DevHub
               </Link>
+              
+              {/* Mobile hamburger menu button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="sm:hidden p-2 rounded-md hover:lightmode-highlight dark:hover:darkmode-highlight"
+                aria-label="Toggle mobile menu"
+              >
+                {isMobileMenuOpen ? (
+                  <XMarkIcon className="w-6 h-6" />
+                ) : (
+                  <Bars3Icon className="w-6 h-6" />
+                )}
+              </button>
               
               <div className="hidden md:flex space-x-6">
                 <Link
@@ -193,6 +212,53 @@ const Navigation: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        <div className={`sm:hidden lightmode dark:darkmode border-t overflow-hidden transition-all duration-500 ease-in-out ${
+          isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          <div className="px-4 py-4 space-y-3">
+              {/* Navigation Links */}
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm ${
+                  isActive('/')
+                    ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary'
+                    : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary'
+                }`}
+              >
+                <HomeIcon className="w-5 h-5" />
+                <span>Home</span>
+              </Link>
+              
+              <Link
+                to="/news"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm ${
+                  isActive('/news')
+                    ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary'
+                    : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary'
+                }`}
+              >
+                <NewspaperIcon className="w-5 h-5" />
+                <span>News</span>
+              </Link>
+              
+              <Link
+                to="/browse"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm ${
+                  isActive('/browse')
+                    ? 'lightmode-highlight lightmode-text-primary dark:darkmode-highlight dark:darkmode-text-primary'
+                    : 'hover:lightmode-highlight lightmode-text-primary dark:hover:darkmode-highlight dark:darkmode-text-primary'
+                }`}
+              >
+                <MapIcon className="w-5 h-5" />
+                <span>User Map</span>
+              </Link>
+            </div>
+          </div>
       </nav>
 
     </>

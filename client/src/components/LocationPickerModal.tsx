@@ -174,7 +174,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="lightmode lightmode-text-primary dark:darkmode dark:darkmode-text-primary rounded-lg shadow-xl max-w-2xl w-full min-w-0 mx-2 sm:mx-0 max-h-[90vh] overflow-hidden">
         <div className="p-6">
           <h3 className="text-lg  mb-4">
             Select Your Location
