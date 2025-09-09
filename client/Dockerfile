@@ -1,24 +1,7 @@
-FROM node:20-alpine AS base
-
-# Set working directory
+# syntax=docker/dockerfile:1
+FROM node:20-alpine AS development
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Development stage
-FROM base AS development
-COPY . .
+# No COPY, no npm install here. Everything comes from bind mount.
 EXPOSE 3001
-VOLUME ["/app/node_modules"]
-CMD ["npm", "run", "dev"]
-
-# Production stage  
-FROM base AS production
-COPY . .
-RUN npm run build
-EXPOSE 3001
-CMD ["npx", "serve", "-s", "build", "-l", "3001"]
+CMD ["sh", "-c", "npm install && npm run dev"]

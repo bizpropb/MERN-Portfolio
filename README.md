@@ -113,21 +113,11 @@ Hit CTRL + SHIFT + V to open the .md-formatter for VS CODE.
 
 ## Getting Started
 
-### Install dependencies for client
-```bash
-cd client
-npm install
-```
-
-### Install dependencies for server
-```bash
-cd server
-npm install
-```
-
 ### Running the Application in prod mode
 Quick start Application in prod mode (including helper script):
 ```bash
+cd client; npm install; cd ..
+cd server; npm install; cd ..
 docker-compose -f compose.yaml -f compose.prod.yaml up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
 docker run --rm -it -v "${PWD}\startup.sh:/startup.sh:ro" -v "/var/run/docker.sock:/var/run/docker.sock" --network mern-portfolio_app-network alpine:latest sh -c "apk add --no-cache docker-cli && sh /startup.sh"
 ```
@@ -141,8 +131,9 @@ docker-compose restart
 
 Quick start (and rebuild) Application in dev mode (including helper script & seed):
 ```bash
+cd client; npm install; cd ..
+cd server; npm install; cd ..
 docker-compose down # Stop all containers and delete them
-docker volume rm mern-portfolio_client_node_modules mern-portfolio_server_node_modules # These are cache volumes. I named them to be orderly, but this makes them persistent. Remove them on rebuilds to prevent issues.
 docker-compose build --no-cache # Rebuild all containers (with clean cache)
 docker-compose up -d # Start all containers in detached mode, remove the 'd' if you want to follow the logs
 docker exec -it mern-server npm run seed
@@ -158,6 +149,6 @@ docker-compose build --no-cache # Rebuild all containers (with clean cache)
 docker system prune --volumes # Remove all orphans
 ```
 
-```
+```bash
 # If vmmem RAM-Usage spikes in taskmanager just restart docker by rightclicking the tray icon
 ```

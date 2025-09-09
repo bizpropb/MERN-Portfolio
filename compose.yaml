@@ -1,14 +1,8 @@
-# Docker Compose configuration for MERN Stack Portfolio application
-# Includes MongoDB database, Node.js server, React client, MongoDB admin interface, and database seeding
-version: '3.8'
-
 services:
-  # MongoDB database service with authentication and data persistence
   mongodb:
     image: mongo:7.0
     container_name: mern-mongodb
     restart: "no"
-    #command: mongod --quiet --logpath /dev/null  #uncomment this to silence mongodb logs 
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo-root-username
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo-root-password
@@ -25,8 +19,6 @@ services:
     networks:
       - app-network
 
-
-  # Node.js Backend Server
   server:
     build:
       context: ./server
@@ -34,6 +26,7 @@ services:
       target: development
     container_name: mern-server
     restart: "no"
+    working_dir: /app
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
@@ -42,17 +35,16 @@ services:
       - CLIENT_URL=${CLIENT_URL}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRE=${JWT_EXPIRE}
+    command: sh -c "npm install && npm run dev"
     ports:
       - "5001:5001"
     volumes:
       - ./server:/app
-      - server_node_modules:/app/node_modules
     depends_on:
       - mongodb
     networks:
       - app-network
 
-  # React Frontend Client
   client:
     build:
       context: ./client
@@ -60,66 +52,23 @@ services:
       target: development
     container_name: mern-client
     restart: "no"
+    working_dir: /app
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL}
       - PORT=3001
+    command: sh -c "npm install && npm run dev"
     ports:
       - "3001:3001"
     volumes:
       - ./client:/app
-      - client_node_modules:/app/node_modules
     depends_on:
       - server
-    networks:
-      - app-network
-
-  # MongoDB Admin UI
-  mongo-express:
-    image: mongo-express:1.0.2
-    container_name: mongo-express
-    restart: "no"
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
-      ME_CONFIG_MONGODB_URL: ${ME_CONFIG_MONGODB_URL}
-      ME_CONFIG_BASICAUTH: ${ME_CONFIG_BASICAUTH}
-    depends_on:
-      - mongodb
-    networks:
-      - app-network   
-
-
-  # Database Seeding Service
-  seed:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-      target: development
-    container_name: mern-seed
-    command: npm run seed
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - MONGODB_URI=${MONGODB_URI}
-      - DATABASE_TYPE=${DATABASE_TYPE}
-    volumes:
-      - ./server:/app
-      - seed_node_modules:/app/node_modules
-    depends_on:
-      - mongodb
-      - server
-    profiles:
-      - tools
     networks:
       - app-network
 
 volumes:
   mongodb_data:
   mongodb_configdb:
-  server_node_modules:
-  client_node_modules:
-  seed_node_modules:
 
 networks:
   app-network:
