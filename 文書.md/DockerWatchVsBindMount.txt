@@ -1,0 +1,15 @@
+| Features                                                  | Docker Watch | Bind Mount |
+| --------------------------------------------------------- | ------------ | ---------- |
+| Live-code update without rebuilding                       | YES          | YES        |
+| Dependencies are updated without rebuilding               | NO           | YES        |
+| Safe for cross-platform (ARM ↔ x86, Windows ↔ Linux)      | YES          | NO         |
+| Handles native C/C++ modules (bcrypt, sharp, etc.) cleanly| YES          | NO         |
+| High performance on large file trees                      | YES          | NO         |
+| Easier set up                                             | YES          | NO         |
+| Faster rebuilding                                         | NO           | YES        |
+
+Lessons:
+Docker compuse up --watch: -> when depencies or platforms cause issues
+Bind Mount: -> in all other cases (during development)
+
+*Never use bind mount for Filament.php, the I/O slows down the sever by x40!!
