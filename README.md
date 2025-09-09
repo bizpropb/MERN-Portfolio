@@ -129,7 +129,9 @@ Quick restart
 docker-compose restart
 ```
 
+
 Quick start (and rebuild) Application in dev mode (including helper script & seed):
+⚠️ In most cases you can just use F5 to hotreload the application. (doesnt work if docker related files are changed)
 ```bash
 cd client; npm install; cd ..
 cd server; npm install; cd ..
