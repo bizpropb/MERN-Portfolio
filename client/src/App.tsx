@@ -234,6 +234,27 @@ const ConditionalFooter: React.FC = () => {
 
 // Root application component that sets up routing, authentication, and renders the main layout
 const App: React.FC = () => {
+  // Console easter egg for curious developers
+  React.useEffect(() => {
+    /* eslint-disable no-console */
+    const indigo400 = '#818cf8';
+  
+    console.log(
+      `%c` +
+      `♡  ∩__∩\n` +
+      `  („•֊•„)♡ you found me!\n` +
+      `|￣U   U￣￣￣￣￣￣￣￣|\n` +
+      `|  I'M AN EASTER EGG! | \n` +
+      `￣￣￣￣￣￣￣￣￣￣￣￣`,
+      `
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: ${indigo400};
+      text-shadow: 0 0 6px ${indigo400};
+      `
+    );
+  }, []);
   return (
     <DarkModeProvider>
       <AuthProvider>
