@@ -356,7 +356,7 @@ const ProfileView: React.FC = () => {
                 <UserIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
-                <p className="text-2xl ">{stats.projects.totalProjects}</p>
+                <p className="text-2xl lightmode-text-primary dark:darkmode-text-primary">{stats.projects.totalProjects}</p>
                 <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">Projects</p>
               </div>
             </div>
@@ -368,7 +368,7 @@ const ProfileView: React.FC = () => {
                 <EyeIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
-                <p className="text-2xl ">{stats.projects.totalViews}</p>
+                <p className="text-2xl lightmode-text-primary dark:darkmode-text-primary">{stats.projects.totalViews}</p>
                 <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">Views</p>
               </div>
             </div>
@@ -380,7 +380,7 @@ const ProfileView: React.FC = () => {
                 <HeartIcon className="w-6 h-6 lightmode-text-secondary dark:darkmode-text-secondary" />
               </div>
               <div>
-                <p className="text-2xl ">{stats.projects.totalLikes}</p>
+                <p className="text-2xl lightmode-text-primary dark:darkmode-text-primary">{stats.projects.totalLikes}</p>
                 <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">Likes</p>
               </div>
             </div>
@@ -392,7 +392,7 @@ const ProfileView: React.FC = () => {
                 <span className="lightmode-text-secondary dark:darkmode-text-secondary  text-xl">★</span>
               </div>
               <div>
-                <p className="text-2xl ">{stats.projects.featuredProjects}</p>
+                <p className="text-2xl lightmode-text-primary dark:darkmode-text-primary">{stats.projects.featuredProjects}</p>
                 <p className="text-sm lightmode-text-secondary dark:darkmode-text-secondary">Featured</p>
               </div>
             </div>
@@ -403,13 +403,13 @@ const ProfileView: React.FC = () => {
       {/* Recent Projects */}
       {recentProjects.length > 0 && (
         <div className="lightmode dark:darkmode dark:darkmode-text-primary rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl  mb-4">Recent Projects</h2>
+          <h2 className="text-xl lightmode-text-primary dark:darkmode-text-primary mb-4">Recent Projects</h2>
           <div className="space-y-3">
             {recentProjects.map((project) => (
               <div key={project._id} className="flex items-center justify-between p-3 lightmode-highlight dark:darkmode-highlight rounded-lg">
                 <div>
-                  <h3 
-                    className="font-medium cursor-pointer text-primary hover:text-primary-highlight transition-colors duration-200"
+                  <h3
+                    className="font-medium cursor-pointer text-primary hover:text-primary-highlight transition-colors duration-200 font-futuristic"
                     onClick={() => handleProjectClick(project)}
                   >
                     {project.title}

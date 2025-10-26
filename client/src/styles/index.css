@@ -87,6 +87,11 @@
   font-family: "Inter", sans-serif;
 }
 
+/* font-futuristic: force Orbitron font for specific elements */
+@utility font-futuristic {
+  font-family: "Orbitron", sans-serif !important;
+}
+
 /*----------------------------------------------------*/
 
 /* darkmode: coloring background, and border colors */
