@@ -45,6 +45,8 @@ function first(items) {
 
 5. **No lock-in**: Strip comments tomorrow and you have runnable JavaScript. No transpilation step ever needed.
 
+6. **ESLint as the perfect companion**: JSDoc handles types and intellisense, ESLint handles code quality (unused variables, potential bugs, style). Together they give you 95% of TypeScript's benefits with none of the build complexity.
+
 ### The Statistics That Matter
 
 - **Svelte** migrated from TypeScript to JSDoc in 2024, citing build-time improvements and reduced contributor friction
@@ -141,3 +143,63 @@ The mental overhead of generic constraints, conditional types, and module resolu
 - Complex library development requiring advanced type system features
 
 **The honest truth**: Modern JavaScript with JSDoc annotations gives you 95% of TypeScript's benefits with 5% of the complexity. Choose based on your actual needs, not industry cargo cult trends.
+
+## The False Safety of Type Safety
+
+### Types Vanish at Runtime
+
+TypeScript's biggest illusion: types don't exist after compilation. They're erased completely. Your server cannot reject wrong types because the type information simply isn't there anymore.
+
+```typescript
+// At compile time:
+function addToAccount(amount: number): void { ... }
+
+// At runtime (after compilation):
+function addToAccount(amount) { ... }  // No type checking whatsoever
+```
+
+If malformed data reaches your function at runtime, TypeScript won't save you - the guardrails are gone.
+
+### Type Safety Doesn't Protect Against Malicious Actors
+
+**HTTP/REST API data is always strings.** Every input arrives as text that must be parsed:
+
+```javascript
+// What actually arrives from the network
+req.body.amount = "1000"  // It's a string, always
+
+// You MUST parse and validate explicitly
+const amount = parseInt(req.body.amount);
+if (isNaN(amount) || amount < 0) throw new Error('invalid amount');
+```
+
+TypeScript can't help here because:
+1. The data arrives as strings regardless of your type declarations
+2. A malicious actor can send anything - they don't care about your TypeScript interfaces
+3. Frontend type validation can be bypassed entirely by calling your API directly
+
+### The Real Security Model
+
+**All inputs must be validated at the server boundary.** This is true for every language - Java, C#, Python, JavaScript. The type system (any type system) only guarantees what happens *after* you've validated and assigned.
+
+Since you must validate all external input anyway, type safety within your codebase only helps developers catch their own mistakes. It's a developer experience feature, not a security feature.
+
+### Runtime Failures Are Your Canary
+
+Here's the counterintuitive truth: TypeScript's compile-time blocking can actually *harm* your security testing.
+
+If bad data would cause a runtime error in your business logic, that error reveals a gap in your validation layer. You want to see that failure - it tells you where to strengthen your defenses.
+
+TypeScript hides these gaps by refusing to compile. Your validation layer might have holes, but you'll never see them because the compiler stopped you first. The problem isn't the type error in your function - it's the missing validation at your API boundary.
+
+**Let it fail. Find the real problem. Fix the validation.**
+
+### The Bottom Line on Security
+
+- Type safety = developer convenience, not security
+- All external input must be validated explicitly
+- HTTP data is always strings requiring parsing
+- Types vanish at runtime - they can't reject malicious input
+- Runtime failures expose validation gaps that TypeScript would hide
+
+If you think TypeScript makes your backend more secure against attackers, you're operating under a dangerous illusion. Security comes from explicit validation, parameterized queries, authentication, and authorization - not from compile-time type annotations.
